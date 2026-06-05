@@ -1,26 +1,320 @@
-@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap");
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* =============================================================================
+   ikaZa Import Design System — Basado en wireframes Stitch
+   Colores: Deep Teal Primary + Muted Orange Accent
+   Tipografía: Manrope (headings) + Work Sans (body)
+   ============================================================================= */
 
 @theme inline {
+  /* Shadcn mapping */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-headline);
   --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 2);
+  --radius-full: 9999px;
+
+  /* ikaZa Brand Colors */
+  --color-ikaza-primary: #006065;
+  --color-ikaza-primary-dark: #004f53;
+  --color-ikaza-primary-light: #0d7a80;
+  --color-ikaza-primary-container: #99f1f7;
+  --color-ikaza-secondary: #885200;
+  --color-ikaza-secondary-light: #feb562;
+  --color-ikaza-secondary-container: #ffdcbb;
+  --color-ikaza-surface: #fbf9f8;
+  --color-ikaza-surface-dim: #dbd9d9;
+  --color-ikaza-on-surface: #1b1c1c;
+  --color-ikaza-outline: #6e797a;
+  --color-ikaza-outline-variant: #bdc9c9;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  /* === ikaZa Primary — Deep Teal === */
+  --primary: #006065;
+  --primary-foreground: #ffffff;
+
+  /* === ikaZa Secondary — Muted Orange (CTAs) === */
+  --secondary: #885200;
+  --secondary-foreground: #ffffff;
+
+  /* === Surfaces & Background === */
+  --background: #fbf9f8;
+  --foreground: #1b1c1c;
+  --card: #ffffff;
+  --card-foreground: #1b1c1c;
+  --popover: #ffffff;
+  --popover-foreground: #1b1c1c;
+
+  /* === Muted & Accents === */
+  --muted: #efeded;
+  --muted-foreground: #3e4949;
+  --accent: #99f1f7;
+  --accent-foreground: #002022;
+
+  /* === UI === */
+  --border: #bdc9c9;
+  --input: #e4e2e2;
+  --ring: #0d7a80;
+  --destructive: #ba1a1a;
+  --radius: 0.5rem;
+
+  /* === Chart Colors (Teal range) === */
+  --chart-1: #006065;
+  --chart-2: #0d7a80;
+  --chart-3: #feb562;
+  --chart-4: #885200;
+  --chart-5: #3e4949;
+
+  /* === Admin Sidebar === */
+  --sidebar: #002022;
+  --sidebar-foreground: #c7fbff;
+  --sidebar-primary: #7dd4db;
+  --sidebar-primary-foreground: #002022;
+  --sidebar-accent: #004f53;
+  --sidebar-accent-foreground: #c7fbff;
+  --sidebar-border: #004f53;
+  --sidebar-ring: #7dd4db;
+
+  /* === Typography Variables === */
+  --font-headline: "Manrope", system-ui, sans-serif;
+  --font-body: "Work Sans", system-ui, sans-serif;
+}
+
+/* Dark mode mantenido para compatibilidad con Shadcn */
+.dark {
+  --background: #1b1c1c;
+  --foreground: #e4e2e2;
+  --card: #303030;
+  --card-foreground: #e4e2e2;
+  --popover: #303030;
+  --popover-foreground: #e4e2e2;
+  --primary: #7dd4db;
+  --primary-foreground: #002022;
+  --secondary: #ffb869;
+  --secondary-foreground: #2c1700;
+  --muted: #3e4949;
+  --muted-foreground: #bdc9c9;
+  --accent: #004f53;
+  --accent-foreground: #c7fbff;
+  --border: #3e4949;
+  --input: #3e4949;
+  --ring: #7dd4db;
+  --destructive: #ff897d;
+  --sidebar: #002022;
+  --sidebar-foreground: #c7fbff;
+  --sidebar-primary: #7dd4db;
+  --sidebar-primary-foreground: #002022;
+  --sidebar-accent: #004f53;
+  --sidebar-accent-foreground: #c7fbff;
+  --sidebar-border: #004f53;
+  --sidebar-ring: #7dd4db;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    font-family: "Work Sans", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    background-color: #fbf9f8;
+    color: #1b1c1c;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Manrope", system-ui, sans-serif;
+    font-weight: 700;
+    color: #1b1c1c;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* =============================================================================
+   ikaZa Custom Utilities & Components
+   ============================================================================= */
+
+@layer utilities {
+  /* Contenedor principal del site */
+  .ikaza-container {
+    @apply mx-auto w-full px-4 sm:px-6;
+    max-width: 1280px;
+  }
+
+  /* Tipografía ikaZa */
+  .font-headline {
+    font-family: "Manrope", system-ui, sans-serif;
+  }
+  .font-body {
+    font-family: "Work Sans", system-ui, sans-serif;
+  }
+
+  /* Precio en display */
+  .price-display {
+    font-family: "Work Sans", sans-serif;
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.5rem;
+    color: #006065;
+  }
+
+  /* Badge de descuento */
+  .discount-badge {
+    @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold;
+    background-color: #feb562;
+    color: #2c1700;
+  }
+
+  /* Card de producto */
+  .product-card {
+    @apply relative rounded-lg bg-white border transition-all duration-200;
+    border-color: #e4e2e2;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  }
+
+  .product-card:hover {
+    border-color: #0d7a80;
+    box-shadow: 0 4px 16px rgba(0, 96, 101, 0.12);
+    transform: translateY(-2px);
+  }
+
+  /* Botón primario ikaZa */
+  .btn-ikaza-primary {
+    @apply inline-flex items-center justify-center rounded-full px-6 py-2.5 text-sm font-semibold text-white transition-all duration-200;
+    background-color: #006065;
+  }
+
+  .btn-ikaza-primary:hover {
+    background-color: #004f53;
+    box-shadow: 0 4px 12px rgba(0, 96, 101, 0.3);
+    transform: translateY(-1px);
+  }
+
+  /* Botón CTA de carrito (naranja) */
+  .btn-ikaza-cart {
+    @apply inline-flex w-full items-center justify-center rounded-full px-6 py-2.5 text-sm font-semibold text-white transition-all duration-200;
+    background-color: #885200;
+  }
+
+  .btn-ikaza-cart:hover {
+    background-color: #673d00;
+    box-shadow: 0 4px 12px rgba(136, 82, 0, 0.3);
+  }
+
+  /* Search bar con estilo pill */
+  .search-bar {
+    @apply flex items-center overflow-hidden rounded-full border bg-white;
+    border-color: #bdc9c9;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Sidebar admin */
+  .admin-sidebar {
+    background-color: #002022;
+    color: #c7fbff;
+  }
+
+  /* Glassmorphism card (para hero y banners) */
+  .glass-card {
+    @apply rounded-xl border backdrop-blur-md;
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Gradiente de hero */
+  .hero-gradient {
+    background: linear-gradient(
+      135deg,
+      #002022 0%,
+      #006065 50%,
+      #0d7a80 100%
+    );
+  }
+
+  /* Animación de skeleton loading */
+  .skeleton {
+    @apply animate-pulse rounded;
+    background-color: #efeded;
+  }
+
+  /* Badge de stock */
+  .stock-badge-in {
+    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium;
+    background-color: #d1fae5;
+    color: #065f46;
+  }
+
+  .stock-badge-out {
+    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium;
+    background-color: #fee2e2;
+    color: #991b1b;
+  }
+
+  /* Fade in animation */
+  .fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Slide up animation */
+  .slide-up {
+    animation: slideUp 0.4s ease-out;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 }
