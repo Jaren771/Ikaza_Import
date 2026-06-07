@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ikaZa Import
 
-## Getting Started
+> Plataforma de e-commerce y gestión de importaciones.  
+> **Next.js 16 · Prisma 6 · PostgreSQL · Tailwind CSS v4**
 
-First, run the development server:
+---
+
+<p align="center">
+  <!-- Reemplaza esta URL con la imagen del navbar -->
+  <img src="URL_DE_LA_IMAGEN" alt="ikaZa Import Navbar" width="100%">
+</p>
+
+---
+
+## Stack Tecnológico
+
+| Capa | Tecnología |
+|------|-----------|
+| **Framework** | Next.js 16 (App Router) + React 19 |
+| **Base de Datos** | PostgreSQL + Prisma v6 |
+| **Estilos** | Tailwind CSS v4 + shadcn/ui |
+| **Auth** | NextAuth.js v5 (JWT) |
+| **Formularios** | React Hook Form + Zod |
+| **Estado** | Zustand (local) + TanStack Query v5 (servidor) |
+| **Pagos** | MercadoPago · Culqi · Izipay · PayPal |
+
+---
+
+## Scripts
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev          # Desarrollo
+npm run build        # Producción
+npm run lint         # ESLint
+npm run db:push      # Sincronizar esquema a BD
+npm run db:migrate   # Migración Prisma
+npm run db:seed      # Datos de prueba
+npm run db:studio    # UI gráfica de la BD
+npm run db:reset     # Reset + seed
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Inicio Rápido
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+git clone <repo>
+npm install
+# Configurar .env (PostgreSQL, NextAuth, pagos...)
+npm run db:push
+npm run db:seed
+npm run dev
+```
 
-## Learn More
+Usuarios de prueba del seed:
 
-To learn more about Next.js, take a look at the following resources:
+| Email | Contraseña | Rol |
+|-------|-----------|-----|
+| `superadmin@ikaza.pe` | `Admin123!` | SUPER_ADMIN |
+| `admin@ikaza.pe` | `Admin123!` | ADMIN |
+| `maria@gmail.com` | `Admin123!` | CUSTOMER |
+| `admin@gmail.com` | `admin123` | ADMIN (mock, sin BD) |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Estructura
 
-## Deploy on Vercel
+```
+prisma/               # Schema + seed
+src/
+  app/                # App Router (páginas + API)
+  components/         # UI (shadcn) + features
+  features/           # Lógica por dominio
+    auth/             # Login, registro, roles
+    orders/           # Carrito, checkout, pedidos
+    products/         # Catálogo, filtros, repositorio
+    importer/         # Gestión de importaciones
+  lib/                # Clientes, utilidades, mock data
+  repositories/       # Capa de acceso a datos
+  services/           # Pagos, integraciones externas
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Roles y Permisos
+
+| Rol | Acceso |
+|-----|--------|
+| **SUPER_ADMIN** | Todo el sistema |
+| **ADMIN** | Panel admin, productos, pedidos |
+| **MANAGER** | Importaciones, inventario |
+| **CUSTOMER** | Catálogo, carrito, historial |
+
+---
+
+## Features
+
+- Catálogo con filtros (categoría, precio, stock, búsqueda)
+- Carrito de compras persistente
+- Checkout con múltiples medios de pago
+- Panel administrativo con dashboard y métricas
+- Gestión de importaciones (aduana, fletes, tracking)
+- Cupones de descuento (% , fijo, envío gratis)
+- Banners promocionales administrables
+- Sistema de reseñas con aprobación
+- Auditoría de acciones sensibles
+- 18 productos mock para desarrollo sin BD
