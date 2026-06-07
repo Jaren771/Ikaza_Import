@@ -16,7 +16,7 @@ export class PaymentService {
   private providers: Map<string, IPaymentProvider>;
 
   constructor() {
-    this.providers = new Map([
+    this.providers = new Map<string, IPaymentProvider>([
       ["MERCADOPAGO", new MercadoPagoProvider()],
       ["CULQI", new CulqiProvider()],
       ["IZIPAY", new IzipayProvider()],

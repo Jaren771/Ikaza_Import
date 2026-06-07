@@ -144,7 +144,7 @@ export class OrderRepository extends BaseRepository {
     return this.db.order.update({
       where: { id },
       data: {
-        status: status as Prisma.EnumOrderStatusFilter,
+        status: status as any,
         ...(trackingNumber && { trackingNumber }),
         ...(notes && { notes }),
       },
@@ -157,7 +157,7 @@ export class OrderRepository extends BaseRepository {
   async updatePaymentStatus(id: string, paymentStatus: string) {
     return this.db.order.update({
       where: { id },
-      data: { paymentStatus: paymentStatus as Prisma.EnumPaymentStatusFilter },
+      data: { paymentStatus: paymentStatus as any },
     });
   }
 

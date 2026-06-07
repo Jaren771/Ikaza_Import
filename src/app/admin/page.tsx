@@ -23,7 +23,22 @@ async function getDashboardStats() {
   const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
   const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
 
-  let metrics;
+  let metrics: [
+    number, number, number,
+    { _sum: { total: any | null } },
+    { _sum: { total: any | null } },
+    { _sum: { total: any | null } },
+    number, number, number, number, number, number,
+    Array<{
+      id: string;
+      createdAt: Date;
+      total: any;
+      status: string;
+      paymentStatus: string;
+      user: { name: string | null; email: string } | null;
+      items: Array<{ product: { name: string } }>;
+    }>
+  ];
   try {
     metrics = await Promise.all([
       prisma.order.count(),
@@ -49,7 +64,14 @@ async function getDashboardStats() {
     ]);
   } catch (error) {
     console.error("DB Error in Admin Dashboard:", error);
-    metrics = [150, 45, 12, { _sum: { total: 125000 } }, { _sum: { total: 45000 } }, { _sum: { total: 32000 } }, 1205, 140, 450, 420, 25, 8, []];
+    metrics = [
+      150, 45, 12,
+      { _sum: { total: 125000 } },
+      { _sum: { total: 45000 } },
+      { _sum: { total: 32000 } },
+      1205, 140, 450, 420, 25, 8,
+      []
+    ];
   }
 
   const [
@@ -210,7 +232,7 @@ export default async function AdminDashboardPage() {
                 <div key={order.id} className="flex items-center justify-between py-2 border-b last:border-0">
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">
-                      {order.user.name ?? order.user.email}
+                      {order.user?.name ?? order.user?.email ?? "Cliente"}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {order.items[0]?.product.name ?? "Producto"}

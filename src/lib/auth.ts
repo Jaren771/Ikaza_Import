@@ -104,8 +104,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     // Añadir rol y ID al JWT
     async jwt({ token, user, trigger, session }) {
       if (user) {
-        token.id = user.id;
-        token.role = (user as { role?: string }).role ?? "CUSTOMER";
+        token.id = user.id!;
+        token.role = ((user as { role?: string }).role ?? "CUSTOMER") as any;
       }
 
       // Permitir actualización de sesión desde el cliente
@@ -121,7 +121,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id as string;
-        session.user.role = token.role as string;
+        session.user.role = token.role;
       }
       return session;
     },

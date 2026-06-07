@@ -1,4 +1,4 @@
-import type { IPaymentProvider } from "./IPaymentProvider";
+import type { IPaymentProvider } from "../IPaymentProvider";
 import type { PaymentIntent, PaymentWebhookPayload } from "@/types";
 
 // =============================================================================
@@ -39,10 +39,11 @@ export class MercadoPagoProvider implements IPaymentProvider {
 
   async processWebhook(payload: unknown): Promise<PaymentWebhookPayload> {
     const p = payload as Record<string, unknown>;
+    const data = (p.data as Record<string, unknown>) ?? {};
     return {
       provider: this.providerId,
       event: String(p.type ?? "payment"),
-      paymentId: String(p.data?.id ?? ""),
+      paymentId: String(data.id ?? ""),
       status: "PENDING",
       raw: payload,
     };

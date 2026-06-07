@@ -3,7 +3,8 @@
 import { signIn, signOut } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { loginSchema, registerSchema, forgotPasswordSchema } from "@/features/auth/validators/auth.schema";
-import type { ActionResult, LoginInput, RegisterInput } from "@/types";
+import type { LoginInput, RegisterInput } from "@/features/auth/validators/auth.schema";
+import type { ActionResult } from "@/types";
 import bcrypt from "bcryptjs";
 import { AuthError } from "next-auth";
 

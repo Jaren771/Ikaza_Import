@@ -16,7 +16,7 @@ export default {
   callbacks: {
     async jwt({ token, user, trigger, session }) {
       if (user) {
-        token.id = user.id;
+        token.id = user.id!;
         token.role = (user as any).role ?? "CUSTOMER";
       }
       if (trigger === "update" && session) {
@@ -28,7 +28,7 @@ export default {
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id as string;
-        session.user.role = token.role as string;
+        session.user.role = token.role;
       }
       return session;
     },

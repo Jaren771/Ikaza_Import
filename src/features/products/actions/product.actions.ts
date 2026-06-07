@@ -22,11 +22,12 @@ export async function getProductsAction(filters: ProductFilters) {
   if (!validation.success) {
     return { success: false, error: "Filtros inválidos" };
   }
-  const products = await productRepository.findMany(validation.data);
+  const result = await productRepository.findMany(validation.data);
   return {
     success: true,
     data: {
-      products: products.map(p => serializeProduct(p)),
+      products: await Promise.all(result.data.map(p => serializeProduct(p))),
+      meta: result.meta,
     }
   };
 }
@@ -37,7 +38,7 @@ export async function getProductsAction(filters: ProductFilters) {
 export async function getProductBySlugAction(slug: string) {
   try {
     const product = await productRepository.findBySlug(slug);
-    if (product) return serializeProduct(product);
+    if (product) return await serializeProduct(product);
   } catch (error) {
     console.error("DB connection error in getProductBySlugAction:", error);
   }

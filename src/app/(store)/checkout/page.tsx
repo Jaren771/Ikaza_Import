@@ -38,7 +38,8 @@ export default async function CheckoutPage() {
   }
 
   // Serializar carrito para evitar Decimal
-  const cart = serializeCart(cartRaw);
+  const cart = await serializeCart(cartRaw);
+  if (!cart) redirect("/cart");
 
   // 2. Obtener direcciones del usuario
   const addresses = await prisma.address.findMany({

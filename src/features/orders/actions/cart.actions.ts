@@ -13,7 +13,7 @@ import { revalidatePath } from "next/cache";
 /**
  * Serializa un producto para enviarlo al cliente (convierte Decimals a números)
  */
-export function serializeProduct(product: any): any {
+export async function serializeProduct(product: any): Promise<any> {
   if (!product) return null;
 
   // Campos numéricos que pueden ser Decimal
@@ -33,16 +33,20 @@ export function serializeProduct(product: any): any {
 /**
  * Serializa el carrito para enviarlo al cliente (convierte Decimals a números)
  */
-export function serializeCart(cart: any) {
+export async function serializeCart(cart: any): Promise<{ items: Array<{ id: string; cartId: string; productId: string; quantity: number; price: number; product: any }> } | null> {
   if (!cart) return null;
+
+  const items = await Promise.all(
+    cart.items.map(async (item: any) => ({
+      ...item,
+      price: toNumber(item.price),
+      product: await serializeProduct(item.product),
+    }))
+  );
 
   return {
     ...cart,
-    items: cart.items.map((item: any) => ({
-      ...item,
-      price: toNumber(item.price),
-      product: serializeProduct(item.product),
-    })),
+    items,
   };
 }
 
@@ -70,7 +74,7 @@ export async function getCartAction() {
     },
   });
 
-  return serializeCart(cart);
+  return await serializeCart(cart);
 }
 
 /**

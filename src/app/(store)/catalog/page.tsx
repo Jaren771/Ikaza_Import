@@ -49,7 +49,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
     inStock: params.inStock === "true" ? true : undefined,
   };
 
-  const [products, categories] = await Promise.all([
+  const [productsResult, categories] = await Promise.all([
     getProductsAction(filters),
     getCategoriesAction(),
   ]);
@@ -63,6 +63,9 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
     params.isFeatured ||
     params.inStock
   );
+
+  const productsData = "data" in productsResult && productsResult.data ? productsResult.data.products : [];
+  const productsMeta = "data" in productsResult && productsResult.data ? productsResult.data.meta : { total: 0, page: 1, limit: 12, totalPages: 0 };
 
   return (
     <div className="ikaza-container py-6">
@@ -92,8 +95,8 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
               : "Catálogo de Productos"}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            {products.meta.total > 0
-              ? `${products.meta.total} productos encontrados`
+            {productsMeta.total > 0
+              ? `${productsMeta.total} productos encontrados`
               : "No se encontraron productos"}
           </p>
         </div>
@@ -147,20 +150,20 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
           </button>
 
           {/* Products grid */}
-          {products.data.length > 0 ? (
+          {productsData.length > 0 ? (
             <>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {products.data.map((product) => (
+                {productsData.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
 
               {/* Paginación */}
-              {products.meta.totalPages > 1 && (
+              {productsMeta.totalPages > 1 && (
                 <div className="mt-8">
                   <Pagination
-                    currentPage={products.meta.page}
-                    totalPages={products.meta.totalPages}
+                    currentPage={productsMeta.page}
+                    totalPages={productsMeta.totalPages}
                     baseUrl="/catalog"
                     searchParams={params}
                   />
