@@ -4,6 +4,8 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { productRepository } from "@/features/products/repositories/product.repository";
 import { productSchema, productFilterSchema } from "@/features/products/validators/product.schema";
+import { serializeProduct } from "@/features/orders/actions/cart.actions";
+import { toNumber } from "@/lib/utils";
 import type { ActionResult, ProductFilters } from "@/types";
 import { revalidatePath } from "next/cache";
 import { generateSlug } from "@/lib/utils";
@@ -20,7 +22,13 @@ export async function getProductsAction(filters: ProductFilters) {
   if (!validation.success) {
     return { success: false, error: "Filtros inválidos" };
   }
-  return productRepository.findMany(validation.data);
+  const products = await productRepository.findMany(validation.data);
+  return {
+    success: true,
+    data: {
+      products: products.map(p => serializeProduct(p)),
+    }
+  };
 }
 
 /**
@@ -29,7 +37,7 @@ export async function getProductsAction(filters: ProductFilters) {
 export async function getProductBySlugAction(slug: string) {
   try {
     const product = await productRepository.findBySlug(slug);
-    if (product) return product;
+    if (product) return serializeProduct(product);
   } catch (error) {
     console.error("DB connection error in getProductBySlugAction:", error);
   }

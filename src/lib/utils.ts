@@ -48,6 +48,16 @@ export function calculateDiscount(
   return Math.round(((comparePrice - price) / comparePrice) * 100);
 }
 
+// Convierte Decimal de Prisma a número
+export function toNumber(value: unknown): number {
+  if (typeof value === "number") return value;
+  if (typeof value === "string") return parseFloat(value);
+  if (value && typeof value === "object" && "toNumber" in value) {
+    return (value as { toNumber: () => number }).toNumber();
+  }
+  return 0;
+}
+
 // Formatea fechas en español
 export function formatDate(
   date: Date | string,
@@ -93,16 +103,6 @@ export function getInitials(name: string): string {
     .join("")
     .toUpperCase()
     .slice(0, 2);
-}
-
-// Convierte Decimal de Prisma a número
-export function toNumber(value: unknown): number {
-  if (typeof value === "number") return value;
-  if (typeof value === "string") return parseFloat(value);
-  if (value && typeof value === "object" && "toNumber" in value) {
-    return (value as { toNumber: () => number }).toNumber();
-  }
-  return 0;
 }
 
 // Debounce function

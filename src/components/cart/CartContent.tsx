@@ -5,20 +5,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { Trash2, Plus, Minus, Tag, ArrowRight, Loader2 } from "lucide-react";
 import { updateCartItemAction, removeFromCartAction, clearCartAction } from "@/features/orders/actions/cart.actions";
-import { formatPrice, toNumber } from "@/lib/utils";
+import { formatPrice } from "@/lib/utils";
 import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
 
 interface CartItem {
   id: string;
   quantity: number;
-  price: number | { toNumber: () => number };
+  price: number;
   product: {
     id: string;
     name: string;
     slug: string;
-    price: number | { toNumber: () => number };
-    comparePrice?: number | { toNumber: () => number } | null;
+    price: number;
+    comparePrice?: number | null;
     images?: { url: string; alt?: string | null; isPrimary: boolean }[];
     inventory?: { quantity: number } | null;
   };
@@ -42,7 +42,7 @@ export function CartContent({ cart }: CartContentProps) {
   const [couponCode, setCouponCode] = useState("");
 
   const subtotal = cart.items.reduce(
-    (sum, item) => sum + toNumber(item.price) * item.quantity,
+    (sum, item) => sum + item.price * item.quantity,
     0
   );
   const shipping = subtotal >= 150 ? 0 : 15;
@@ -89,7 +89,7 @@ export function CartContent({ cart }: CartContentProps) {
         <Separator />
 
         {cart.items.map((item) => {
-          const itemPrice = toNumber(item.price);
+          const itemPrice = item.price;
           const itemTotal = itemPrice * item.quantity;
           const primaryImage = item.product.images?.find((img) => img.isPrimary) ?? item.product.images?.[0];
           const maxStock = item.product.inventory?.quantity ?? 99;

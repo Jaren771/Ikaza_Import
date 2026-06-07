@@ -2,6 +2,7 @@
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { toNumber } from "@/lib/utils";
 import type { ActionResult } from "@/types";
 import { revalidatePath } from "next/cache";
 
@@ -10,13 +11,49 @@ import { revalidatePath } from "next/cache";
 // =============================================================================
 
 /**
+ * Serializa un producto para enviarlo al cliente (convierte Decimals a números)
+ */
+export function serializeProduct(product: any): any {
+  if (!product) return null;
+
+  // Campos numéricos que pueden ser Decimal
+  const numericFields = ["price", "comparePrice", "costPrice", "weight", "width", "height", "depth"];
+
+  return numericFields.reduce(
+    (acc: any, field: string) => {
+      if (field in product) {
+        acc[field] = product[field] ? toNumber(product[field]) : null;
+      }
+      return acc;
+    },
+    { ...product }
+  );
+}
+
+/**
+ * Serializa el carrito para enviarlo al cliente (convierte Decimals a números)
+ */
+export function serializeCart(cart: any) {
+  if (!cart) return null;
+
+  return {
+    ...cart,
+    items: cart.items.map((item: any) => ({
+      ...item,
+      price: toNumber(item.price),
+      product: serializeProduct(item.product),
+    })),
+  };
+}
+
+/**
  * Obtiene el carrito del usuario autenticado
  */
 export async function getCartAction() {
   const session = await auth();
   if (!session?.user?.id) return null;
 
-  return prisma.cart.findUnique({
+  const cart = await prisma.cart.findUnique({
     where: { userId: session.user.id },
     include: {
       items: {
@@ -32,6 +69,8 @@ export async function getCartAction() {
       },
     },
   });
+
+  return serializeCart(cart);
 }
 
 /**

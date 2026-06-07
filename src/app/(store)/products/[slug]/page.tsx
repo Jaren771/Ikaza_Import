@@ -15,6 +15,14 @@ interface ProductPageProps {
   params: Promise<{ slug: string }>;
 }
 
+interface ProductImage {
+  id: string;
+  url: string;
+  alt?: string | null;
+  isPrimary: boolean;
+  position: number;
+}
+
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProductBySlugAction(slug);
@@ -29,7 +37,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     openGraph: {
       title: product.name,
       description: product.shortDescription ?? "",
-      images: product.images?.map((img) => ({ url: img.url, alt: img.alt ?? product.name })),
+      images: product.images?.map((img: ProductImage) => ({ url: img.url, alt: img.alt ?? product.name })),
     },
   };
 }
@@ -50,7 +58,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
     product.categoryId ?? null
   );
 
-  const primaryImage = product.images?.find((img) => img.isPrimary) ?? product.images?.[0];
+  const primaryImage = product.images?.find((img: ProductImage) => img.isPrimary) ?? product.images?.[0];
   const price = toNumber(product.price);
   const comparePrice = product.comparePrice ? toNumber(product.comparePrice) : null;
   const discount = comparePrice ? calculateDiscount(price, comparePrice) : 0;
@@ -126,7 +134,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
           {/* Thumbnails */}
           {product.images && product.images.length > 1 && (
             <div className="flex gap-2 overflow-x-auto pb-1">
-              {product.images.map((img) => (
+              {product.images.map((img: ProductImage) => (
                 <div
                   key={img.id}
                   className="relative h-16 w-16 shrink-0 rounded-lg border-2 overflow-hidden cursor-pointer transition-colors"
@@ -257,7 +265,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
           {/* Tags */}
           {product.tags && product.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-4">
-              {product.tags.map((tag) => (
+              {product.tags.map((tag: string) => (
                 <Badge key={tag} variant="secondary" className="text-xs">
                   {tag}
                 </Badge>

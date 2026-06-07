@@ -172,7 +172,7 @@ export default async function HomePage() {
                 style={{ "--hover-color": "#006065" } as React.CSSProperties}
               >
                 <div className="text-3xl mb-1">
-                  {cat.emoji ?? "📦"}
+                  {"emoji" in cat ? cat.emoji : "📦"}
                 </div>
                 <p className="text-sm font-medium">{cat.name}</p>
                 {"_count" in cat && (

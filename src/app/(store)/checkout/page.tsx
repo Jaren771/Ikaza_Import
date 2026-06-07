@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { CheckoutForm } from "@/components/checkout/CheckoutForm";
 import { formatPrice, toNumber } from "@/lib/utils";
+import { serializeCart } from "@/features/orders/actions/cart.actions";
 import { ShieldCheck, Lock } from "lucide-react";
 import Image from "next/image";
 import type { Metadata } from "next";
@@ -19,7 +20,7 @@ export default async function CheckoutPage() {
   }
 
   // 1. Obtener carrito
-  const cart = await prisma.cart.findUnique({
+  const cartRaw = await prisma.cart.findUnique({
     where: { userId: session.user.id },
     include: {
       items: {
@@ -32,9 +33,12 @@ export default async function CheckoutPage() {
     },
   });
 
-  if (!cart || cart.items.length === 0) {
+  if (!cartRaw || cartRaw.items.length === 0) {
     redirect("/cart");
   }
+
+  // Serializar carrito para evitar Decimal
+  const cart = serializeCart(cartRaw);
 
   // 2. Obtener direcciones del usuario
   const addresses = await prisma.address.findMany({

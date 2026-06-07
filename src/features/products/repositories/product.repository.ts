@@ -6,6 +6,23 @@ import { Prisma } from "@prisma/client";
 // Product Repository — Acceso a datos de productos
 // =============================================================================
 
+/**
+ * Convierte todos los campos Decimal de un producto a number
+ * Necesario para serializar productos de Server Components a Client Components
+ */
+function serializeProduct(product: any): any {
+  return {
+    ...product,
+    price: Number(product.price),
+    comparePrice: product.comparePrice ? Number(product.comparePrice) : null,
+    costPrice: product.costPrice ? Number(product.costPrice) : null,
+    weight: product.weight ? Number(product.weight) : null,
+    width: product.width ? Number(product.width) : null,
+    height: product.height ? Number(product.height) : null,
+    depth: product.depth ? Number(product.depth) : null,
+  };
+}
+
 export class ProductRepository extends BaseRepository {
   /**
    * Obtiene productos con filtros, paginación y relaciones
@@ -79,10 +96,7 @@ export class ProductRepository extends BaseRepository {
 
       // Calcular rating promedio
       const enriched = data.map((product) => ({
-        ...product,
-        price: Number(product.price),
-        comparePrice: product.comparePrice ? Number(product.comparePrice) : null,
-        costPrice: product.costPrice ? Number(product.costPrice) : null,
+        ...serializeProduct(product),
         avgRating:
           product.reviews.length > 0
             ? product.reviews.reduce((sum, r) => sum + r.rating, 0) /
@@ -129,11 +143,7 @@ export class ProductRepository extends BaseRepository {
 
     if (!product) return null;
 
-    return {
-      ...product,
-      price: Number(product.price),
-      comparePrice: product.comparePrice ? Number(product.comparePrice) : null,
-    } as unknown as ProductWithRelations;
+    return serializeProduct(product) as unknown as ProductWithRelations;
   }
 
   /**
@@ -162,11 +172,7 @@ export class ProductRepository extends BaseRepository {
       },
     });
 
-    return products.map((p) => ({
-      ...p,
-      price: Number(p.price),
-      comparePrice: p.comparePrice ? Number(p.comparePrice) : null,
-    })) as unknown as ProductWithRelations[];
+    return products.map(serializeProduct) as unknown as ProductWithRelations[];
   }
 
   /**
@@ -185,18 +191,14 @@ export class ProductRepository extends BaseRepository {
       },
     });
 
-    return products.map((p) => ({
-      ...p,
-      price: Number(p.price),
-      comparePrice: p.comparePrice ? Number(p.comparePrice) : null,
-    })) as unknown as ProductWithRelations[];
+    return products.map(serializeProduct) as unknown as ProductWithRelations[];
   }
 
   /**
    * Obtiene un producto por ID (para admin)
    */
   async findById(id: string) {
-    return this.db.product.findUnique({
+    const product = await this.db.product.findUnique({
       where: { id },
       include: {
         category: true,
@@ -211,6 +213,8 @@ export class ProductRepository extends BaseRepository {
         },
       },
     });
+    
+    return product ? serializeProduct(product) : null;
   }
 
   /**
