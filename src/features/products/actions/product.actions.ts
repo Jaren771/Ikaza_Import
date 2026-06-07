@@ -23,20 +23,32 @@ export async function getProductsAction(filters: ProductFilters) {
   if (!validation.success) {
     return { success: false, error: "Filtros inválidos" };
   }
+
+  let dbProducts: any[] = [];
+  let dbMeta: any = null;
+
   try {
     const result = await productRepository.findMany(validation.data);
+    if (result.data.length > 0) {
+      dbProducts = result.data;
+      dbMeta = result.meta;
+    }
+  } catch (error) {
+    console.error("DB connection error in getProductsAction:", error);
+  }
+
+  if (dbProducts.length > 0) {
     return {
       success: true,
       data: {
-        products: await Promise.all(result.data.map(p => serializeProduct(p))),
-        meta: result.meta,
+        products: await Promise.all(dbProducts.map(p => serializeProduct(p))),
+        meta: dbMeta,
       }
     };
-  } catch (error) {
-    console.error("DB connection error in getProductsAction:", error);
-    const { data, meta } = filterMockProducts(validation.data);
-    return { success: true, data: { products: data, meta } };
   }
+
+  const { data, meta } = filterMockProducts(validation.data);
+  return { success: true, data: { products: data, meta } };
 }
 
 /**
@@ -205,7 +217,7 @@ export async function deleteProductAction(
  */
 export async function getCategoriesAction() {
   try {
-    return await prisma.category.findMany({
+    const cats = await prisma.category.findMany({
       where: { isActive: true },
       orderBy: { sortOrder: "asc" },
       include: {
@@ -216,8 +228,9 @@ export async function getCategoriesAction() {
         _count: { select: { products: true } },
       },
     });
+    if (cats.length > 0) return cats;
   } catch (error) {
     console.error("DB connection error in getCategoriesAction:", error);
-    return getMockCategories() as any;
   }
+  return getMockCategories() as any;
 }
