@@ -9,6 +9,7 @@ import { toNumber } from "@/lib/utils";
 import type { ActionResult, ProductFilters } from "@/types";
 import { revalidatePath } from "next/cache";
 import { generateSlug } from "@/lib/utils";
+import { filterMockProducts, getMockCategories, MOCK_PRODUCTS } from "@/lib/mock-products";
 
 // =============================================================================
 // Server Actions — Productos
@@ -22,14 +23,20 @@ export async function getProductsAction(filters: ProductFilters) {
   if (!validation.success) {
     return { success: false, error: "Filtros inválidos" };
   }
-  const result = await productRepository.findMany(validation.data);
-  return {
-    success: true,
-    data: {
-      products: await Promise.all(result.data.map(p => serializeProduct(p))),
-      meta: result.meta,
-    }
-  };
+  try {
+    const result = await productRepository.findMany(validation.data);
+    return {
+      success: true,
+      data: {
+        products: await Promise.all(result.data.map(p => serializeProduct(p))),
+        meta: result.meta,
+      }
+    };
+  } catch (error) {
+    console.error("DB connection error in getProductsAction:", error);
+    const { data, meta } = filterMockProducts(validation.data);
+    return { success: true, data: { products: data, meta } };
+  }
 }
 
 /**
@@ -43,71 +50,10 @@ export async function getProductBySlugAction(slug: string) {
     console.error("DB connection error in getProductBySlugAction:", error);
   }
 
-  // Fallback mock product if database is not running
-  return {
-    id: "mock-product-id",
-    slug: slug || "mock-product",
-    name: "Producto de Muestra ikaZa",
-    sku: "IKZ-MOCK-001",
-    price: 299.90,
-    comparePrice: 399.90,
-    shortDescription: "Esta es una descripción corta del producto de muestra. Ideal para verificar el diseño visual de la página de detalles.",
-    description: "Esta es la descripción detallada del producto de muestra. Aquí se detallan los materiales, características y especificaciones técnicas para comprobar el comportamiento del acordeón y los textos largos en la página web.",
-    status: "ACTIVE",
-    isFeatured: true,
-    categoryId: "mock-cat",
-    category: {
-      id: "mock-cat",
-      name: "Hogar y Decoración",
-      slug: "hogar-decoracion"
-    },
-    brandId: "mock-brand",
-    brand: {
-      id: "mock-brand",
-      name: "ikaZa Premium",
-      slug: "ikaza-premium",
-      logo: null
-    },
-    images: [
-      {
-        id: "img1",
-        url: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&auto=format&fit=crop&q=60",
-        alt: "Producto Muestra Principal",
-        isPrimary: true,
-        position: 1
-      },
-      {
-        id: "img2",
-        url: "https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=800&auto=format&fit=crop&q=60",
-        alt: "Vista alternativa 1",
-        isPrimary: false,
-        position: 2
-      }
-    ],
-    inventory: {
-      quantity: 15,
-      minStock: 5
-    },
-    reviews: [
-      {
-        id: "rev1",
-        rating: 5,
-        title: "¡Excelente calidad!",
-        content: "Me encantó el producto. El acabado es premium y llegó super rápido.",
-        user: { name: "Juan Pérez", image: null },
-        createdAt: new Date()
-      },
-      {
-        id: "rev2",
-        rating: 4,
-        title: "Muy bueno",
-        content: "Cumple con todo lo especificado. Lo recomiendo.",
-        user: { name: "Ana Gómez", image: null },
-        createdAt: new Date()
-      }
-    ],
-    tags: ["Decoración", "Premium", "Novedad"]
-  } as any;
+  const mock = MOCK_PRODUCTS.find((p) => p.slug === slug);
+  if (mock) return mock;
+
+  return MOCK_PRODUCTS[0] as any;
 }
 
 /**
@@ -118,7 +64,7 @@ export async function getFeaturedProductsAction(limit = 8) {
     return await productRepository.findFeatured(limit);
   } catch (error) {
     console.error("DB connection error in getFeaturedProductsAction:", error);
-    return []; // Fallback gracefully if DB is not running
+    return MOCK_PRODUCTS.filter((p) => p.isFeatured).slice(0, limit);
   }
 }
 
@@ -133,29 +79,10 @@ export async function getRelatedProductsAction(
     return await productRepository.findRelated(productId, categoryId);
   } catch (error) {
     console.error("DB connection error in getRelatedProductsAction:", error);
-    // Return a list of mock products as related products
-    return [
-      {
-        id: "mock-related-1",
-        slug: "related-1",
-        name: "Lámpara de Mesa Elegante",
-        price: 89.90,
-        comparePrice: 120.00,
-        images: [{ url: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&auto=format&fit=crop&q=60" }],
-        inventory: { quantity: 10 },
-        reviews: [{ rating: 5 }]
-      },
-      {
-        id: "mock-related-2",
-        slug: "related-2",
-        name: "Cojín Decorativo Moderno",
-        price: 45.00,
-        comparePrice: null,
-        images: [{ url: "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=400&auto=format&fit=crop&q=60" }],
-        inventory: { quantity: 25 },
-        reviews: [{ rating: 4.5 }]
-      }
-    ] as any[];
+    const related = MOCK_PRODUCTS.filter(
+      (p) => p.id !== productId && (!categoryId || p.categoryId === categoryId)
+    ).slice(0, 4);
+    return related as any[];
   }
 }
 
@@ -291,6 +218,6 @@ export async function getCategoriesAction() {
     });
   } catch (error) {
     console.error("DB connection error in getCategoriesAction:", error);
-    return []; // Fallback gracefully if DB is not running
+    return getMockCategories() as any;
   }
 }

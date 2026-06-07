@@ -89,10 +89,11 @@ export class CulqiProvider implements IPaymentProvider {
 
   async processWebhook(payload: unknown): Promise<PaymentWebhookPayload> {
     const p = payload as Record<string, unknown>;
+    const data = (p.data as Record<string, unknown>) ?? {};
     return {
       provider: this.providerId,
       event: String(p.event ?? "charge"),
-      paymentId: String(p.data?.id ?? ""),
+      paymentId: String(data.id ?? ""),
       status: "PENDING",
       raw: payload,
     };
@@ -180,10 +181,11 @@ export class PayPalProvider implements IPaymentProvider {
 
   async processWebhook(payload: unknown): Promise<PaymentWebhookPayload> {
     const p = payload as Record<string, unknown>;
+    const resource = (p.resource as Record<string, unknown>) ?? {};
     return {
       provider: this.providerId,
       event: String(p.event_type ?? "payment"),
-      paymentId: String(p.resource?.id ?? ""),
+      paymentId: String(resource.id ?? ""),
       status: "PENDING",
       raw: payload,
     };
