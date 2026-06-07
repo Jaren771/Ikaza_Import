@@ -7,7 +7,7 @@
 
 <p align="center">
   <!-- Reemplaza esta URL con la imagen del navbar -->
-  <img src="URL_DE_LA_IMAGEN" alt="ikaZa Import" width="100%">
+  <img src="Logo IKAZA.jpg" alt="ikaZa Import" width="100%">
 </p>
 
 ---
