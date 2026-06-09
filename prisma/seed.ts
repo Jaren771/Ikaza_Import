@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import fs from "fs";
+import path from "path";
 
 const prisma = new PrismaClient();
 
@@ -134,13 +136,14 @@ async function main() {
         name: "Hogar",
         slug: "hogar",
         description: "Artículos para el hogar",
-        image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400",
         sortOrder: 1,
         subcategories: {
           create: [
             { name: "Sala", slug: "sala", sortOrder: 1 },
             { name: "Dormitorio", slug: "dormitorio", sortOrder: 2 },
-            { name: "Iluminación", slug: "iluminacion", sortOrder: 3 },
+            { name: "Baño", slug: "bano", sortOrder: 3 },
+            { name: "Limpieza", slug: "limpieza", sortOrder: 4 },
+            { name: "Organización", slug: "organizacion", sortOrder: 5 },
           ],
         },
       },
@@ -150,7 +153,6 @@ async function main() {
         name: "Cocina",
         slug: "cocina",
         description: "Utensilios y electrodomésticos de cocina",
-        image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400",
         sortOrder: 2,
         subcategories: {
           create: [
@@ -166,12 +168,12 @@ async function main() {
         name: "Tecnología",
         slug: "tecnologia",
         description: "Gadgets y accesorios tecnológicos",
-        image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400",
         sortOrder: 3,
         subcategories: {
           create: [
             { name: "Audio", slug: "audio", sortOrder: 1 },
             { name: "Accesorios", slug: "accesorios-tech", sortOrder: 2 },
+            { name: "Iluminación", slug: "iluminacion", sortOrder: 3 },
           ],
         },
       },
@@ -184,8 +186,90 @@ async function main() {
         sortOrder: 4,
         subcategories: {
           create: [
-            { name: "Cuadros", slug: "cuadros", sortOrder: 1 },
-            { name: "Plantas artificiales", slug: "plantas-artificiales", sortOrder: 2 },
+            { name: "Cuadros y Portafotos", slug: "cuadros", sortOrder: 1 },
+            { name: "Plantas y Flores", slug: "plantas-artificiales", sortOrder: 2 },
+            { name: "Adornos", slug: "adornos", sortOrder: 3 },
+          ],
+        },
+      },
+    }),
+    prisma.category.create({
+      data: {
+        name: "Vestimenta",
+        slug: "vestimenta",
+        description: "Ropa y accesorios",
+        sortOrder: 5,
+        subcategories: {
+          create: [
+            { name: "Ropa Mujer", slug: "ropa-mujer", sortOrder: 1 },
+            { name: "Ropa Hombre", slug: "ropa-hombre", sortOrder: 2 },
+            { name: "Ropa Infantil", slug: "ropa-infantil", sortOrder: 3 },
+            { name: "Accesorios", slug: "accesorios-ropa", sortOrder: 4 },
+          ],
+        },
+      },
+    }),
+    prisma.category.create({
+      data: {
+        name: "Belleza y Cuidado Personal",
+        slug: "belleza-y-cuidado-personal",
+        description: "Productos de belleza y cosméticos",
+        sortOrder: 6,
+        subcategories: {
+          create: [
+            { name: "Maquillaje", slug: "maquillaje", sortOrder: 1 },
+            { name: "Accesorios de Belleza", slug: "accesorios-belleza", sortOrder: 2 },
+          ],
+        },
+      },
+    }),
+    prisma.category.create({
+      data: {
+        name: "Juguetes y Juegos",
+        slug: "juguetes-y-juegos",
+        description: "Diversión para todas las edades",
+        sortOrder: 7,
+        subcategories: {
+          create: [
+            { name: "Peluches", slug: "peluches", sortOrder: 1 },
+            { name: "Didácticos y Juegos", slug: "didacticos", sortOrder: 2 },
+            { name: "Diversión", slug: "diversion", sortOrder: 3 },
+          ],
+        },
+      },
+    }),
+    prisma.category.create({
+      data: {
+        name: "Regalos y Celebraciones",
+        slug: "regalos-y-celebraciones",
+        description: "Regalos para fechas especiales",
+        sortOrder: 8,
+        subcategories: {
+          create: [
+            { name: "Día del Padre", slug: "dia-del-padre", sortOrder: 1 },
+            { name: "Fiestas", slug: "fiestas", sortOrder: 2 },
+          ],
+        },
+      },
+    }),
+    prisma.category.create({
+      data: {
+        name: "Jardín",
+        slug: "jardin",
+        description: "Artículos para el jardín y exteriores",
+        sortOrder: 9,
+      },
+    }),
+    prisma.category.create({
+      data: {
+        name: "Arte y Manualidades",
+        slug: "arte-y-manualidades",
+        description: "Materiales y arte",
+        sortOrder: 10,
+        subcategories: {
+          create: [
+            { name: "Útiles Escolares", slug: "utiles", sortOrder: 1 },
+            { name: "Manualidades", slug: "manualidades", sortOrder: 2 },
           ],
         },
       },
@@ -228,7 +312,71 @@ async function main() {
   // =========================================================================
   // PRODUCTOS
   // =========================================================================
-  const products = await Promise.all([
+  
+  let importedProducts: any[] = [];
+  try {
+    const seedPath = path.join(process.cwd(), "prisma", "seed-reales.json");
+    if (fs.existsSync(seedPath)) {
+      importedProducts = JSON.parse(fs.readFileSync(seedPath, "utf-8"));
+      console.log(`📦 Encontrados ${importedProducts.length} productos reales en seed-reales.json`);
+    }
+  } catch (e) {
+    console.log("No se pudo leer seed-reales.json, usando productos por defecto.");
+  }
+
+  const products = [];
+  
+  if (importedProducts.length > 0) {
+    for (let i = 0; i < importedProducts.length; i++) {
+      const p = importedProducts[i];
+      const categorySlug = p.categoryId.replace("cat-", ""); // asumiendo que "cat-hogar" -> "hogar"
+      
+      // Buscar la categoría real en BD o usar la primera por defecto
+      let dbCat = await prisma.category.findUnique({ where: { slug: categorySlug } });
+      if (!dbCat) {
+        dbCat = categories[0]; // fallback
+      }
+
+      // Buscar la subcategoría real en BD si existe
+      let dbSubCat = null;
+      if (p.subcategoryId) {
+        dbSubCat = await prisma.subcategory.findFirst({ where: { slug: p.subcategoryId } });
+      }
+
+      const product = await prisma.product.create({
+        data: {
+          name: p.name,
+          slug: p.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") + "-" + i,
+          sku: `SKU-REAL-${i+1}`,
+          description: p.name,
+          shortDescription: p.name,
+          price: p.price,
+          comparePrice: null,
+          costPrice: p.price * 0.7,
+          status: "ACTIVE",
+          isFeatured: i < 8,
+          categoryId: dbCat.id,
+          subcategoryId: dbSubCat ? dbSubCat.id : null,
+          brandId: brands[0].id,
+          supplierId: supplier.id,
+          images: {
+            create: [{
+              url: `/products/${p.imageFile}`,
+              alt: p.name,
+              isPrimary: true,
+              position: 0,
+            }],
+          },
+          inventory: {
+            create: { quantity: 50, minStock: 5 },
+          },
+        },
+      });
+      products.push(product);
+    }
+  } else {
+    // Default mock products
+    const defaultProducts = await Promise.all([
     // Producto 1 — Cocina
     prisma.product.create({
       data: {
@@ -386,8 +534,10 @@ async function main() {
           create: { quantity: 30, minStock: 8 },
         },
       },
-    }),
+    })
   ]);
+  products.push(...defaultProducts);
+}
 
   console.log("✅ Productos creados");
 

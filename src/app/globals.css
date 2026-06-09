@@ -317,4 +317,144 @@
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
   }
+
+  /* ============================================================
+     IKAZA REDESIGN — Animaciones de pétalos flotantes
+     ============================================================ */
+
+  .hero-petal {
+    position: absolute;
+    border-radius: 50% 0 50% 0;
+    opacity: 0;
+    animation: petalFall linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes petalFall {
+    0%   { opacity: 0;   transform: translateY(-20px) rotate(0deg) scale(0.8); }
+    10%  { opacity: 0.7; }
+    90%  { opacity: 0.4; }
+    100% { opacity: 0;   transform: translateY(110vh) rotate(720deg) scale(1.1); }
+  }
+
+  /* Hero image halo/glow */
+  .hero-image-halo {
+    position: relative;
+  }
+
+  .hero-image-halo::before {
+    content: "";
+    position: absolute;
+    inset: -20px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(153, 241, 247, 0.3) 0%, rgba(254, 181, 98, 0.15) 50%, transparent 70%);
+    animation: haloPulse 4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @keyframes haloPulse {
+    0%, 100% { transform: scale(1);   opacity: 0.8; }
+    50%       { transform: scale(1.08); opacity: 1;   }
+  }
+
+  /* Header — barra decorativa gradiente */
+  .header-brand-bar {
+    height: 3px;
+    background: linear-gradient(90deg, #006065 0%, #0d7a80 30%, #99f1f7 50%, #feb562 70%, #885200 100%);
+  }
+
+  /* Category cards premium */
+  .category-card-hogar      { background: linear-gradient(135deg, #e0f7f8 0%, #b2eef2 100%); }
+  .category-card-cocina     { background: linear-gradient(135deg, #fff4e0 0%, #ffdcbb 100%); }
+  .category-card-tech       { background: linear-gradient(135deg, #dce4f0 0%, #b8cce0 100%); }
+  .category-card-deco       { background: linear-gradient(135deg, #f8e8f0 0%, #ffc6e0 100%); }
+  .category-card-vestimenta { background: linear-gradient(135deg, #eee8fc 0%, #d8c8f5 100%); }
+  .category-card-belleza    { background: linear-gradient(135deg, #fce8f4 0%, #f5c8dc 100%); }
+  .category-card-juguetes   { background: linear-gradient(135deg, #fcf8e4 0%, #f5ecc0 100%); }
+  .category-card-regalos    { background: linear-gradient(135deg, #fce8e4 0%, #f5c8c0 100%); }
+  .category-card-jardin     { background: linear-gradient(135deg, #e8f8e8 0%, #c0f0c0 100%); }
+  .category-card-bano       { background: linear-gradient(135deg, #e0eef8 0%, #bde0fa 100%); }
+  .category-card-arte       { background: linear-gradient(135deg, #ede8fc 0%, #c8b8f5 100%); }
+  .category-card-default    { background: linear-gradient(135deg, #f0f8f8 0%, #c7fbff 100%); }
+
+  .category-card-item {
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+
+  .category-card-item:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 12px 32px rgba(0, 96, 101, 0.18);
+    border-color: #0d7a80;
+  }
+
+  /* Offer banner */
+  .offer-banner-overlay {
+    background: linear-gradient(135deg, rgba(136, 82, 0, 0.92) 0%, rgba(254, 181, 98, 0.88) 100%);
+  }
+
+  /* Testimonial quote decoration */
+  .testimonial-card {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .testimonial-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 96, 101, 0.1);
+  }
+
+  .testimonial-card::before {
+    content: '\"';
+    position: absolute;
+    top: -10px;
+    left: 12px;
+    font-size: 7rem;
+    font-family: "Manrope", serif;
+    font-weight: 900;
+    line-height: 1;
+    color: #006065;
+    opacity: 0.07;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* Features bar hover */
+  .feature-item {
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .feature-item:hover {
+    background-color: #ffffff;
+    transform: translateY(-2px);
+  }
+
+  /* Section wave divider */
+  .wave-divider {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+  }
+
+  /* Float animation for hero badge */
+  .float-badge {
+    animation: floatBadge 3s ease-in-out infinite;
+  }
+
+  @keyframes floatBadge {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-6px); }
+  }
+
+  /* Pulse dot for live indicator */
+  .pulse-dot {
+    animation: pulseDot 2s ease-in-out infinite;
+  }
+
+  @keyframes pulseDot {
+    0%, 100% { opacity: 1;   transform: scale(1); }
+    50%       { opacity: 0.5; transform: scale(1.4); }
+  }
 }

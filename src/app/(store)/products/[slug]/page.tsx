@@ -110,7 +110,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
                 src={primaryImage.url}
                 alt={primaryImage.alt ?? product.name}
                 fill
-                className="object-cover"
+                className="object-contain"
                 priority
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
@@ -140,7 +140,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
                   className="relative h-16 w-16 shrink-0 rounded-lg border-2 overflow-hidden cursor-pointer transition-colors"
                   style={{ borderColor: img.isPrimary ? "#006065" : "#e4e2e2" }}
                 >
-                  <Image src={img.url} alt={img.alt ?? ""} fill className="object-cover" />
+                  <Image src={img.url} alt={img.alt ?? ""} fill className="object-contain" />
                 </div>
               ))}
             </div>

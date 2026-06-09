@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Package, Mail, Phone, MapPin } from "lucide-react";
+import Image from "next/image";
+import { Mail, Phone, MapPin } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/constants";
 
 export function Footer() {
@@ -12,9 +13,14 @@ export function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl"
-                style={{ background: "linear-gradient(135deg, #006065, #0d7a80)" }}>
-                <Package className="h-6 w-6 text-white" />
+              <div className="relative h-10 w-10 overflow-hidden rounded-xl">
+                <Image
+                  src="/logo_ikasa_sin_fondo.webp"
+                  alt="ikaZa Import"
+                  width={40}
+                  height={40}
+                  className="object-contain w-full h-full"
+                />
               </div>
               <div>
                 <p className="font-headline text-xl font-bold text-white">ikaZa</p>

@@ -1,0 +1,1409 @@
+[
+  {
+    "imageFile": "img-1.webp",
+    "name": "Plato Rectangular Tipo Parrilla",
+    "price": 6.5,
+    "categoryId": "cat-cocina",
+    "subcategoryId": "utensilios"
+  },
+  {
+    "imageFile": "img-2.webp",
+    "name": "Cuadro Para Sala",
+    "price": 10.9,
+    "categoryId": "cat-decoracion",
+    "subcategoryId": "cuadros"
+  },
+  {
+    "imageFile": "img-3.webp",
+    "name": "Casacas Para Niños",
+    "price": 22.5,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "ropa-infantil"
+  },
+  {
+    "imageFile": "img-4.webp",
+    "name": "Saco Niña",
+    "price": 25,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "ropa-infantil"
+  },
+  {
+    "imageFile": "img-5.webp",
+    "name": "Polo Replica A1 Lacoste",
+    "price": 20,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "ropa-hombre"
+  },
+  {
+    "imageFile": "img-6.webp",
+    "name": "Conjunto",
+    "price": 25,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "ropa-mujer"
+  },
+  {
+    "imageFile": "img-7.webp",
+    "name": "Vestido",
+    "price": 23,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "ropa-mujer"
+  },
+  {
+    "imageFile": "img-8.webp",
+    "name": "Vestido",
+    "price": 18,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "ropa-mujer"
+  },
+  {
+    "imageFile": "img-9.webp",
+    "name": "Bola Verde Decoración",
+    "price": 3.5,
+    "categoryId": "cat-decoracion",
+    "subcategoryId": "adornos"
+  },
+  {
+    "imageFile": "img-10.webp",
+    "name": "Bolsa De Regalo Con Mica",
+    "price": 1.5,
+    "categoryId": "cat-regalos-y-celebraciones",
+    "subcategoryId": "fiestas"
+  },
+  {
+    "imageFile": "img-11.webp",
+    "name": "Vestido",
+    "price": 25,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "ropa-mujer"
+  },
+  {
+    "imageFile": "img-12.webp",
+    "name": "Polo Replica A1 Louis Vuiton",
+    "price": 20,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "ropa-hombre"
+  },
+  {
+    "imageFile": "img-13.webp",
+    "name": "Pantalon",
+    "price": 16,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "ropa-mujer"
+  },
+  {
+    "imageFile": "img-14.webp",
+    "name": "Sabanas Piel De Durazno",
+    "price": 15.9,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "dormitorio"
+  },
+  {
+    "imageFile": "img-15.webp",
+    "name": "Set X3 Fuentes De Vidrio",
+    "price": 24.5,
+    "categoryId": "cat-cocina",
+    "subcategoryId": "utensilios"
+  },
+  {
+    "imageFile": "img-16.webp",
+    "name": "Pegatinas De Pared Azulejo",
+    "price": 4.7,
+    "categoryId": "cat-decoracion",
+    "subcategoryId": "adornos"
+  },
+  {
+    "imageFile": "img-17.webp",
+    "name": "Cuadro Decorativo",
+    "price": 16.9,
+    "categoryId": "cat-decoracion",
+    "subcategoryId": "cuadros"
+  },
+  {
+    "imageFile": "img-18.webp",
+    "name": "Gancho De Cabello",
+    "price": 1.3,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "accesorios-ropa"
+  },
+  {
+    "imageFile": "img-19.webp",
+    "name": "Cuadro Para Sala",
+    "price": 18.5,
+    "categoryId": "cat-decoracion",
+    "subcategoryId": "cuadros"
+  },
+  {
+    "imageFile": "img-20.webp",
+    "name": "Tops Deportivos",
+    "price": 10,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "ropa-mujer"
+  },
+  {
+    "imageFile": "img-21.webp",
+    "name": "Cuadro Decorativo",
+    "price": 27.5,
+    "categoryId": "cat-decoracion",
+    "subcategoryId": "cuadros"
+  },
+  {
+    "imageFile": "img-22.webp",
+    "name": "Vestido",
+    "price": 25,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "ropa-mujer"
+  },
+  {
+    "imageFile": "img-23.webp",
+    "name": "Sandalias Vaquita",
+    "price": 9.5,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "accesorios-ropa"
+  },
+  {
+    "imageFile": "img-24.webp",
+    "name": "Goroo Capibara",
+    "price": 3.2,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "accesorios-ropa"
+  },
+  {
+    "imageFile": "img-25.webp",
+    "name": "Block De Stickers",
+    "price": 1.6,
+    "categoryId": "cat-arte-y-manualidades",
+    "subcategoryId": "manualidades"
+  },
+  {
+    "imageFile": "img-26.webp",
+    "name": "Manta Trenzado",
+    "price": 27.5,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "dormitorio"
+  },
+  {
+    "imageFile": "img-27.webp",
+    "name": "Conjunto De Niña Con Capucha",
+    "price": 23,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "ropa-infantil"
+  },
+  {
+    "imageFile": "img-28.webp",
+    "name": "Bola Verde Decoración",
+    "price": 3,
+    "categoryId": "cat-decoracion",
+    "subcategoryId": "adornos"
+  },
+  {
+    "imageFile": "img-29.webp",
+    "name": "Porta Cubiertos",
+    "price": 0,
+    "categoryId": "cat-cocina",
+    "subcategoryId": "almacenamiento-cocina"
+  },
+  {
+    "imageFile": "img-30.webp",
+    "name": "Ositos Peluche 20 CM",
+    "price": 0,
+    "categoryId": "cat-juguetes-y-juegos",
+    "subcategoryId": "peluches"
+  },
+  {
+    "imageFile": "img-31.webp",
+    "name": "Plato Loza Rectangular",
+    "price": 4.9,
+    "categoryId": "cat-cocina",
+    "subcategoryId": "utensilios"
+  },
+  {
+    "imageFile": "img-32.webp",
+    "name": "Bolsa De Compra 50 x 45 cm",
+    "price": 3.5,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "organizacion"
+  },
+  {
+    "imageFile": "img-33.webp",
+    "name": "Bolsa De Compra 65 x 55 cm",
+    "price": 4.5,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "organizacion"
+  },
+  {
+    "imageFile": "img-34.webp",
+    "name": "Blusa Talla 14",
+    "price": 12,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "ropa-infantil"
+  },
+  {
+    "imageFile": "img-35.webp",
+    "name": "Set De Utensilios X3",
+    "price": 5.4,
+    "categoryId": "cat-cocina",
+    "subcategoryId": "utensilios"
+  },
+  {
+    "imageFile": "img-36.webp",
+    "name": "Saco Talla L",
+    "price": 25,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "ropa-mujer"
+  },
+  {
+    "imageFile": "img-37.webp",
+    "name": "Edredón Carnero",
+    "price": 26.5,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "dormitorio"
+  },
+  {
+    "imageFile": "img-38.webp",
+    "name": "Stickers Duo Alto Relieve",
+    "price": 3.5,
+    "categoryId": "cat-arte-y-manualidades",
+    "subcategoryId": "manualidades"
+  },
+  {
+    "imageFile": "img-39.webp",
+    "name": "Conjunto Niña",
+    "price": 18,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "ropa-infantil"
+  },
+  {
+    "imageFile": "img-40.webp",
+    "name": "Ramo De Flores",
+    "price": 5.9,
+    "categoryId": "cat-decoracion",
+    "subcategoryId": "plantas-artificiales"
+  },
+  {
+    "imageFile": "img-41.webp",
+    "name": "Conjunto Replica A1 Nike",
+    "price": 55,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "ropa-infantil"
+  },
+  {
+    "imageFile": "img-42.webp",
+    "name": "Camisa",
+    "price": 12,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "ropa-infantil"
+  },
+  {
+    "imageFile": "img-43.webp",
+    "name": "Sartén N°34",
+    "price": 12.5,
+    "categoryId": "cat-cocina",
+    "subcategoryId": "utensilios"
+  },
+  {
+    "imageFile": "img-44.webp",
+    "name": "Pegatinas De Pared Azulejo",
+    "price": 4.7,
+    "categoryId": "cat-decoracion",
+    "subcategoryId": "adornos"
+  },
+  {
+    "imageFile": "img-45.webp",
+    "name": "Orejeras",
+    "price": 4.5,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "accesorios-ropa"
+  },
+  {
+    "imageFile": "img-46.webp",
+    "name": "Bolsa De Compra 65 X 60 CM",
+    "price": 4.9,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "organizacion"
+  },
+  {
+    "imageFile": "img-47.webp",
+    "name": "Mini Máquina De Coser Con Mesita",
+    "price": 22.5,
+    "categoryId": "cat-arte-y-manualidades",
+    "subcategoryId": "manualidades"
+  },
+  {
+    "imageFile": "img-48.webp",
+    "name": "Block De Recortables",
+    "price": 0.7,
+    "categoryId": "cat-arte-y-manualidades",
+    "subcategoryId": "manualidades"
+  },
+  {
+    "imageFile": "img-49.webp",
+    "name": "Producto sin nombre (img-49.webp)",
+    "price": 2,
+    "categoryId": "cat-cocina",
+    "subcategoryId": "utensilios"
+  },
+  {
+    "imageFile": "img-50.webp",
+    "name": "Gorro Modelos Variados",
+    "price": 2.9,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "accesorios-ropa"
+  },
+  {
+    "imageFile": "img-51.webp",
+    "name": "Ositos Peluche 21 CM",
+    "price": 6,
+    "categoryId": "cat-juguetes-y-juegos",
+    "subcategoryId": "peluches"
+  },
+  {
+    "imageFile": "img-52.webp",
+    "name": "Bolso Conejo",
+    "price": 5,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "accesorios-ropa"
+  },
+  {
+    "imageFile": "img-53.webp",
+    "name": "Batidora",
+    "price": 11.9,
+    "categoryId": "cat-cocina",
+    "subcategoryId": "electrodomesticos"
+  },
+  {
+    "imageFile": "img-54.webp",
+    "name": "Pantalon Jeans",
+    "price": 38,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "ropa-mujer"
+  },
+  {
+    "imageFile": "img-55.webp",
+    "name": "Florero",
+    "price": 8.5,
+    "categoryId": "cat-decoracion",
+    "subcategoryId": "plantas-artificiales"
+  },
+  {
+    "imageFile": "img-56.webp",
+    "name": "Espejo",
+    "price": 11.9,
+    "categoryId": "cat-decoracion",
+    "subcategoryId": "adornos"
+  },
+  {
+    "imageFile": "img-57.webp",
+    "name": "Vestido",
+    "price": 18,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "ropa-mujer"
+  },
+  {
+    "imageFile": "img-58.webp",
+    "name": "Polo Manga Larga",
+    "price": 12,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "ropa-mujer"
+  },
+  {
+    "imageFile": "img-59.webp",
+    "name": "Falda Shorts Suplex",
+    "price": 18,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "ropa-mujer"
+  },
+  {
+    "imageFile": "img-60.webp",
+    "name": "Mini Block De Stickers",
+    "price": 0.8,
+    "categoryId": "cat-arte-y-manualidades",
+    "subcategoryId": "manualidades"
+  },
+  {
+    "imageFile": "img-61.webp",
+    "name": "Guantes De Terciopelo",
+    "price": 1.9,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "accesorios-ropa"
+  },
+  {
+    "imageFile": "img-62.webp",
+    "name": "Pegatinas Letras",
+    "price": 1,
+    "categoryId": "cat-decoracion",
+    "subcategoryId": "adornos"
+  },
+  {
+    "imageFile": "img-63.webp",
+    "name": "Pinesol Verde Antibacterial En Galón",
+    "price": 7.5,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "limpieza"
+  },
+  {
+    "imageFile": "img-64.webp",
+    "name": "Compás",
+    "price": 1,
+    "categoryId": "cat-arte-y-manualidades",
+    "subcategoryId": "utiles"
+  },
+  {
+    "imageFile": "img-65.webp",
+    "name": "Cintas Embalaje 600",
+    "price": 8,
+    "categoryId": "cat-arte-y-manualidades",
+    "subcategoryId": "manualidades"
+  },
+  {
+    "imageFile": "img-66.webp",
+    "name": "Portafolio Laser",
+    "price": 2.5,
+    "categoryId": "cat-decoracion",
+    "subcategoryId": "cuadros"
+  },
+  {
+    "imageFile": "img-67.webp",
+    "name": "Set X4 Individuales A5758",
+    "price": 4.9,
+    "categoryId": "cat-arte-y-manualidades",
+    "subcategoryId": "manualidades"
+  },
+  {
+    "imageFile": "img-68.webp",
+    "name": "Lampara Solar",
+    "price": 8.9,
+    "categoryId": "cat-tecnologia",
+    "subcategoryId": "iluminacion"
+  },
+  {
+    "imageFile": "img-69.webp",
+    "name": "Labial Corazón",
+    "price": 2.3,
+    "categoryId": "cat-belleza-y-cuidado-personal",
+    "subcategoryId": "maquillaje"
+  },
+  {
+    "imageFile": "img-70.webp",
+    "name": "Gloss Labial",
+    "price": 2.5,
+    "categoryId": "cat-belleza-y-cuidado-personal",
+    "subcategoryId": "maquillaje"
+  },
+  {
+    "imageFile": "img-71.webp",
+    "name": "Rimel Volumen 3D",
+    "price": 3.5,
+    "categoryId": "cat-belleza-y-cuidado-personal",
+    "subcategoryId": "maquillaje"
+  },
+  {
+    "imageFile": "img-72.webp",
+    "name": "Labial Activación Con PH",
+    "price": 2.5,
+    "categoryId": "cat-belleza-y-cuidado-personal",
+    "subcategoryId": "maquillaje"
+  },
+  {
+    "imageFile": "img-73.webp",
+    "name": "Set De Brochas",
+    "price": 4.5,
+    "categoryId": "cat-belleza-y-cuidado-personal",
+    "subcategoryId": "maquillaje"
+  },
+  {
+    "imageFile": "img-74.webp",
+    "name": "Sombras",
+    "price": 4.9,
+    "categoryId": "cat-belleza-y-cuidado-personal",
+    "subcategoryId": "maquillaje"
+  },
+  {
+    "imageFile": "img-75.webp",
+    "name": "Lipgloss",
+    "price": 3.9,
+    "categoryId": "cat-belleza-y-cuidado-personal",
+    "subcategoryId": "maquillaje"
+  },
+  {
+    "imageFile": "img-76.webp",
+    "name": "Polvo Compacto",
+    "price": 16,
+    "categoryId": "cat-belleza-y-cuidado-personal",
+    "subcategoryId": "maquillaje"
+  },
+  {
+    "imageFile": "img-77.webp",
+    "name": "Delineador Con Formas",
+    "price": 5,
+    "categoryId": "cat-belleza-y-cuidado-personal",
+    "subcategoryId": "maquillaje"
+  },
+  {
+    "imageFile": "img-78.webp",
+    "name": "Labial",
+    "price": 3.9,
+    "categoryId": "cat-belleza-y-cuidado-personal",
+    "subcategoryId": "maquillaje"
+  },
+  {
+    "imageFile": "img-79.webp",
+    "name": "Sombras",
+    "price": 3,
+    "categoryId": "cat-belleza-y-cuidado-personal",
+    "subcategoryId": "maquillaje"
+  },
+  {
+    "imageFile": "img-80.webp",
+    "name": "Labial Matte",
+    "price": 5.5,
+    "categoryId": "cat-belleza-y-cuidado-personal",
+    "subcategoryId": "maquillaje"
+  },
+  {
+    "imageFile": "img-81.webp",
+    "name": "Labial Miss Betty",
+    "price": 2.9,
+    "categoryId": "cat-belleza-y-cuidado-personal",
+    "subcategoryId": "maquillaje"
+  },
+  {
+    "imageFile": "img-82.webp",
+    "name": "Lip Gloss",
+    "price": 4.5,
+    "categoryId": "cat-belleza-y-cuidado-personal",
+    "subcategoryId": "maquillaje"
+  },
+  {
+    "imageFile": "img-83.webp",
+    "name": "Rimel Transparente",
+    "price": 3.9,
+    "categoryId": "cat-belleza-y-cuidado-personal",
+    "subcategoryId": "maquillaje"
+  },
+  {
+    "imageFile": "img-84.webp",
+    "name": "Pestañas Magneticas",
+    "price": 13.5,
+    "categoryId": "cat-belleza-y-cuidado-personal",
+    "subcategoryId": "accesorios-belleza"
+  },
+  {
+    "imageFile": "img-85.webp",
+    "name": "Sombras De Ojos",
+    "price": 4.9,
+    "categoryId": "cat-belleza-y-cuidado-personal",
+    "subcategoryId": "maquillaje"
+  },
+  {
+    "imageFile": "img-86.webp",
+    "name": "Labiales De Terciopelo",
+    "price": 5.5,
+    "categoryId": "cat-belleza-y-cuidado-personal",
+    "subcategoryId": "maquillaje"
+  },
+  {
+    "imageFile": "img-87.webp",
+    "name": "Lipgloss Linda Hade",
+    "price": 4,
+    "categoryId": "cat-belleza-y-cuidado-personal",
+    "subcategoryId": "maquillaje"
+  },
+  {
+    "imageFile": "img-88.webp",
+    "name": "Rubor Corazón",
+    "price": 2.5,
+    "categoryId": "cat-belleza-y-cuidado-personal",
+    "subcategoryId": "maquillaje"
+  },
+  {
+    "imageFile": "img-89.webp",
+    "name": "Rubor Mágico",
+    "price": 5,
+    "categoryId": "cat-belleza-y-cuidado-personal",
+    "subcategoryId": "maquillaje"
+  },
+  {
+    "imageFile": "img-90.webp",
+    "name": "Sombras De Ojos",
+    "price": 2.9,
+    "categoryId": "cat-belleza-y-cuidado-personal",
+    "subcategoryId": "maquillaje"
+  },
+  {
+    "imageFile": "img-91.webp",
+    "name": "Faja Para Cuerpo",
+    "price": 10.5,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "accesorios-ropa"
+  },
+  {
+    "imageFile": "img-92.webp",
+    "name": "Cinta Métrica",
+    "price": 4.5,
+    "categoryId": "cat-jardin",
+    "subcategoryId": null
+  },
+  {
+    "imageFile": "img-93.webp",
+    "name": "Bastón",
+    "price": 4.5,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "accesorios-ropa"
+  },
+  {
+    "imageFile": "img-94.webp",
+    "name": "Rodillo Para Pintar",
+    "price": 1.9,
+    "categoryId": "cat-jardin",
+    "subcategoryId": null
+  },
+  {
+    "imageFile": "img-95.webp",
+    "name": "Globos Feliz Cumpleaños Letra Ligada",
+    "price": 1.5,
+    "categoryId": "cat-regalos-y-celebraciones",
+    "subcategoryId": "fiestas"
+  },
+  {
+    "imageFile": "img-96.webp",
+    "name": "Marcador",
+    "price": 1.9,
+    "categoryId": "cat-arte-y-manualidades",
+    "subcategoryId": "utiles"
+  },
+  {
+    "imageFile": "img-97.webp",
+    "name": "Chullo Bufanda Para Niños",
+    "price": 4.5,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "accesorios-ropa"
+  },
+  {
+    "imageFile": "img-98.webp",
+    "name": "Cintas De Embalaje 200 Yardas",
+    "price": 2.8,
+    "categoryId": "cat-arte-y-manualidades",
+    "subcategoryId": "manualidades"
+  },
+  {
+    "imageFile": "img-99.webp",
+    "name": "Set Mini Perchero",
+    "price": 5,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "organizacion"
+  },
+  {
+    "imageFile": "img-100.webp",
+    "name": "Atomizador Surtidos Para Autos 120 ML",
+    "price": 3.9,
+    "categoryId": "cat-jardin",
+    "subcategoryId": null
+  },
+  {
+    "imageFile": "img-101.webp",
+    "name": "Respaldar Lumbar",
+    "price": 3.5,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "dormitorio"
+  },
+  {
+    "imageFile": "img-102.webp",
+    "name": "Osos Deportivos",
+    "price": 7.5,
+    "categoryId": "cat-juguetes-y-juegos",
+    "subcategoryId": "peluches"
+  },
+  {
+    "imageFile": "img-103.webp",
+    "name": "Portafoto Copa",
+    "price": 2.7,
+    "categoryId": "cat-decoracion",
+    "subcategoryId": "cuadros"
+  },
+  {
+    "imageFile": "img-104.webp",
+    "name": "Lavavajilla Líquido Limón 1LT",
+    "price": 3.5,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "limpieza"
+  },
+  {
+    "imageFile": "img-105.webp",
+    "name": "Reloj Digital Sport Watch",
+    "price": 5.5,
+    "categoryId": "cat-tecnologia",
+    "subcategoryId": "accesorios-tech"
+  },
+  {
+    "imageFile": "img-106.webp",
+    "name": "Quitasarro 4 KG",
+    "price": 9.9,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "limpieza"
+  },
+  {
+    "imageFile": "img-107.webp",
+    "name": "Organizador Cocina",
+    "price": 15.5,
+    "categoryId": "cat-cocina",
+    "subcategoryId": "almacenamiento-cocina"
+  },
+  {
+    "imageFile": "img-108.webp",
+    "name": "Lavavajilla Líquido Limón En Galón",
+    "price": 10.7,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "limpieza"
+  },
+  {
+    "imageFile": "img-109.webp",
+    "name": "Set Cabezal De Ducha Con Manguera",
+    "price": 6.5,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "bano"
+  },
+  {
+    "imageFile": "img-110.webp",
+    "name": "Chalinas",
+    "price": 5.9,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "accesorios-ropa"
+  },
+  {
+    "imageFile": "img-111.webp",
+    "name": "Planchas X12 Bolsitas Bolitas Hidrogel",
+    "price": 2.9,
+    "categoryId": "cat-arte-y-manualidades",
+    "subcategoryId": "manualidades"
+  },
+  {
+    "imageFile": "img-112.webp",
+    "name": "Porta Celular",
+    "price": 4.5,
+    "categoryId": "cat-tecnologia",
+    "subcategoryId": "accesorios-tech"
+  },
+  {
+    "imageFile": "img-113.webp",
+    "name": "Espiral",
+    "price": 1.6,
+    "categoryId": "cat-bano",
+    "subcategoryId": null
+  },
+  {
+    "imageFile": "img-114.webp",
+    "name": "Quitasarro de 1LT",
+    "price": 3.5,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "limpieza"
+  },
+  {
+    "imageFile": "img-115.webp",
+    "name": "Set de Condimentero Con Base",
+    "price": 16.9,
+    "categoryId": "cat-cocina",
+    "subcategoryId": "almacenamiento-cocina"
+  },
+  {
+    "imageFile": "img-116.webp",
+    "name": "Ajedrez Magnetic Games 5 En 1",
+    "price": 10.9,
+    "categoryId": "cat-juguetes-y-juegos",
+    "subcategoryId": "didacticos"
+  },
+  {
+    "imageFile": "img-117.webp",
+    "name": "Minibrocha",
+    "price": 1,
+    "categoryId": "cat-jardin",
+    "subcategoryId": null
+  },
+  {
+    "imageFile": "img-118.webp",
+    "name": "Mochila Antirrobo",
+    "price": 12.9,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "accesorios-ropa"
+  },
+  {
+    "imageFile": "img-119.webp",
+    "name": "Cintas Embalaje 400 Yardas",
+    "price": 5.4,
+    "categoryId": "cat-arte-y-manualidades",
+    "subcategoryId": "manualidades"
+  },
+  {
+    "imageFile": "img-120.webp",
+    "name": "Botellas 900ML Limpiatodo Antibacterial",
+    "price": 2,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "limpieza"
+  },
+  {
+    "imageFile": "img-121.webp",
+    "name": "Cometa",
+    "price": 3.5,
+    "categoryId": "cat-juguetes-y-juegos",
+    "subcategoryId": "diversion"
+  },
+  {
+    "imageFile": "img-122.webp",
+    "name": "Paquetes X10 Pares Medias Tobillera Unicolor Pastel",
+    "price": 13.5,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "accesorios-ropa"
+  },
+  {
+    "imageFile": "img-123.webp",
+    "name": "Limpiatodo Antibacterial En Galón",
+    "price": 7.5,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "limpieza"
+  },
+  {
+    "imageFile": "img-124.webp",
+    "name": "Globos Metálicos Feliz Día Papá Letra Ligada",
+    "price": 1.9,
+    "categoryId": "cat-regalos-y-celebraciones",
+    "subcategoryId": "dia-del-padre"
+  },
+  {
+    "imageFile": "img-125.webp",
+    "name": "Audifonos Vincha P47",
+    "price": 7.5,
+    "categoryId": "cat-tecnologia",
+    "subcategoryId": "audio"
+  },
+  {
+    "imageFile": "img-126.webp",
+    "name": "Cable Light Con Focos",
+    "price": 20.9,
+    "categoryId": "cat-tecnologia",
+    "subcategoryId": "iluminacion"
+  },
+  {
+    "imageFile": "img-127.webp",
+    "name": "Minibrocha",
+    "price": 0.5,
+    "categoryId": "cat-jardin",
+    "subcategoryId": null
+  },
+  {
+    "imageFile": "img-128.webp",
+    "name": "Portafoto Ampliación",
+    "price": 2.7,
+    "categoryId": "cat-decoracion",
+    "subcategoryId": "cuadros"
+  },
+  {
+    "imageFile": "img-129.webp",
+    "name": "Aspa Foco",
+    "price": 4.9,
+    "categoryId": "cat-tecnologia",
+    "subcategoryId": "iluminacion"
+  },
+  {
+    "imageFile": "img-130.webp",
+    "name": "Collar Vandana Para Mascota",
+    "price": 2,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "accesorios-ropa"
+  },
+  {
+    "imageFile": "img-131.webp",
+    "name": "Paquetes Pañitos Payasitos X100",
+    "price": 2.8,
+    "categoryId": "cat-bano",
+    "subcategoryId": null
+  },
+  {
+    "imageFile": "img-132.webp",
+    "name": "Siliconas UV3 Surtidas 350ML",
+    "price": 6,
+    "categoryId": "cat-jardin",
+    "subcategoryId": null
+  },
+  {
+    "imageFile": "img-133.webp",
+    "name": "Porta Celular",
+    "price": 2,
+    "categoryId": "cat-tecnologia",
+    "subcategoryId": "accesorios-tech"
+  },
+  {
+    "imageFile": "img-134.webp",
+    "name": "Trapeador De Fibra",
+    "price": 2.5,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "limpieza"
+  },
+  {
+    "imageFile": "img-135.webp",
+    "name": "Audifonos Vincha",
+    "price": 7.5,
+    "categoryId": "cat-tecnologia",
+    "subcategoryId": "audio"
+  },
+  {
+    "imageFile": "img-136.webp",
+    "name": "Poste Tipo Inflable 1.2MT",
+    "price": 13.9,
+    "categoryId": "cat-jardin",
+    "subcategoryId": null
+  },
+  {
+    "imageFile": "img-137.webp",
+    "name": "Cinta Corrector",
+    "price": 0.7,
+    "categoryId": "cat-arte-y-manualidades",
+    "subcategoryId": "utiles"
+  },
+  {
+    "imageFile": "img-138.webp",
+    "name": "Ganchos De Soporte",
+    "price": 1.3,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "organizacion"
+  },
+  {
+    "imageFile": "img-139.webp",
+    "name": "Chullo Rompones Con Cuellera",
+    "price": 6.2,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "accesorios-ropa"
+  },
+  {
+    "imageFile": "img-140.webp",
+    "name": "Zapateras 7 pisos",
+    "price": 13.5,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "organizacion"
+  },
+  {
+    "imageFile": "img-141.webp",
+    "name": "Foco Led Socate",
+    "price": 5.5,
+    "categoryId": "cat-tecnologia",
+    "subcategoryId": "iluminacion"
+  },
+  {
+    "imageFile": "img-142.webp",
+    "name": "Infladores Para Globo",
+    "price": 1.5,
+    "categoryId": "cat-arte-y-manualidades",
+    "subcategoryId": "manualidades"
+  },
+  {
+    "imageFile": "img-143.webp",
+    "name": "Lavavajilla Pasta Extraclin/Bryllante",
+    "price": 4.5,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "limpieza"
+  },
+  {
+    "imageFile": "img-144.webp",
+    "name": "Tijeras De Cocina",
+    "price": 2,
+    "categoryId": "cat-cocina",
+    "subcategoryId": "utensilios"
+  },
+  {
+    "imageFile": "img-145.webp",
+    "name": "Parlante Portátil Con Microfono",
+    "price": 23.5,
+    "categoryId": "cat-tecnologia",
+    "subcategoryId": "audio"
+  },
+  {
+    "imageFile": "img-146.webp",
+    "name": "Bastón Plegable",
+    "price": 7.9,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "accesorios-ropa"
+  },
+  {
+    "imageFile": "img-147.webp",
+    "name": "Bañera Con Muñeca",
+    "price": 11.9,
+    "categoryId": "cat-juguetes-y-juegos",
+    "subcategoryId": "diversion"
+  },
+  {
+    "imageFile": "img-148.webp",
+    "name": "Táper Y Tomatodo",
+    "price": 6.9,
+    "categoryId": "cat-cocina",
+    "subcategoryId": "almacenamiento-cocina"
+  },
+  {
+    "imageFile": "img-149.webp",
+    "name": "Paquetes X12 Pares Medias Taloneras Varón",
+    "price": 9.5,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "accesorios-ropa"
+  },
+  {
+    "imageFile": "img-150.webp",
+    "name": "Bolsas De Juegos Didácticos Variados Bei Yue Toys",
+    "price": 6.5,
+    "categoryId": "cat-juguetes-y-juegos",
+    "subcategoryId": "didacticos"
+  },
+  {
+    "imageFile": "img-151.webp",
+    "name": "Set X3 Carro Mica",
+    "price": 8.5,
+    "categoryId": "cat-juguetes-y-juegos",
+    "subcategoryId": "didacticos"
+  },
+  {
+    "imageFile": "img-152.webp",
+    "name": "Burbuja Mediana",
+    "price": 0.8,
+    "categoryId": "cat-juguetes-y-juegos",
+    "subcategoryId": "diversion"
+  },
+  {
+    "imageFile": "img-153.webp",
+    "name": "Set De Té - Loza Mediana",
+    "price": 8.9,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "sala"
+  },
+  {
+    "imageFile": "img-154.webp",
+    "name": "Truck X2",
+    "price": 8.9,
+    "categoryId": "cat-juguetes-y-juegos",
+    "subcategoryId": "didacticos"
+  },
+  {
+    "imageFile": "img-155.webp",
+    "name": "Paquetes X12 Pares Medias Tobilleras Sport",
+    "price": 10.5,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "accesorios-ropa"
+  },
+  {
+    "imageFile": "img-156.webp",
+    "name": "Cojín",
+    "price": 4.9,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "sala"
+  },
+  {
+    "imageFile": "img-157.webp",
+    "name": "Aspiradoras Robot",
+    "price": 17.5,
+    "categoryId": "cat-tecnologia",
+    "subcategoryId": "accesorios-tech"
+  },
+  {
+    "imageFile": "img-158.webp",
+    "name": "Encendedores Eléctricos",
+    "price": 4.5,
+    "categoryId": "cat-cocina",
+    "subcategoryId": "electrodomesticos"
+  },
+  {
+    "imageFile": "img-159.webp",
+    "name": "Varita",
+    "price": 2.2,
+    "categoryId": "cat-juguetes-y-juegos",
+    "subcategoryId": "diversion"
+  },
+  {
+    "imageFile": "img-160.webp",
+    "name": "Chullos Con Cuellera",
+    "price": 3.3,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "accesorios-ropa"
+  },
+  {
+    "imageFile": "img-161.webp",
+    "name": "Estante De Baño",
+    "price": 26.5,
+    "categoryId": "cat-bano",
+    "subcategoryId": null
+  },
+  {
+    "imageFile": "img-162.webp",
+    "name": "Set De Utensilios X19 Piezas",
+    "price": 22.9,
+    "categoryId": "cat-cocina",
+    "subcategoryId": "utensilios"
+  },
+  {
+    "imageFile": "img-163.webp",
+    "name": "Set Té Cartera",
+    "price": 9.9,
+    "categoryId": "cat-juguetes-y-juegos",
+    "subcategoryId": "diversion"
+  },
+  {
+    "imageFile": "img-164.webp",
+    "name": "Set Utensilios",
+    "price": 12.9,
+    "categoryId": "cat-cocina",
+    "subcategoryId": "utensilios"
+  },
+  {
+    "imageFile": "img-165.webp",
+    "name": "Burbuja Vara Grande",
+    "price": 1.2,
+    "categoryId": "cat-juguetes-y-juegos",
+    "subcategoryId": "diversion"
+  },
+  {
+    "imageFile": "img-166.webp",
+    "name": "Set De Arte 208 Piezas Guerreras K-Pop",
+    "price": 15,
+    "categoryId": "cat-arte-y-manualidades",
+    "subcategoryId": "manualidades"
+  },
+  {
+    "imageFile": "img-167.webp",
+    "name": "Set De Forro De Muebles",
+    "price": 95,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "sala"
+  },
+  {
+    "imageFile": "img-168.webp",
+    "name": "Ajedrez 2 En 1",
+    "price": 4.9,
+    "categoryId": "cat-juguetes-y-juegos",
+    "subcategoryId": "didacticos"
+  },
+  {
+    "imageFile": "img-169.webp",
+    "name": "PortaFoto Laser",
+    "price": 2.5,
+    "categoryId": "cat-decoracion",
+    "subcategoryId": "cuadros"
+  },
+  {
+    "imageFile": "img-170.webp",
+    "name": "Juego De Té- Loza Grande",
+    "price": 12.5,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "sala"
+  },
+  {
+    "imageFile": "img-171.webp",
+    "name": "Lavavajilla Líquida Bryllante",
+    "price": 3.9,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "limpieza"
+  },
+  {
+    "imageFile": "img-172.webp",
+    "name": "Porta Celular",
+    "price": 2.7,
+    "categoryId": "cat-decoracion",
+    "subcategoryId": "cuadros"
+  },
+  {
+    "imageFile": "img-173.webp",
+    "name": "Chocolates De Trufas 30g Feliz Día Papá",
+    "price": 3.5,
+    "categoryId": "cat-regalos-y-celebraciones",
+    "subcategoryId": "dia-del-padre"
+  },
+  {
+    "imageFile": "img-174.webp",
+    "name": "Paquetes Pañitos X100 Tuinies",
+    "price": 3.5,
+    "categoryId": "cat-bano",
+    "subcategoryId": null
+  },
+  {
+    "imageFile": "img-175.webp",
+    "name": "Set Chocolates Botellas Lazo",
+    "price": 12,
+    "categoryId": "cat-regalos-y-celebraciones",
+    "subcategoryId": "dia-del-padre"
+  },
+  {
+    "imageFile": "img-176.webp",
+    "name": "Escaleras 3 Pisos",
+    "price": 48,
+    "categoryId": "cat-jardin",
+    "subcategoryId": null
+  },
+  {
+    "imageFile": "img-177.webp",
+    "name": "Tapiz Blanco Pared",
+    "price": 1.8,
+    "categoryId": "cat-decoracion",
+    "subcategoryId": "adornos"
+  },
+  {
+    "imageFile": "img-178.webp",
+    "name": "Paquetes X12 Pares Medias Taloneras Dama",
+    "price": 9.5,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "accesorios-ropa"
+  },
+  {
+    "imageFile": "img-179.webp",
+    "name": "Pañitos X25",
+    "price": 0.9,
+    "categoryId": "cat-bano",
+    "subcategoryId": null
+  },
+  {
+    "imageFile": "img-180.webp",
+    "name": "Joyeros Con Espejo",
+    "price": 6.9,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "organizacion"
+  },
+  {
+    "imageFile": "img-181.webp",
+    "name": "Organizador",
+    "price": 9.5,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "organizacion"
+  },
+  {
+    "imageFile": "img-182.webp",
+    "name": "Plancha De Cabello",
+    "price": 11.9,
+    "categoryId": "cat-belleza-y-cuidado-personal",
+    "subcategoryId": "accesorios-belleza"
+  },
+  {
+    "imageFile": "img-183.webp",
+    "name": "Loza Chica",
+    "price": 6.9,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "sala"
+  },
+  {
+    "imageFile": "img-184.webp",
+    "name": "Zapateras 9 Pisos",
+    "price": 14.9,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "organizacion"
+  },
+  {
+    "imageFile": "img-185.webp",
+    "name": "Carro X3 Didáctico",
+    "price": 6.9,
+    "categoryId": "cat-juguetes-y-juegos",
+    "subcategoryId": "diversion"
+  },
+  {
+    "imageFile": "img-186.webp",
+    "name": "Balde Trapeador Con Dos Mopas",
+    "price": 17.5,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "limpieza"
+  },
+  {
+    "imageFile": "img-187.webp",
+    "name": "Paquetes X12 Pares Medias Tobilleras Blanco",
+    "price": 10.5,
+    "categoryId": "cat-vestimenta",
+    "subcategoryId": "accesorios-ropa"
+  },
+  {
+    "imageFile": "img-188.webp",
+    "name": "Paquete De Limpiapipas",
+    "price": 3.5,
+    "categoryId": "cat-arte-y-manualidades",
+    "subcategoryId": "manualidades"
+  },
+  {
+    "imageFile": "img-189.webp",
+    "name": "Portafoto Sporting Cristal",
+    "price": 2.7,
+    "categoryId": "cat-decoracion",
+    "subcategoryId": "cuadros"
+  },
+  {
+    "imageFile": "img-190.webp",
+    "name": "Papel Fotográfico Adhesivo X20 Hojas",
+    "price": 5.5,
+    "categoryId": "cat-arte-y-manualidades",
+    "subcategoryId": "utiles"
+  },
+  {
+    "imageFile": "img-191.webp",
+    "name": "Sábanas Nancy Gruesa 2 Plazas",
+    "price": 22.9,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "dormitorio"
+  },
+  {
+    "imageFile": "img-192.webp",
+    "name": "Edredón Carnero",
+    "price": 26.5,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "dormitorio"
+  },
+  {
+    "imageFile": "img-193.webp",
+    "name": "Hervidor Eléctrico",
+    "price": 13,
+    "categoryId": "cat-cocina",
+    "subcategoryId": "electrodomesticos"
+  },
+  {
+    "imageFile": "img-194.webp",
+    "name": "Chocolates Amoretta",
+    "price": 12.9,
+    "categoryId": "cat-regalos-y-celebraciones",
+    "subcategoryId": "dia-del-padre"
+  },
+  {
+    "imageFile": "img-195.webp",
+    "name": "Palitos Selfie Día Del Padre",
+    "price": 0.4,
+    "categoryId": "cat-regalos-y-celebraciones",
+    "subcategoryId": "dia-del-padre"
+  },
+  {
+    "imageFile": "img-196.webp",
+    "name": "Stickers Día Del Padre",
+    "price": 0.9,
+    "categoryId": "cat-regalos-y-celebraciones",
+    "subcategoryId": "dia-del-padre"
+  },
+  {
+    "imageFile": "img-197.webp",
+    "name": "Mantas Piel De Durazno",
+    "price": 14.9,
+    "categoryId": "cat-hogar",
+    "subcategoryId": "dormitorio"
+  },
+  {
+    "imageFile": "img-198.webp",
+    "name": "Cerditos Deportivos",
+    "price": 12.5,
+    "categoryId": "cat-juguetes-y-juegos",
+    "subcategoryId": "peluches"
+  },
+  {
+    "imageFile": "img-199.webp",
+    "name": "Globos Día Del Padre",
+    "price": 0.9,
+    "categoryId": "cat-regalos-y-celebraciones",
+    "subcategoryId": "dia-del-padre"
+  },
+  {
+    "imageFile": "img-200.webp",
+    "name": "Cajita Bombonera",
+    "price": 0.5,
+    "categoryId": "cat-regalos-y-celebraciones",
+    "subcategoryId": "fiestas"
+  },
+  {
+    "imageFile": "img-201.webp",
+    "name": "Vaso Chop Día Del padre",
+    "price": 5.4,
+    "categoryId": "cat-regalos-y-celebraciones",
+    "subcategoryId": "dia-del-padre"
+  }
+]

@@ -54,8 +54,12 @@ export class ProductRepository extends BaseRepository {
           { tags: { has: search } },
         ],
       }),
-      ...(categoryId && { categoryId }),
-      ...(subcategoryId && { subcategoryId }),
+      ...(categoryId && {
+        category: { OR: [{ id: categoryId }, { slug: categoryId }] }
+      }),
+      ...(subcategoryId && {
+        subcategory: { OR: [{ id: subcategoryId }, { slug: subcategoryId }] }
+      }),
       ...(brandId && { brandId }),
       ...(minPrice !== undefined && { price: { gte: minPrice } }),
       ...(maxPrice !== undefined && { price: { lte: maxPrice } }),
@@ -70,52 +74,44 @@ export class ProductRepository extends BaseRepository {
 
     const offset = this.getOffset(page, limit);
 
-    try {
-      const [data, total] = await Promise.all([
-        this.db.product.findMany({
-          where,
-          orderBy,
-          skip: offset,
-          take: limit,
-          include: {
-            category: { select: { id: true, name: true, slug: true } },
-            subcategory: { select: { id: true, name: true, slug: true } },
-            brand: { select: { id: true, name: true, slug: true, logo: true } },
-            images: {
-              orderBy: { position: "asc" },
-              select: { id: true, url: true, alt: true, isPrimary: true, position: true },
-            },
-            inventory: {
-              select: { quantity: true, reservedQuantity: true },
-            },
-            reviews: { select: { rating: true } },
+    const [data, total] = await Promise.all([
+      this.db.product.findMany({
+        where,
+        orderBy,
+        skip: offset,
+        take: limit,
+        include: {
+          category: { select: { id: true, name: true, slug: true } },
+          subcategory: { select: { id: true, name: true, slug: true } },
+          brand: { select: { id: true, name: true, slug: true, logo: true } },
+          images: {
+            orderBy: { position: "asc" },
+            select: { id: true, url: true, alt: true, isPrimary: true, position: true },
           },
-        }),
-        this.db.product.count({ where }),
-      ]);
+          inventory: {
+            select: { quantity: true, reservedQuantity: true },
+          },
+          reviews: { select: { rating: true } },
+        },
+      }),
+      this.db.product.count({ where }),
+    ]);
 
-      // Calcular rating promedio
-      const enriched = data.map((product) => ({
-        ...serializeProduct(product),
-        avgRating:
-          product.reviews.length > 0
-            ? product.reviews.reduce((sum, r) => sum + r.rating, 0) /
-              product.reviews.length
-            : 0,
-        reviewCount: product.reviews.length,
-      }));
+    // Calcular rating promedio
+    const enriched = data.map((product) => ({
+      ...serializeProduct(product),
+      avgRating:
+        product.reviews.length > 0
+          ? product.reviews.reduce((sum, r) => sum + r.rating, 0) /
+            product.reviews.length
+          : 0,
+      reviewCount: product.reviews.length,
+    }));
 
-      return {
-        data: enriched as unknown as ProductWithRelations[],
-        meta: this.buildPaginationMeta(total, page, limit),
-      };
-    } catch (error) {
-      console.error("DB connection error in ProductRepository.findMany:", error);
-      return {
-        data: [],
-        meta: this.buildPaginationMeta(0, page, limit),
-      };
-    }
+    return {
+      data: enriched as unknown as ProductWithRelations[],
+      meta: this.buildPaginationMeta(total, page, limit),
+    };
   }
 
   /**

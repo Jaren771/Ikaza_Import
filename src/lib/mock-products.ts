@@ -28,8 +28,13 @@ const MOCK_CATEGORIES = [
   { id: "cat-cocina", name: "Cocina", slug: "cocina" },
   { id: "cat-tecnologia", name: "Tecnología", slug: "tecnologia" },
   { id: "cat-decoracion", name: "Decoración", slug: "decoracion" },
+  { id: "cat-vestimenta", name: "Vestimenta", slug: "vestimenta" },
+  { id: "cat-belleza", name: "Belleza y cuidado personal", slug: "belleza-y-cuidado-personal" },
+  { id: "cat-juguetes", name: "Juguetes y juegos", slug: "juguetes-y-juegos" },
+  { id: "cat-regalos", name: "Regalos y celebraciones", slug: "regalos-y-celebraciones" },
   { id: "cat-jardin", name: "Jardín", slug: "jardin" },
   { id: "cat-bano", name: "Baño", slug: "bano" },
+  { id: "cat-arte-y-manualidades", name: "Arte y Manualidades", slug: "arte-y-manualidades" },
 ];
 
 const MOCK_BRANDS = [

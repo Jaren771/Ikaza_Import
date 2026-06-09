@@ -35,6 +35,11 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "ikaZa Import" }],
   creator: "ikaZa Import",
+  icons: {
+    icon: "/logo_ikasa_hd.webp",
+    shortcut: "/logo_ikasa_hd.webp",
+    apple: "/logo_ikasa_hd.webp",
+  },
   openGraph: {
     type: "website",
     locale: "es_PE",
@@ -42,11 +47,20 @@ export const metadata: Metadata = {
     title: SITE_CONFIG.name,
     description: SITE_CONFIG.description,
     siteName: SITE_CONFIG.name,
+    images: [
+      {
+        url: "/logo_ikasa_hd.webp",
+        width: 1200,
+        height: 630,
+        alt: SITE_CONFIG.name,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: SITE_CONFIG.name,
     description: SITE_CONFIG.description,
+    images: ["/logo_ikasa_hd.webp"],
   },
   robots: {
     index: true,

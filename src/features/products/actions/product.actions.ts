@@ -24,31 +24,26 @@ export async function getProductsAction(filters: ProductFilters) {
     return { success: false, error: "Filtros inválidos" };
   }
 
-  let dbProducts: any[] = [];
-  let dbMeta: any = null;
-
   try {
+    // Intentar obtener productos de la base de datos
     const result = await productRepository.findMany(validation.data);
-    if (result.data.length > 0) {
-      dbProducts = result.data;
-      dbMeta = result.meta;
-    }
-  } catch (error) {
-    console.error("DB connection error in getProductsAction:", error);
-  }
-
-  if (dbProducts.length > 0) {
+    
+    // La BD respondió correctamente — usar sus resultados aunque sean 0
     return {
       success: true,
       data: {
-        products: await Promise.all(dbProducts.map(p => serializeProduct(p))),
-        meta: dbMeta,
+        products: result.data.length > 0
+          ? await Promise.all(result.data.map(p => serializeProduct(p)))
+          : [],
+        meta: result.meta,
       }
     };
+  } catch (error) {
+    // Solo caer a mock si la BD no está disponible
+    console.error("DB connection error in getProductsAction:", error);
+    const { data, meta } = filterMockProducts(validation.data);
+    return { success: true, data: { products: data, meta } };
   }
-
-  const { data, meta } = filterMockProducts(validation.data);
-  return { success: true, data: { products: data, meta } };
 }
 
 /**
@@ -58,6 +53,8 @@ export async function getProductBySlugAction(slug: string) {
   try {
     const product = await productRepository.findBySlug(slug);
     if (product) return await serializeProduct(product);
+    // Product not found in DB - return null, don't fall to mock
+    return null;
   } catch (error) {
     console.error("DB connection error in getProductBySlugAction:", error);
   }

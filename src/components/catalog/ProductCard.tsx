@@ -72,7 +72,7 @@ export function ProductCard({ product, inWishlist = false }: ProductCardProps) {
               src={primaryImage.url}
               alt={primaryImage.alt ?? product.name}
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              className="object-contain transition-transform duration-500 group-hover:scale-105"
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
             />
           ) : (
@@ -128,10 +128,10 @@ export function ProductCard({ product, inWishlist = false }: ProductCardProps) {
 
       {/* Contenido */}
       <div className="flex flex-col flex-1 p-3">
-        {/* Marca */}
-        {product.brand && (
+        {/* Categoría en lugar de Marca */}
+        {product.category && (
           <p className="text-xs font-medium uppercase tracking-wide mb-0.5" style={{ color: "#885200" }}>
-            {product.brand.name}
+            {product.category.name}
           </p>
         )}
 

@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { ShoppingCart, Heart, User, Search, Menu, Package } from "lucide-react";
+import Image from "next/image";
+import { Heart, User } from "lucide-react";
 import { auth } from "@/lib/auth";
-import { SITE_CONFIG } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
+import { getCategoriesAction } from "@/features/products/actions/product.actions";
 import { MobileMenu } from "./MobileMenu";
 import { CartIconButton } from "../cart/CartIconButton";
 import { UserMenu } from "../shared/UserMenu";
@@ -32,16 +33,25 @@ export async function Header() {
     ? await getCartItemCount(session.user.id)
     : 0;
 
+  const navCategories = await getCategoriesAction();
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white shadow-sm">
+      {/* Barra decorativa de marca — gradiente ikaZa (Opción C) */}
+      <div className="header-brand-bar w-full" aria-hidden="true" />
       <div className="ikaza-container">
         {/* Top bar */}
         <div className="flex h-16 items-center gap-4">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 shrink-0">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg"
-              style={{ background: "linear-gradient(135deg, #006065, #0d7a80)" }}>
-              <Package className="h-5 w-5 text-white" />
+            <div className="relative h-9 w-9 overflow-hidden rounded-lg">
+              <Image
+                src="/logo_ikasa_sin_fondo.webp"
+                alt="ikaZa Import"
+                width={36}
+                height={36}
+                className="object-contain w-full h-full"
+              />
             </div>
             <div className="hidden sm:block">
               <span className="font-headline text-xl font-bold" style={{ color: "#006065" }}>
@@ -91,52 +101,37 @@ export async function Header() {
           </div>
         </div>
 
-        {/* Navigation bar — categorías */}
-        <nav className="hidden md:flex items-center gap-6 py-2 border-t border-border/50 overflow-x-auto">
-          <Link
-            href="/catalog"
-            className="whitespace-nowrap text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Todo el Catálogo
-          </Link>
-          <Link
-            href="/catalog?category=hogar"
-            className="whitespace-nowrap text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Hogar
-          </Link>
-          <Link
-            href="/catalog?category=cocina"
-            className="whitespace-nowrap text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Cocina
-          </Link>
-          <Link
-            href="/catalog?category=tecnologia"
-            className="whitespace-nowrap text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Tecnología
-          </Link>
-          <Link
-            href="/catalog?category=decoracion"
-            className="whitespace-nowrap text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Decoración
-          </Link>
-          <Link
-            href="/catalog?category=jardin"
-            className="whitespace-nowrap text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Jardín
-          </Link>
-          <Link
-            href="/catalog?isFeatured=true"
-            className="whitespace-nowrap text-sm font-semibold transition-colors"
-            style={{ color: "#885200" }}
-          >
-            ✦ Ofertas
-          </Link>
-        </nav>
+        {/* Navigation bar — categorías dinámicas con scroll */}
+        <div className="hidden md:block relative border-t border-border/50">
+          {/* Fade gradiente derecho indicando scroll */}
+          <div className="absolute right-0 top-0 bottom-0 w-10 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+          <nav className="flex items-center gap-6 py-2 overflow-x-auto flex-nowrap">
+            <Link
+              href="/catalog"
+              className="shrink-0 whitespace-nowrap text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            >
+              Todo el Catálogo
+            </Link>
+            {navCategories.map((cat: { slug: string; name: string }) => (
+              <Link
+                key={cat.slug}
+                href={`/catalog?category=${cat.slug}`}
+                className="shrink-0 whitespace-nowrap text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                {cat.name}
+              </Link>
+            ))}
+            <Link
+              href="/catalog?isFeatured=true"
+              className="shrink-0 whitespace-nowrap text-sm font-semibold transition-colors"
+              style={{ color: "#885200" }}
+            >
+              ✦ Ofertas
+            </Link>
+          </nav>
+        </div>
+        {/* Línea decorativa de marca al fondo del header */}
+        <div className="header-brand-bar w-full" aria-hidden="true" />
       </div>
     </header>
   );

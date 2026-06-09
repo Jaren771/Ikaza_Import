@@ -48,6 +48,12 @@ export function ProductFiltersPanel({ categories, currentFilters }: ProductFilte
     } else {
       params.delete(key);
     }
+    
+    // Evitar que la subcategoría se arrastre al cambiar de categoría principal
+    if (key === "category") {
+      params.delete("subcategory");
+    }
+    
     params.set("page", "1");
     router.push(`${pathname}?${params.toString()}`);
   };
@@ -116,15 +122,22 @@ export function ProductFiltersPanel({ categories, currentFilters }: ProductFilte
                 {cat.name}
               </button>
               {/* Subcategorías */}
-              {searchParams.get("category") === cat.slug && cat.subcategories?.map((sub) => (
-                <button
-                  key={sub.id}
-                  onClick={() => updateFilter("subcategory", sub.slug)}
-                  className="w-full text-left pl-6 pr-2 py-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {sub.name}
-                </button>
-              ))}
+              {searchParams.get("category") === cat.slug && cat.subcategories?.map((sub) => {
+                const isActive = searchParams.get("subcategory") === sub.slug;
+                return (
+                  <button
+                    key={sub.id}
+                    onClick={() => updateFilter("subcategory", sub.slug)}
+                    className={`w-full text-left pl-6 pr-2 py-1.5 text-sm transition-colors rounded-lg my-0.5 ${
+                      isActive 
+                        ? "font-semibold text-white bg-[#006065]/90" 
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    }`}
+                  >
+                    {sub.name}
+                  </button>
+                );
+              })}
             </div>
           ))}
         </div>
