@@ -75,9 +75,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es" suppressHydrationWarning>
+    <html lang="es" suppressHydrationWarning data-scroll-behavior="smooth">
       <body
         className={`${manrope.variable} ${workSans.variable} font-body antialiased`}
+        suppressHydrationWarning
       >
         <Providers>{children}</Providers>
       </body>

@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
         hostname: "**.cloudinary.com",
       },
     ],
+    qualities: [75, 95],
+  },
+  turbopack: {
+    root: process.cwd(),
   },
 };
 
