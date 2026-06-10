@@ -66,7 +66,7 @@ export function ProductCard({ product, inWishlist = false }: ProductCardProps) {
     >
       {/* Imagen */}
       <div className="relative overflow-hidden bg-muted aspect-square">
-        <Link href={`/products/${product.slug}`} tabIndex={-1} className="relative block">
+        <Link href={`/products/${product.slug}`} tabIndex={-1}>
           {primaryImage ? (
             <Image
               src={primaryImage.url}
