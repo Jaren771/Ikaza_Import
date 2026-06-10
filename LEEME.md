@@ -70,7 +70,7 @@ CREATE DATABASE ikaza_db;
 
 ### 3. Variables de Entorno
 
-Crea un archivo `.env` en la raíz del proyecto (ya existe uno de ejemplo). Las variables obligatorias son:
+Crea un archivo `.env` en la raíz del proyecto. Las variables obligatorias son:
 
 ```env
 DATABASE_URL="postgresql://usuario:password@localhost:5432/ikaza_db"
@@ -78,7 +78,7 @@ AUTH_SECRET="<generar con: openssl rand -base64 32>"
 NEXTAUTH_SECRET="<generar con: openssl rand -base64 32>"
 ```
 
-(Opcional — necesarias para funcionalidades específicas):
+Opcionales (necesarias para funcionalidades específicas):
 
 ```env
 # Datos mock sin BD (útil para frontend sin PostgreSQL)
@@ -103,7 +103,7 @@ PAYPAL_CLIENT_SECRET=""
 ```bash
 npm run db:generate
 npm run db:push        # Crea las tablas según el schema
-npm run db:seed        # Inserta datos de prueba (usuarios, categorías, productos, etc.)
+npm run db:seed        # Inserta datos de prueba
 ```
 
 ### 5. Ejecutar
@@ -134,10 +134,10 @@ Abrir [http://localhost:3000](http://localhost:3000).
 prisma/
   schema.prisma         # Modelos de base de datos
   seed.ts              # Seed principal
-  seed-reales.json     # Datos de productos reales para seed
+  seed-reales.json     # Datos de productos reales
 src/
   app/                 # App Router (páginas + API routes)
-  components/          # UI (shadcn) + componentes de features
+  components/          # UI (shadcn) + componentes
   features/            # Lógica por dominio
     auth/              # Login, registro, roles
     orders/            # Carrito, checkout, pedidos
@@ -161,23 +161,9 @@ src/
 
 ---
 
-## Features
-
-- Catálogo con filtros (categoría, precio, stock, búsqueda)
-- Carrito de compras persistente (sesión y usuario autenticado)
-- Checkout con múltiples medios de pago
-- Panel administrativo con dashboard y métricas
-- Gestión de importaciones (aduana, fletes, tracking)
-- Cupones de descuento (% , fijo, envío gratis)
-- Banners promocionales administrables
-- Sistema de reseñas con aprobación
-- Auditoría de acciones sensibles
-
----
-
 ## Notas para Desarrollo
 
-- El proyecto funciona **sin PostgreSQL** si se activa `USE_MOCK_DATA="true"`. En ese modo los datos vienen de `src/lib/mock-products.ts`.
-- Para desarrollo local de la BD se recomienda `npm run db:studio` para inspeccionar datos visualmente.
+- El proyecto funciona **sin PostgreSQL** si se activa `USE_MOCK_DATA="true"`. Los datos provienen de `src/lib/mock-products.ts`.
+- Para desarrollo local de la BD usa `npm run db:studio` para inspeccionar datos visualmente.
 - Las migraciones de Prisma se versionan en `prisma/migrations/`.
-- Los datos de seed incluyen 18+ productos con imágenes reales de Unsplash.
+- El seed incluye 18+ productos con imágenes reales de Unsplash.
