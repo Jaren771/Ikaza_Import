@@ -5,16 +5,10 @@ import type { PaginationMeta } from "@/types";
 // Repository Base — Patrón Repository (SOLID - Dependency Inversion)
 // Abstrae el acceso a datos permitiendo cambiar el ORM sin modificar
 // la lógica de negocio.
-// 
-// PRINCIPIOS SOLID APLICADOS:
-// - Dependency Inversion Principle (DIP): Las capas superiores (Actions/Controllers)
-//   dependen de la abstracción de repositorios en lugar de interactuar directamente
-//   con el cliente de la base de datos (Prisma/ORM).
-// - Single Responsibility Principle (SRP): Concentra en una sola clase las funciones
-//   comunes y el acceso al cliente de base de datos, separando la persistencia de la
-//   lógica de negocio.
 // =============================================================================
 
+// [SOLID - DIP (Dependency Inversion Principle)]: Abstracción base para desacoplar a las capas superiores de llamadas directas a la base de datos (Prisma).
+// [SOLID - SRP (Single Responsibility Principle)]: Se encarga puramente de exponer utilidades comunes de persistencia y el cliente ORM.
 export abstract class BaseRepository {
   protected readonly db = prisma;
 

@@ -3,14 +3,10 @@ import type { PaymentIntent, PaymentWebhookPayload } from "@/types";
 
 // =============================================================================
 // MercadoPago Provider (Stub — listo para integración real)
-// 
-// PRINCIPIOS SOLID APLICADOS:
-// - Single Responsibility Principle (SRP): Esta clase tiene la única responsabilidad
-//   de encapsular la lógica de integración con MercadoPago.
-// - Liskov Substitution Principle (LSP): Implementa por completo IPaymentProvider,
-//   lo que garantiza que puede reemplazar a la interfaz base en cualquier parte de la app.
 // =============================================================================
 
+// [SOLID - SRP (Single Responsibility Principle)]: Tiene la única responsabilidad de integrar la pasarela de pagos de MercadoPago.
+// [SOLID - LSP (Liskov Substitution Principle)]: Implementa IPaymentProvider para que pueda reemplazar a la abstracción base de manera transparente.
 export class MercadoPagoProvider implements IPaymentProvider {
   readonly providerId = "MERCADOPAGO";
   readonly name = "MercadoPago";

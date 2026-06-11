@@ -4,16 +4,11 @@ import type { PaymentIntent, PaymentWebhookPayload } from "@/types";
 // IPaymentProvider — Interfaz de Pasarela de Pago (Principio de Inversión)
 // Todos los proveedores deben implementar esta interfaz.
 // Esto permite añadir/cambiar proveedores sin modificar el checkout.
-// 
-// PRINCIPIOS SOLID APLICADOS:
-// - Interface Segregation Principle (ISP): Interfaz pequeña y cohesiva enfocada
-//   únicamente en pagos (no se mezclan otras responsabilidades).
-// - Dependency Inversion Principle (DIP): Los módulos de alto nivel dependen
-//   de esta abstracción en lugar de clases de bajo nivel (MercadoPago, PayPal, etc.).
-// - Liskov Substitution Principle (LSP): Establece un contrato uniforme para
-//   que cualquier proveedor sea sustituible sin romper la aplicación.
 // =============================================================================
 
+// [SOLID - ISP (Interface Segregation Principle)]: Interfaz pequeña y cohesiva enfocada únicamente en pagos (no se mezclan otras responsabilidades).
+// [SOLID - DIP (Dependency Inversion Principle)]: Abstracción de la que dependen los módulos de alto nivel en lugar de depender de clases concretas (bajo nivel).
+// [SOLID - LSP (Liskov Substitution Principle)]: Define el contrato uniforme que permite que cualquier implementación sea sustituible sin romper la aplicación.
 export interface IPaymentProvider {
   readonly providerId: string;
   readonly name: string;
