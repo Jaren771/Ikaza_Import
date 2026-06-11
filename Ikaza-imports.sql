@@ -138,5 +138,310 @@ ALTER SYSTEM SET idle_in_transaction_session_timeout = '30min';
 SELECT pg_reload_conf();
 
 -- =============================================================================
+--               MODELO LÓGICO — DIAGRAMA ENTIDAD-RELACIÓN
+-- =============================================================================
+-- A continuación se describe el modelo lógico relacional que diseñó el
+-- equipo. Cada tabla representa una entidad del sistema.
+-- 
+-- NOTA: Estas sentencias CREATE TABLE son SOLO de referencia. La base de
+-- datos real se maneja con Prisma ORM (ver prisma/schema.prisma). Si
+-- ejecutas este archivo completo, las tablas reales ya existen y estos
+-- CREATE causarían error. Se incluyen aquí como documentación.
+-- =============================================================================
+
+-- =============================================================================
+-- TABLA: Categoria
+-- =============================================================================
+-- ¿Para qué sirve?  Agrupa los productos por tipo. Ejemplo: "Electrodomésticos",
+--                   "Celulares", "Laptops". Así los clientes pueden navegar
+--                   por categorías y encontrar lo que buscan más rápido.
+CREATE TABLE IF NOT EXISTS Categoria (
+    id_categoria INT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL
+);
+
+-- =============================================================================
+-- TABLA: Producto
+-- =============================================================================
+-- ¿Para qué sirve?  Guarda toda la información de cada producto que se vende
+--                   en la tienda: su nombre, precio, cuántos hay en stock,
+--                   una foto y a qué categoría pertenece.
+CREATE TABLE IF NOT EXISTS Producto (
+    id_producto INT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    precio DECIMAL(10,2) NOT NULL,
+    stock INT NOT NULL,
+    img VARCHAR(255),
+    id_categoria INT NOT NULL,
+    FOREIGN KEY (id_categoria) REFERENCES Categoria(id_categoria)
+);
+
+-- =============================================================================
+-- TABLA: Usuario
+-- =============================================================================
+-- ¿Para qué sirve?  Almacena los datos de cada persona que se registra en la
+--                   tienda: su nombre, correo (para iniciar sesión), contraseña
+--                   (guardada como hash, no en texto plano), el rol (cliente,
+--                   administrador, etc.) y si la cuenta está activa o no.
+CREATE TABLE IF NOT EXISTS Usuario (
+    id_usuario INT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    correo VARCHAR(100) UNIQUE NOT NULL,
+    contraseña VARCHAR(255) NOT NULL,
+    rol VARCHAR(30) NOT NULL,
+    estado VARCHAR(30)
+);
+
+-- =============================================================================
+-- TABLA: Carrito
+-- =============================================================================
+-- ¿Para qué sirve?  Cada usuario tiene un carrito de compras donde va
+--                   añadiendo productos antes de comprar. Un usuario solo
+--                   puede tener un carrito activo a la vez.
+CREATE TABLE IF NOT EXISTS Carrito (
+    id_carrito INT PRIMARY KEY,
+    id_usuario INT NOT NULL UNIQUE,
+    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
+);
+
+-- =============================================================================
+-- TABLA: Detalle_carrito
+-- =============================================================================
+-- ¿Para qué sirve?  Guarda los productos que el usuario metió al carrito:
+--                   cuántas unidades de cada producto y cuánto vale ese
+--                   renglón (cantidad × precio del producto).
+CREATE TABLE IF NOT EXISTS Detalle_carrito (
+    id_detalle_carrito INT PRIMARY KEY,
+    id_carrito INT NOT NULL,
+    id_producto INT NOT NULL,
+    cantidad INT NOT NULL,
+    subtotal DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (id_carrito) REFERENCES Carrito(id_carrito),
+    FOREIGN KEY (id_producto) REFERENCES Producto(id_producto)
+);
+
+-- =============================================================================
+-- TABLA: Pedido
+-- =============================================================================
+-- ¿Para qué sirve?  Cuando el usuario confirma la compra, el carrito se
+--                   convierte en un pedido. Aquí se guarda la fecha, a qué
+--                   dirección se envía, el total a pagar y el estado
+--                   (pendiente, enviado, entregado, cancelado).
+CREATE TABLE IF NOT EXISTS Pedido (
+    id_pedido INT PRIMARY KEY,
+    fecha DATE NOT NULL,
+    direccion VARCHAR(255),
+    total DECIMAL(10,2) NOT NULL,
+    estado VARCHAR(30) NOT NULL,
+    id_usuario INT NOT NULL,
+    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
+);
+
+-- =============================================================================
+-- TABLA: Detalle_pedido
+-- =============================================================================
+-- ¿Para qué sirve?  Guarda cada producto incluido en un pedido: cuántas
+--                   unidades, a qué precio se compró (por si el precio cambia
+--                   después), y el detalle de a qué pedido pertenece.
+CREATE TABLE IF NOT EXISTS Detalle_pedido (
+    id_detalle_pedido INT PRIMARY KEY,
+    id_pedido INT NOT NULL,
+    id_producto INT NOT NULL,
+    cantidad INT NOT NULL,
+    precio_unitario DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (id_pedido) REFERENCES Pedido(id_pedido),
+    FOREIGN KEY (id_producto) REFERENCES Producto(id_producto)
+);
+
+-- =============================================================================
+-- TABLA: Pago
+-- =============================================================================
+-- ¿Para qué sirve?  Registra el pago de cada pedido: con qué método se pagó
+--                   (tarjeta, transferencia, PayPal), cuánto dinero y si el
+--                   pago fue exitoso o está pendiente.
+CREATE TABLE IF NOT EXISTS Pago (
+    id_pago INT PRIMARY KEY,
+    id_pedido INT NOT NULL,
+    metodo_pago VARCHAR(50) NOT NULL,
+    monto DECIMAL(10,2) NOT NULL,
+    estado_pago VARCHAR(30) NOT NULL,
+    FOREIGN KEY (id_pedido) REFERENCES Pedido(id_pedido)
+);
+
+-- =============================================================================
+-- TABLA: Stock
+-- =============================================================================
+-- ¿Para qué sirve?  Lleva un control más detallado del inventario de cada
+--                   producto: cuántos hay disponibles, cuál es el mínimo
+--                   permitido (para saber cuándo reabastecer) y la fecha
+--                   de la última actualización.
+CREATE TABLE IF NOT EXISTS Stock (
+    id_stock INT PRIMARY KEY,
+    id_producto INT NOT NULL,
+    cantidad_disponible INT NOT NULL,
+    stock_minimo INT NOT NULL,
+    fecha_actualizacion DATE NOT NULL,
+    FOREIGN KEY (id_producto) REFERENCES Producto(id_producto)
+);
+
+-- =============================================================================
+--                  OBSERVACIONES Y RECOMENDACIONES
+-- =============================================================================
+--
+-- Después de revisar el modelo lógico que diseñaron tú y tu equipo,
+-- encontramos algunos puntos que vale la pena mejorar:
+--
+-- ────────────────────────────────────────────────────────────────────────────
+-- 1. STOCK DUPLICADO
+-- ────────────────────────────────────────────────────────────────────────────
+--    La tabla Producto tiene una columna "stock" y además existe una tabla
+--    separada llamada Stock. Esto significa que la cantidad de productos
+--    disponibles se guarda en dos lugares distintos.
+--    ¿Cuál es el problema?  Si actualizas el stock en un lugar y olvidas
+--    actualizar el otro, los números no coincidirán y podrías vender
+--    productos que ya no tienes.
+--    Recomendación:  Quitar "stock" de la tabla Producto y usar solo la
+--    tabla Stock, o al revés: eliminar la tabla Stock y dejar el stock
+--    dentro de Producto. Las dos no deben existir al mismo tiempo.
+--
+-- ────────────────────────────────────────────────────────────────────────────
+-- 2. SUBTOTAL Y TOTAL QUE SE PUEDEN CALCULAR
+-- ────────────────────────────────────────────────────────────────────────────
+--    En Detalle_carrito guardas "subtotal" y en Pedido guardas "total".
+--    Ambos se pueden calcular automáticamente:
+--      - subtotal = cantidad × precio del producto
+--      - total    = suma de todos los detalle_pedido
+--    Guardarlos no está mal del todo (de hecho ayuda a que las consultas
+--    sean más rápidas), pero hay que asegurarse de que siempre estén
+--    actualizados. Si el precio de un producto cambia después de la
+--    compra, el subtotal del carrito debería recalcularse.
+--    Recomendación:  Está bien mantenerlos por rendimiento, pero agregar
+--    un disparador (trigger) o lógica en la aplicación que los recalcule
+--    automáticamente cuando cambien los precios o cantidades.
+--
+-- ────────────────────────────────────────────────────────────────────────────
+-- 3. DIRECCIÓN DENTRO DE PEDIDO
+-- ────────────────────────────────────────────────────────────────────────────
+--    La dirección está guardada como texto dentro de la tabla Pedido.
+--    Esto funciona, pero si un usuario hace varios pedidos, tendrá que
+--    escribir su dirección cada vez.
+--    Recomendación:  Crear una tabla "Direccion" separada (con id_direccion,
+--    calle, ciudad, país, etc.) y asociarla al Pedido. Así el usuario puede
+--    guardar varias direcciones y reutilizarlas. En la base de datos real
+--    que usa Prisma ya existe la tabla "addresses" para esto.
+--
+-- ────────────────────────────────────────────────────────────────────────────
+-- 4. FALTAN FECHAS DE CREACIÓN Y ACTUALIZACIÓN
+-- ────────────────────────────────────────────────────────────────────────────
+--    Ninguna tabla tiene columnas como "fecha_creacion" o "fecha_actualizacion".
+--    Estas fechas son muy útiles para saber cuándo se registró un usuario,
+--    cuándo se creó un producto o cuándo se modificó un pedido.
+--    Recomendación:  Agregar en cada tabla:
+--      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+--      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+--
+-- ────────────────────────────────────────────────────────────────────────────
+-- 5. ÍNDICES EN CLAVES FORÁNEAS
+-- ────────────────────────────────────────────────────────────────────────────
+--    Las claves foráneas (id_usuario, id_producto, id_categoria, etc.)
+--    no tienen índices. Esto hace que las consultas que buscan "todos los
+--    pedidos de un usuario" sean más lentas.
+--    Recomendación:  Crear índices en todas las columnas que sean clave
+--    foránea. Ejemplo:
+--      CREATE INDEX idx_pedido_usuario ON Pedido(id_usuario);
+--
+-- ────────────────────────────────────────────────────────────────────────────
+-- 6. CONTRASEÑAS: NUNCA EN TEXTO PLANO
+-- ────────────────────────────────────────────────────────────────────────────
+--    La columna "contraseña" es VARCHAR(255), que es suficiente. Pero hay
+--    que asegurarse de que el sistema guarde la contraseña ENCRIPTADA
+--    (haciendo un hash con pgcrypto o bcrypt), no la contraseña tal cual
+--    la escribió el usuario.
+--    Si alguien roba la base de datos y las contraseñas están en texto
+--    plano, todas las cuentas estarían comprometidas.
+--    Recomendación:  Usar la extensión pgcrypto (ya la activamos arriba)
+--    con la función crypt() para guardar contraseñas, o usar bcrypt desde
+--    el código de la aplicación. El proyecto actual ya usa bcryptjs.
+--
+-- ────────────────────────────────────────────────────────────────────────────
+-- 7. IDIOMA: ESPAÑOL VS INGLÉS
+-- ────────────────────────────────────────────────────────────────────────────
+--    El modelo lógico usa nombres en español (Producto, Pedido, Usuario).
+--    La base de datos real que usa Prisma tiene nombres en inglés
+--    (products, orders, users).
+--    No es un error, pero hay que tener cuidado de no confundirse al
+--    escribir consultas SQL o al leer el código de la aplicación.
+--    Recomendación:  Elegir un solo idioma y mantenerlo en todo el
+--    proyecto. Si la aplicación está en español, los nombres de las
+--    tablas también pueden estar en español.
+--
+-- ────────────────────────────────────────────────────────────────────────────
+-- 8. TAMAÑO DE COLUMNAS
+-- ────────────────────────────────────────────────────────────────────────────
+--    - "direccion" en Pedido es VARCHAR(255). Una dirección larga (con
+--      calle, número, distrito, ciudad, referencias) puede ocupar más.
+--      Recomendación:  Usar TEXT en lugar de VARCHAR(255).
+--    - "subtotal" en Detalle_carrito es DECIMAL(10,2). El número máximo
+--      es 99'999,999.99. Si alguien compra 1000 productos de S/200,
+--      el subtotal sería S/200,000 y no cabría.
+--      Recomendación:  Usar DECIMAL(12,2) o simplemente no guardar el
+--      subtotal (ver punto 2).
+--
+-- ────────────────────────────────────────────────────────────────────────────
+-- 9. TABLAS QUE FALTAN EN EL MODELO DEL EQUIPO
+-- ────────────────────────────────────────────────────────────────────────────
+--    El modelo actual no incluye varias tablas que serán necesarias para
+--    el funcionamiento completo de la tienda. Estas tablas ya existen en
+--    la base de datos real (creadas por Prisma):
+--
+--    Tabla              ¿Para qué sirve?
+--    ─────────────────  ─────────────────────────────────────────────────
+--    Reseña (reviews)   Los clientes califican y opinan sobre los
+--                       productos que compraron.
+--    Cupón (coupons)    Códigos de descuento como "BIENVENIDO10" para
+--                       ofrecer promociones.
+--    Imagen producto    Un producto puede tener varias fotos (no solo
+--     (product_images)  una en "img").
+--    Variante           Un producto puede venir en varios colores o
+--     (product_variants)tamaños, cada uno con su propio precio y stock.
+--    Lista deseos       Los usuarios guardan productos que les interesan
+--     (wishlist)        para comprarlos después.
+--    Notificación       La app envía alertas al usuario (ej: "tu pedido
+--     (notifications)   ha sido enviado").
+--    Banner             Imágenes grandes en la página principal para
+--                       promocionar ofertas o colecciones.
+--    Marca (brands)     Cada producto pertenece a una marca (Samsung,
+--                       LG, etc.).
+--    Proveedor          De quién se compran los productos para
+--     (suppliers)       importarlos (usado en el módulo de importación).
+--
+-- ────────────────────────────────────────────────────────────────────────────
+-- 10. NORMALIZACIÓN GENERAL
+-- ────────────────────────────────────────────────────────────────────────────
+--     El modelo está en 3FN (Tercera Forma Normal), lo cual es correcto.
+--     Sin embargo, algunos campos como "subtotal" y "total" rompen
+--     ligeramente la 3FN porque se pueden calcular a partir de otros
+--     datos. Como se mencionó antes, es una práctica común y aceptable
+--     por razones de rendimiento (se llama "desnormalización controlada").
+--
+-- =============================================================================
+-- RESUMEN FINAL
+-- =============================================================================
+-- Fortalezas del modelo:
+--   ✅ Sigue la Tercera Forma Normal (3FN)
+--   ✅ Cubre las entidades principales del negocio
+--   ✅ Relaciones claras entre tablas
+--   ✅ Buen uso de claves primarias y foráneas
+--
+-- Puntos a mejorar:
+--   ⚠️  Stock duplicado (tabla Producto.stock y tabla Stock)
+--   ⚠️  Subtotal y total almacenados (pueden calcularse)
+--   ⚠️  Faltan fechas de creación/actualización
+--   ⚠️  Faltan índices en claves foráneas
+--   ⚠️  Dirección debería ser una tabla aparte
+--   ⚠️  Faltan tablas importantes (reseñas, cupones, imágenes, etc.)
+--   ⚠️  Mezcla de español e inglés en nombres de tablas
+-- =============================================================================
 -- FIN DEL ARCHIVO
 -- =============================================================================
