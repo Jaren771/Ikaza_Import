@@ -10,6 +10,15 @@ import {
 // PaymentService — Orquestador de Pagos (Patrón Strategy)
 // Selecciona el proveedor correcto en tiempo de ejecución basado en
 // el providerId. Para añadir un nuevo proveedor, solo registrar aquí.
+// 
+// PRINCIPIOS SOLID APLICADOS:
+// - Open/Closed Principle (OCP): Abierto para añadir nuevos proveedores (extensión)
+//   registrándolos en el constructor sin tener que modificar la lógica de negocio 
+//   o el flujo de checkout existente (cerrado a la modificación).
+// - Liskov Substitution Principle (LSP): Maneja todos los proveedores de forma 
+//   intercambiable a través de la firma común.
+// - Dependency Inversion Principle (DIP): El orquestador depende del contrato
+//   abstruso IPaymentProvider en lugar de acoplarse a un proveedor de pago concreto.
 // =============================================================================
 
 export class PaymentService {

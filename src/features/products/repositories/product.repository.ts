@@ -4,6 +4,12 @@ import { Prisma } from "@prisma/client";
 
 // =============================================================================
 // Product Repository — Acceso a datos de productos
+// 
+// PRINCIPIOS SOLID APLICADOS:
+// - Single Responsibility Principle (SRP): Esta clase se encarga exclusivamente de 
+//   interactuar con la base de datos para realizar operaciones sobre los productos.
+// - Liskov Substitution Principle (LSP): Hereda de BaseRepository y utiliza sus métodos
+//   auxiliares (como getOffset y buildPaginationMeta) respetando su firma y semántica.
 // =============================================================================
 
 /**
