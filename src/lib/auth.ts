@@ -45,20 +45,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           throw new Error("Credenciales inválidas");
         }
 
-        // =====================================================================
-        // MOCK ADMIN BYPASS (Para poder entrar sin base de datos)
-        // =====================================================================
-        if (credentials.email === "admin@gmail.com" && credentials.password === "admin123") {
-          return {
-            id: "mock-admin-id",
-            name: "Admin Demo",
-            email: "admin@gmail.com",
-            image: null,
-            role: "ADMIN" as UserRole,
-          };
-        }
-        // =====================================================================
-
         try {
           const user = await prisma.user.findUnique({
             where: { email: credentials.email as string },

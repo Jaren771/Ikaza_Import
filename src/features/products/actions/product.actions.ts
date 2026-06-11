@@ -9,7 +9,7 @@ import { toNumber } from "@/lib/utils";
 import type { ActionResult, ProductFilters } from "@/types";
 import { revalidatePath } from "next/cache";
 import { generateSlug } from "@/lib/utils";
-import { filterMockProducts, getMockCategories, MOCK_PRODUCTS } from "@/lib/mock-products";
+
 
 // =============================================================================
 // Server Actions — Productos
@@ -39,10 +39,8 @@ export async function getProductsAction(filters: ProductFilters) {
       }
     };
   } catch (error) {
-    // Solo caer a mock si la BD no está disponible
     console.error("DB connection error in getProductsAction:", error);
-    const { data, meta } = filterMockProducts(validation.data);
-    return { success: true, data: { products: data, meta } };
+    return { success: false, error: "Error de conexión con la base de datos" };
   }
 }
 
@@ -57,12 +55,8 @@ export async function getProductBySlugAction(slug: string) {
     return null;
   } catch (error) {
     console.error("DB connection error in getProductBySlugAction:", error);
+    return null;
   }
-
-  const mock = MOCK_PRODUCTS.find((p) => p.slug === slug);
-  if (mock) return mock;
-
-  return MOCK_PRODUCTS[0] as any;
 }
 
 /**
@@ -73,7 +67,7 @@ export async function getFeaturedProductsAction(limit = 8) {
     return await productRepository.findFeatured(limit);
   } catch (error) {
     console.error("DB connection error in getFeaturedProductsAction:", error);
-    return MOCK_PRODUCTS.filter((p) => p.isFeatured).slice(0, limit);
+    return [];
   }
 }
 
@@ -88,10 +82,7 @@ export async function getRelatedProductsAction(
     return await productRepository.findRelated(productId, categoryId);
   } catch (error) {
     console.error("DB connection error in getRelatedProductsAction:", error);
-    const related = MOCK_PRODUCTS.filter(
-      (p) => p.id !== productId && (!categoryId || p.categoryId === categoryId)
-    ).slice(0, 4);
-    return related as any[];
+    return [];
   }
 }
 
@@ -225,9 +216,9 @@ export async function getCategoriesAction() {
         _count: { select: { products: true } },
       },
     });
-    if (cats.length > 0) return cats;
+    return cats;
   } catch (error) {
     console.error("DB connection error in getCategoriesAction:", error);
+    return [];
   }
-  return getMockCategories() as any;
 }
