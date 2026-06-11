@@ -34,6 +34,7 @@ public class Address {
     private String country;
 
     @Column(name = "is_default")
+    @Builder.Default
     private Boolean isDefault = false;  // Dirección principal
 
     private String phone;         // Teléfono de contacto para esta dirección

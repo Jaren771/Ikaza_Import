@@ -37,6 +37,7 @@ public class Review {
     private String content;
 
     @Column(name = "is_approved")
+    @Builder.Default
     private Boolean isApproved = false; // Aprobada por admin
 
     @Column(updatable = false)

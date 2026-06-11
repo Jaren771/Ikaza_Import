@@ -26,12 +26,15 @@ public class Inventory {
     private Long id;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer quantity = 0;
 
     @Column(name = "reserved_quantity")
+    @Builder.Default
     private Integer reservedQuantity = 0;
 
     @Column(name = "min_stock")
+    @Builder.Default
     private Integer minStock = 5;
 
     // El producto al que pertenece este inventario
