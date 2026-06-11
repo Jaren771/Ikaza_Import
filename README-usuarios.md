@@ -6,7 +6,6 @@
 ---
 
 <p align="center">
-  <!-- Reemplaza esta URL con la imagen del navbar -->
   <img src="Logo IKAZA.jpg" alt="ikaZa Import" width="100%">
 </p>
 
@@ -84,6 +83,23 @@
 ### Inventario
 - Revisa el stock actual de cada producto
 - Configura alertas cuando el stock esté bajo
+
+---
+
+## Base de Datos
+
+El proyecto guarda toda su información en una base de datos **PostgreSQL**.  
+El archivo `Ikaza-imports.sql` contiene el script para crearla con todas las medidas de seguridad necesarias.
+
+### Seguridad de la información
+
+| Medida | ¿Qué hace? |
+|--------|-----------|
+| **Contraseñas encriptadas** | Las contraseñas de los usuarios se guardan encriptadas (no en texto plano), usando un método llamado bcrypt. Así, aunque alguien acceda a la base de datos, no puede leer las contraseñas. |
+| **Permisos limitados** | La aplicación se conecta con un usuario que solo puede leer y escribir datos, pero no puede borrar tablas ni modificar la estructura de la base de datos. |
+| **Aislamiento de datos** | Cada usuario solo puede ver su propia información (sus pedidos, su carrito). La base de datos está configurada para impedir que un usuario vea datos de otros, incluso si la aplicación tuviera un error. |
+| **Registro de accesos** | La base de datos anota cada vez que alguien se conecta o desconecta. Esto ayuda a detectar accesos sospechosos. |
+| **Tiempo de espera** | Si una conexión está inactiva por más de 30 minutos, se cierra automáticamente para liberar recursos. |
 
 ---
 

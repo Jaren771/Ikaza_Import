@@ -1,7 +1,7 @@
 # ikaZa Import
 
 > Plataforma de e-commerce y gestión de importaciones.  
-> **Next.js 16 · Prisma 6 · PostgreSQL · Tailwind CSS v4**
+> **Next.js 16 · Prisma 6 · PostgreSQL · Spring Boot 3 · Tailwind CSS v4**
 
 <p align="center">
   <img src="public/logo_ikasa_hd.webp" alt="ikaZa Import Navbar" width="100%">
@@ -13,28 +13,60 @@
 
 | Capa | Tecnología |
 |------|-----------|
-| **Framework** | Next.js 16 (App Router) + React 19 |
-| **Base de Datos** | PostgreSQL + Prisma v6 |
+| **Frontend** | Next.js 16 (App Router) + React 19 |
+| **Backend (API REST)** | Spring Boot 3.4 + Java 21 |
+| **Base de Datos** | PostgreSQL + Prisma v6 (frontend) / JPA Hibernate (backend) |
+| **Autenticación** | NextAuth.js v5 (frontend) / JWT con Spring Security (backend) |
 | **Estilos** | Tailwind CSS v4 + shadcn/ui |
-| **Auth** | NextAuth.js v5 (JWT) |
 | **Formularios** | React Hook Form + Zod |
 | **Estado** | Zustand (local) + TanStack Query v5 (servidor) |
 | **Pagos** | MercadoPago · Culqi · Izipay · PayPal |
 
 ---
 
+## Estructura del Proyecto
+
+```
+Ikaza-imports.sql      # Script SQL con creación de BD, seguridad y documentación
+prisma/
+  schema.prisma         # Modelos de base de datos (frontend)
+  seed.ts              # Seed principal
+  seed-reales.json     # Datos de productos reales para seed
+src/
+  app/                 # App Router (páginas + API routes)
+  components/          # UI (shadcn) + componentes de features
+  features/            # Lógica por dominio
+    auth/              # Login, registro, roles
+    orders/            # Carrito, checkout, pedidos
+    products/          # Catálogo, filtros, repositorio
+    importer/          # Gestión de importaciones
+  lib/                 # Clientes, utilidades
+  repositories/        # Capa de acceso a datos
+  services/            # Pagos, integraciones externas
+backend/               # API REST en Spring Boot
+  src/main/java/       # Controladores, servicios, repositorios, entidades
+  src/main/resources/  # Configuración (application.yml)
+pom.xml                # Dependencias Maven
+```
+
+---
+
 ## Requisitos
 
 - Node.js 20 o superior
-- PostgreSQL 15+ (local o remoto — Neon, Supabase, Railway, etc.)
+- PostgreSQL 15+
 - npm 10+
+- Java 21 (para el backend)
+- Maven 3.9+ (para el backend)
 
 ---
 
 ## Scripts
 
+### Frontend (Next.js)
+
 ```bash
-npm run dev            # Desarrollo
+npm run dev            # Desarrollo (http://localhost:3000)
 npm run build          # Producción
 npm run start          # Servidor de producción
 npm run lint           # ESLint
@@ -46,6 +78,13 @@ npm run db:migrate     # Crear migración Prisma
 npm run db:seed        # Poblar BD con datos de prueba
 npm run db:studio      # UI gráfica de la BD (Prisma Studio)
 npm run db:reset       # Reset completo + seed
+```
+
+### Backend (Spring Boot)
+
+```bash
+cd backend
+mvn spring-boot:run    # Iniciar API (http://localhost:8081)
 ```
 
 ---
@@ -62,18 +101,20 @@ npm install
 
 ### 2. Configurar PostgreSQL
 
-Crea una base de datos PostgreSQL. Puedes usar **local** o servicios cloud como **Neon**, **Supabase** o **Railway**.
+Crea la base de datos. Puedes usar el script incluido o hacerlo manualmente:
 
 ```sql
-CREATE DATABASE ikaza_db;
+CREATE DATABASE "Ikaza-imports";
 ```
+
+El script completo con seguridad, índices y documentación está en **`Ikaza-imports.sql`** (incluye extensión pgcrypto, roles, RLS y más).
 
 ### 3. Variables de Entorno
 
-Crea un archivo `.env` en la raíz del proyecto (ya existe uno de ejemplo). Las variables obligatorias son:
+Crea un archivo `.env` en la raíz del proyecto. Las variables obligatorias son:
 
 ```env
-DATABASE_URL="postgresql://usuario:password@localhost:5432/ikaza_db"
+DATABASE_URL="postgresql://postgres:password@localhost:5432/Ikaza-imports"
 AUTH_SECRET="<generar con: openssl rand -base64 32>"
 NEXTAUTH_SECRET="<generar con: openssl rand -base64 32>"
 ```
@@ -81,9 +122,6 @@ NEXTAUTH_SECRET="<generar con: openssl rand -base64 32>"
 (Opcional — necesarias para funcionalidades específicas):
 
 ```env
-# Datos mock sin BD (útil para frontend sin PostgreSQL)
-USE_MOCK_DATA="true"
-
 # Autenticación Google OAuth
 AUTH_GOOGLE_ID=""
 AUTH_GOOGLE_SECRET=""
@@ -103,16 +141,23 @@ PAYPAL_CLIENT_SECRET=""
 ```bash
 npm run db:generate
 npm run db:push        # Crea las tablas según el schema
-npm run db:seed        # Inserta datos de prueba (usuarios, categorías, productos, etc.)
+npm run db:seed        # Inserta datos de prueba (usuarios, categorías, 201 productos, etc.)
 ```
 
-### 5. Ejecutar
+### 5. Ejecutar frontend
 
 ```bash
 npm run dev
 ```
 
 Abrir [http://localhost:3000](http://localhost:3000).
+
+### 6. (Opcional) Ejecutar backend
+
+```bash
+cd backend
+mvn spring-boot:run    # http://localhost:8081
+```
 
 ---
 
@@ -122,31 +167,9 @@ Abrir [http://localhost:3000](http://localhost:3000).
 |-------|-----------|-----|
 | `superadmin@ikaza.pe` | `Admin123!` | SUPER_ADMIN |
 | `admin@ikaza.pe` | `Admin123!` | ADMIN |
-| `maria@gmail.com` | `Admin123!` | CUSTOMER |
-
-*Con `USE_MOCK_DATA="true"` también existe:* `admin@gmail.com` / `admin123`
-
----
-
-## Estructura del Proyecto
-
-```
-prisma/
-  schema.prisma         # Modelos de base de datos
-  seed.ts              # Seed principal
-  seed-reales.json     # Datos de productos reales para seed
-src/
-  app/                 # App Router (páginas + API routes)
-  components/          # UI (shadcn) + componentes de features
-  features/            # Lógica por dominio
-    auth/              # Login, registro, roles
-    orders/            # Carrito, checkout, pedidos
-    products/          # Catálogo, filtros, repositorio
-    importer/          # Gestión de importaciones
-  lib/                 # Clientes, utilidades, datos mock
-  repositories/        # Capa de acceso a datos
-  services/            # Pagos, integraciones externas
-```
+| `manager@ikaza.pe` | `Admin123!` | MANAGER |
+| `maria@gmail.com` | `Customer123!` | CUSTOMER |
+| `carlos@gmail.com` | `Customer123!` | CUSTOMER |
 
 ---
 
@@ -172,12 +195,29 @@ src/
 - Banners promocionales administrables
 - Sistema de reseñas con aprobación
 - Auditoría de acciones sensibles
+- API REST con autenticación JWT (backend Spring Boot)
+
+---
+
+## Base de Datos — Modelo Lógico
+
+El archivo **`Ikaza-imports.sql`** contiene:
+
+| Sección | Contenido |
+|---------|-----------|
+| Creación de BD | `CREATE DATABASE` con configuración regional |
+| Seguridad | Extensiones pgcrypto, roles, permisos, RLS, auditoría |
+| Documentación | CREATE TABLE de referencia con comentarios en lenguaje simple |
+| Observaciones | 10 hallazgos sobre el modelo lógico del equipo (redundancias, normalización, tablas faltantes) |
+
+Las tablas se gestionan con **Prisma ORM** (schema en `prisma/schema.prisma`) y se sincronizan con `npm run db:push`.
 
 ---
 
 ## Notas para Desarrollo
 
-- El proyecto funciona **sin PostgreSQL** si se activa `USE_MOCK_DATA="true"`. En ese modo los datos vienen de `src/lib/mock-products.ts`.
+- **Requiere PostgreSQL** — El proyecto ya no usa datos mock. Todos los datos vienen de la base de datos.
+- Si la BD no está disponible, las páginas mostrarán error en lugar de datos falsos.
 - Para desarrollo local de la BD se recomienda `npm run db:studio` para inspeccionar datos visualmente.
 - Las migraciones de Prisma se versionan en `prisma/migrations/`.
-- Los datos de seed incluyen 18+ productos con imágenes reales de Unsplash.
+- Los datos de seed incluyen **201 productos reales** con imágenes.
