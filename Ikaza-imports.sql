@@ -18,8 +18,6 @@ CREATE DATABASE "Ikaza-imports"
     WITH
     OWNER = postgres
     ENCODING = 'UTF8'
-    LC_COLLATE = 'es_PE.UTF-8'
-    LC_CTYPE = 'es_PE.UTF-8'
     CONNECTION LIMIT = 100;
 
 -- =============================================================================

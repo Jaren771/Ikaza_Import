@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Package, ShoppingCart, Users, Tag, BarChart3,
   Settings, Image, Ticket, Boxes, TrendingUp, LogOut, ChevronLeft,
-  ChevronRight, Shield, Truck,
+  ChevronRight, Shield, Truck, Store
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
@@ -28,6 +28,7 @@ interface AdminSidebarProps {
 // =============================================================================
 
 const navItems = [
+  { label: "Ver Tienda Web", href: "/", icon: Store, exact: true },
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard, exact: true },
   {
     label: "Productos",
