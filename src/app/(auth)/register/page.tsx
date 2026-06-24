@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema, type RegisterInput } from "@/features/auth/validators/auth.schema";
 import { registerAction, loginWithGoogleAction } from "@/features/auth/actions/auth.actions";
@@ -27,7 +27,7 @@ export default function RegisterPage() {
     register,
     handleSubmit,
     setError,
-    watch,
+    control,
     formState: { errors },
   } = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
@@ -215,10 +215,17 @@ export default function RegisterPage() {
 
         {/* Términos */}
         <div className="flex items-start gap-2">
-          <Checkbox
-            id="terms"
-            {...register("acceptTerms")}
-            className="mt-0.5"
+          <Controller
+            name="acceptTerms"
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                id="terms"
+                checked={field.value}
+                onCheckedChange={field.onChange}
+                className="mt-0.5"
+              />
+            )}
           />
           <label htmlFor="terms" className="text-sm text-muted-foreground leading-relaxed cursor-pointer">
             Acepto los{" "}
