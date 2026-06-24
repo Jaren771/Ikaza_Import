@@ -1,169 +1,175 @@
-# ikaZa Import
+# ikaZa Import — Guía de Instalación para Primerizos
 
-> Plataforma de e-commerce y gestión de importaciones.  
-> **Next.js 16 · Prisma 6 · PostgreSQL · Tailwind CSS v4**
-
-<p align="center">
-  <img src="public/logo_ikasa_hd.webp" alt="ikaZa Import Navbar" width="100%">
-</p>
+> Si es tu primera vez instalando este proyecto en tu computadora, sigue estos pasos en orden.  
+> **Duración estimada:** 15-20 minutos.
 
 ---
 
-## Stack Tecnológico
+## ¿Qué necesito instalar primero?
 
-| Capa | Tecnología |
-|------|-----------|
-| **Framework** | Next.js 16 (App Router) + React 19 |
-| **Base de Datos** | PostgreSQL + Prisma v6 |
-| **Estilos** | Tailwind CSS v4 + shadcn/ui |
-| **Auth** | NextAuth.js v5 (JWT) |
-| **Formularios** | React Hook Form + Zod |
-| **Estado** | Zustand (local) + TanStack Query v5 (servidor) |
-| **Pagos** | MercadoPago · Culqi · Izipay · PayPal |
+Antes de empezar, asegúrate de tener estos programas instalados en tu PC:
 
----
-
-## Requisitos
-
-- Node.js 20 o superior
-- PostgreSQL 15+ (local o remoto — Neon, Supabase, Railway, etc.)
-- npm 10+
-
----
-
-## Scripts
+### 1. Node.js (incluye npm)
+- Descárgalo desde: [https://nodejs.org](https://nodejs.org) (versión 20 o superior)
+- Para verificar que quedó bien instalado, abre una terminal y escribe:
 
 ```bash
-npm run dev            # Desarrollo
-npm run build          # Producción
-npm run start          # Servidor de producción
-npm run lint           # ESLint
-
-# Base de datos
-npm run db:generate    # Generar Prisma Client
-npm run db:push        # Sincronizar esquema a BD
-npm run db:migrate     # Crear migración Prisma
-npm run db:seed        # Poblar BD con datos de prueba
-npm run db:studio      # UI gráfica de la BD (Prisma Studio)
-npm run db:reset       # Reset completo + seed
+node --version
+npm --version
 ```
+
+Deberías ver números como `v20.x.x` y `10.x.x`.
+
+### 2. PostgreSQL
+- Descárgalo desde: [https://www.postgresql.org/download](https://www.postgresql.org/download)
+- Durante la instalación te pedirá una contraseña para el usuario `postgres`. **Guárdala**, la necesitarás después.
+- Para verificar que funciona, abre una terminal y escribe:
+
+```bash
+psql --version
+```
+
+### 3. Git
+- Descárgalo desde: [https://git-scm.com](https://git-scm.com)
+- Para verificar:
+
+```bash
+git --version
+```
+
+### 4. Editor de código (recomendado: VS Code)
+- Descárgalo desde: [https://code.visualstudio.com](https://code.visualstudio.com)
 
 ---
 
-## Inicio Rápido
+## Pasos para instalar el proyecto
 
-### 1. Clonar e instalar
+### Paso 1: Descargar el proyecto
+
+Abre una terminal y escribe:
 
 ```bash
 git clone https://github.com/Jaren771/Ikaza_Import.git
 cd Ikaza_Import
+```
+
+Esto creará una carpeta llamada `Ikaza_Import` y entrarás en ella.
+
+### Paso 2: Instalar las dependencias
+
+```bash
 npm install
 ```
 
-### 2. Configurar PostgreSQL
+Este paso descarga todas las librerías que necesita el proyecto. Puede tardar 1-2 minutos.
 
-Crea una base de datos PostgreSQL. Puedes usar **local** o servicios cloud como **Neon**, **Supabase** o **Railway**.
+### Paso 3: Crear la base de datos
+
+Abre PostgreSQL. Hay dos formas:
+
+**Opción A — Desde terminal:**
+
+```bash
+psql -U postgres
+```
+
+Te pedirá la contraseña que pusiste al instalar PostgreSQL. Luego escribe:
 
 ```sql
-CREATE DATABASE ikaza_db;
+CREATE DATABASE "Ikaza-imports";
+\q
 ```
 
-### 3. Variables de Entorno
+**Opción B — Desde pgAdmin (interfaz gráfica):**
+1. Abre pgAdmin
+2. Conéctate con tu contraseña
+3. Haz clic derecho en "Databases" → "Create" → "Database"
+4. Pon como nombre: `Ikaza-imports`
+5. Guarda
 
-Crea un archivo `.env` en la raíz del proyecto. Las variables obligatorias son:
+### Paso 4: Configurar el archivo .env
+
+En la carpeta del proyecto, crea un archivo llamado `.env` (sin nombre, solo la extensión).  
+Pega esto adentro:
 
 ```env
-DATABASE_URL="postgresql://usuario:password@localhost:5432/ikaza_db"
-AUTH_SECRET="<generar con: openssl rand -base64 32>"
-NEXTAUTH_SECRET="<generar con: openssl rand -base64 32>"
+DATABASE_URL="postgresql://postgres:TU_CONTRASEÑA@localhost:5432/Ikaza-imports"
+AUTH_SECRET="abc123def456"
+NEXTAUTH_SECRET="abc123def456"
 ```
 
-Opcionales (necesarias para funcionalidades específicas):
+**Importante:** Reemplaza `TU_CONTRASEÑA` por la contraseña que pusiste al instalar PostgreSQL.
 
-```env
-# Datos mock sin BD (útil para frontend sin PostgreSQL)
-USE_MOCK_DATA="true"
-
-# Autenticación Google OAuth
-AUTH_GOOGLE_ID=""
-AUTH_GOOGLE_SECRET=""
-
-# Pasarelas de pago
-MERCADOPAGO_ACCESS_TOKEN=""
-CULQI_PUBLIC_KEY=""
-CULQI_SECRET_KEY=""
-IZIPAY_MERCHANT_CODE=""
-IZIPAY_API_KEY=""
-PAYPAL_CLIENT_ID=""
-PAYPAL_CLIENT_SECRET=""
-```
-
-### 4. Sincronizar base de datos y sembrar datos
+### Paso 5: Sincronizar la base de datos
 
 ```bash
 npm run db:generate
-npm run db:push        # Crea las tablas según el schema
-npm run db:seed        # Inserta datos de prueba
+npm run db:push
+npm run db:seed
 ```
 
-### 5. Ejecutar
+Esto crea las tablas y las llena con datos de prueba (productos, usuarios, etc.).
+
+### Paso 6: Iniciar el proyecto
 
 ```bash
 npm run dev
 ```
 
-Abrir [http://localhost:3000](http://localhost:3000).
+Espera a que aparezca un mensaje como `http://localhost:3000`.
+
+### Paso 7: Abrir en el navegador
+
+Abre tu navegador y ve a: [http://localhost:3000](http://localhost:3000)
+
+¡Ya deberías ver la tienda funcionando!
 
 ---
 
-## Usuarios de Prueba (seed)
+## Usuarios de prueba
+
+Puedes iniciar sesión con cualquiera de estas cuentas:
 
 | Email | Contraseña | Rol |
 |-------|-----------|-----|
-| `superadmin@ikaza.pe` | `Admin123!` | SUPER_ADMIN |
-| `admin@ikaza.pe` | `Admin123!` | ADMIN |
-| `maria@gmail.com` | `Admin123!` | CUSTOMER |
-
-*Con `USE_MOCK_DATA="true"` también existe:* `admin@gmail.com` / `admin123`
+| `superadmin@ikaza.pe` | `Admin123!` | Super Administrador |
+| `admin@ikaza.pe` | `Admin123!` | Administrador |
+| `manager@ikaza.pe` | `Admin123!` | Gestor de importaciones |
+| `maria@gmail.com` | `Customer123!` | Cliente |
+| `carlos@gmail.com` | `Customer123!` | Cliente |
 
 ---
 
-## Estructura del Proyecto
+## Solución de problemas comunes
 
+| Problema | Causa probable | Solución |
+|----------|---------------|----------|
+| `node --version` no funciona | Node.js no está instalado | Vuelve a instalarlo desde nodejs.org |
+| `npm install` da errores | Conexión a internet o permisos | Reintenta o ejecuta como administrador |
+| `npm run db:push` falla | Contraseña incorrecta en .env | Revisa que `DATABASE_URL` tenga tu contraseña real |
+| `npm run dev` no abre | Puerto 3000 ocupado | Cierra otros programas o cambia de puerto |
+| Error "relation does not exist" | No se corrió `db:push` | Ejecuta `npm run db:push` nuevamente |
+| La página carga sin datos | No se corrió `db:seed` | Ejecuta `npm run db:seed` |
+
+---
+
+## Comandos útiles
+
+```bash
+npm run dev            # Iniciar el proyecto en modo desarrollo
+npm run build          # Preparar para producción
+npm run db:studio      # Ver la base de datos gráficamente
+npm run db:reset       # Reiniciar la base de datos desde cero
+npm run lint           # Revisar errores de código
 ```
-prisma/
-  schema.prisma         # Modelos de base de datos
-  seed.ts              # Seed principal
-  seed-reales.json     # Datos de productos reales
-src/
-  app/                 # App Router (páginas + API routes)
-  components/          # UI (shadcn) + componentes
-  features/            # Lógica por dominio
-    auth/              # Login, registro, roles
-    orders/            # Carrito, checkout, pedidos
-    products/          # Catálogo, filtros, repositorio
-    importer/          # Gestión de importaciones
-  lib/                 # Clientes, utilidades, datos mock
-  repositories/        # Capa de acceso a datos
-  services/            # Pagos, integraciones externas
-```
 
 ---
 
-## Roles y Permisos
+## ¿Necesitas ayuda?
 
-| Rol | Acceso |
-|-----|--------|
-| **SUPER_ADMIN** | Todo el sistema |
-| **ADMIN** | Panel admin, productos, pedidos |
-| **MANAGER** | Importaciones, inventario |
-| **CUSTOMER** | Catálogo, carrito, historial |
+Si algo no funciona, revisa:
+1. Que todos los pasos anteriores se hayan completado en orden
+2. Que la contraseña en el archivo `.env` sea correcta
+3. Que PostgreSQL esté funcionando (búscalo en los servicios de tu sistema)
 
----
-
-## Notas para Desarrollo
-
-- El proyecto funciona **sin PostgreSQL** si se activa `USE_MOCK_DATA="true"`. Los datos provienen de `src/lib/mock-products.ts`.
-- Para desarrollo local de la BD usa `npm run db:studio` para inspeccionar datos visualmente.
-- Las migraciones de Prisma se versionan en `prisma/migrations/`.
-- El seed incluye 18+ productos con imágenes reales de Unsplash.
+Si el error persiste, consulta la documentación para desarrolladores en `README.md`.

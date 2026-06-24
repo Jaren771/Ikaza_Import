@@ -34,15 +34,21 @@ prisma/
   seed-reales.json     # Datos de productos reales para seed
 src/
   app/                 # App Router (páginas + API routes)
+    (auth)/            # Login, registro
+    (store)/           # Catálogo, carrito, checkout
+    admin/             # Panel administrativo
+    importer/          # Gestión de importaciones
+    profile/           # Perfil de usuario
+    wishlist/          # Lista de deseos
   components/          # UI (shadcn) + componentes de features
   features/            # Lógica por dominio
     auth/              # Login, registro, roles
     orders/            # Carrito, checkout, pedidos
     products/          # Catálogo, filtros, repositorio
-    importer/          # Gestión de importaciones
   lib/                 # Clientes, utilidades
   repositories/        # Capa de acceso a datos
   services/            # Pagos, integraciones externas
+  types/               # Tipos globales de TypeScript
 backend/               # API REST en Spring Boot
   src/main/java/       # Controladores, servicios, repositorios, entidades
   src/main/resources/  # Configuración (application.yml)
@@ -119,7 +125,7 @@ AUTH_SECRET="<generar con: openssl rand -base64 32>"
 NEXTAUTH_SECRET="<generar con: openssl rand -base64 32>"
 ```
 
-(Opcional — necesarias para funcionalidades específicas):
+Opcionales (necesarias para funcionalidades específicas):
 
 ```env
 # Autenticación Google OAuth
@@ -191,7 +197,7 @@ mvn spring-boot:run    # http://localhost:8081
 - Checkout con múltiples medios de pago
 - Panel administrativo con dashboard y métricas
 - Gestión de importaciones (aduana, fletes, tracking)
-- Cupones de descuento (% , fijo, envío gratis)
+- Cupones de descuento (%, fijo, envío gratis)
 - Banners promocionales administrables
 - Sistema de reseñas con aprobación
 - Auditoría de acciones sensibles
@@ -221,3 +227,4 @@ Las tablas se gestionan con **Prisma ORM** (schema en `prisma/schema.prisma`) y 
 - Para desarrollo local de la BD se recomienda `npm run db:studio` para inspeccionar datos visualmente.
 - Las migraciones de Prisma se versionan en `prisma/migrations/`.
 - Los datos de seed incluyen **201 productos reales** con imágenes.
+- El backend Spring Boot es opcional; el frontend puede funcionar de forma independiente con Prisma.
