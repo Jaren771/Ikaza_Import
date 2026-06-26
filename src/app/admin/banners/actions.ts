@@ -1,6 +1,7 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { sanitizeValue } from "@/lib/validation-utils";
 
 export async function getBanners() {
   try {
@@ -13,7 +14,7 @@ export async function getBanners() {
 
 export async function createBanner(formData: FormData) {
   try {
-    const title = formData.get("title") as string;
+    const title = sanitizeValue(formData.get("title") as string);
     const image = formData.get("image") as string;
     const link = formData.get("link") as string;
     const position = formData.get("position") as string;

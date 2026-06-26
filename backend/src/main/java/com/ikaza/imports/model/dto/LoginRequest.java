@@ -16,6 +16,7 @@ package com.ikaza.imports.model.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
@@ -26,5 +27,6 @@ public class LoginRequest {
     private String email;
 
     @NotBlank(message = "La contraseña es obligatoria")
+    @Pattern(regexp = "^[^<>&]*$", message = "Caracteres no permitidos (<, >, &)")
     private String password;
 }

@@ -1,6 +1,7 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { sanitizeValue } from "@/lib/validation-utils";
 import { MovementType } from "@prisma/client";
 
 export async function getInventory() {
@@ -37,7 +38,7 @@ export async function adjustInventory(inventoryId: string, formData: FormData) {
   try {
     const type = formData.get("type") as MovementType;
     const quantity = parseInt(formData.get("quantity") as string);
-    const reason = formData.get("reason") as string;
+    const reason = sanitizeValue(formData.get("reason") as string);
     
     if (isNaN(quantity) || quantity <= 0) {
       return { success: false, error: "La cantidad debe ser mayor a 0" };

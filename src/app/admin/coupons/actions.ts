@@ -1,6 +1,7 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { sanitizeValue } from "@/lib/validation-utils";
 
 export async function getCoupons() {
   try {
@@ -15,7 +16,7 @@ export async function getCoupons() {
 
 export async function createCoupon(formData: FormData) {
   try {
-    const code = formData.get("code") as string;
+    const code = sanitizeValue(formData.get("code") as string);
     const discountType = formData.get("discountType") as any;
     const discountValue = parseFloat(formData.get("discountValue") as string);
     const minOrderAmount = parseFloat(formData.get("minOrderAmount") as string) || null;

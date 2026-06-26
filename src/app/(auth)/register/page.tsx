@@ -161,12 +161,13 @@ export default function RegisterPage() {
               id="reg-phone"
               type="tel"
               autoComplete="tel"
-              placeholder="+51 999 999 999"
+              placeholder="+51999999999"
               {...register("phone")}
               className="w-full rounded-xl border bg-white pl-10 pr-4 py-3 text-sm outline-none focus:ring-2 focus:ring-ring/20"
-              style={{ borderColor: "#bdc9c9" }}
+              style={{ borderColor: errors.phone ? "#ba1a1a" : "#bdc9c9" }}
             />
           </div>
+          {errors.phone && <p className="text-xs text-destructive">{errors.phone.message}</p>}
         </div>
 
         {/* Contraseña */}

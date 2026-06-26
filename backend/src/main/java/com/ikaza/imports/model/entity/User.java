@@ -24,7 +24,11 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
 
     @Id
@@ -38,14 +42,14 @@ public class User {
     private String email;
 
     @Column(nullable = false)
-    private String password;       // Contraseña encriptada con BCrypt
+    private String password; // Contraseña encriptada con BCrypt
 
-    private String image;          // URL de la foto de perfil
+    private String image; // URL de la foto de perfil
     private String phone;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserRole role;         // SUPER_ADMIN, ADMIN, MANAGER o CUSTOMER
+    private UserRole role; // SUPER_ADMIN, ADMIN, usuario normal
 
     private Boolean active = true; // Si la cuenta está activa
 

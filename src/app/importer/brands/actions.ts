@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { sanitizeValue } from "@/lib/validation-utils";
 
 export async function getBrands() {
   try {
@@ -22,9 +23,9 @@ export async function getBrands() {
 
 export async function createBrand(formData: FormData) {
   try {
-    const name = formData.get("name") as string;
-    const slug = formData.get("slug") as string || name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-    const description = formData.get("description") as string;
+    const name = sanitizeValue(formData.get("name") as string);
+    const slug = sanitizeValue(formData.get("slug") as string || name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""));
+    const description = sanitizeValue(formData.get("description") as string || "");
 
     if (!name) return { success: false, error: "El nombre es obligatorio" };
 
@@ -42,9 +43,9 @@ export async function createBrand(formData: FormData) {
 
 export async function updateBrand(id: string, formData: FormData) {
   try {
-    const name = formData.get("name") as string;
-    const slug = formData.get("slug") as string;
-    const description = formData.get("description") as string;
+    const name = sanitizeValue(formData.get("name") as string);
+    const slug = sanitizeValue(formData.get("slug") as string);
+    const description = sanitizeValue(formData.get("description") as string || "");
 
     if (!name) return { success: false, error: "El nombre es obligatorio" };
 

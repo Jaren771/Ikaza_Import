@@ -1,22 +1,20 @@
 import { z } from "zod";
+import { safeString, safeStringOptional } from "@/lib/validation-utils";
 
 // =============================================================================
 // ikaZa Import — Validadores de Productos
 // =============================================================================
 
 export const productSchema = z.object({
-  name: z
-    .string()
-    .min(2, "El nombre debe tener al menos 2 caracteres")
-    .max(255, "El nombre es muy largo"),
+  name: safeString({ min: 2, max: 255, label: "El nombre" }),
   slug: z
     .string()
     .min(2, "El slug es requerido")
     .regex(/^[a-z0-9-]+$/, "Solo letras minúsculas, números y guiones"),
-  description: z.string().optional(),
-  shortDescription: z.string().max(300, "Máximo 300 caracteres").optional(),
-  sku: z.string().min(1, "El SKU es requerido"),
-  barcode: z.string().optional(),
+  description: safeStringOptional(),
+  shortDescription: safeStringOptional({ max: 300 }),
+  sku: safeString({ min: 1, label: "El SKU" }),
+  barcode: safeStringOptional(),
   price: z
     .number()
     .positive("El precio debe ser mayor a 0")

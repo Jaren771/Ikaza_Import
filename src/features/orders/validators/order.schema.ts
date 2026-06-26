@@ -1,22 +1,23 @@
 import { z } from "zod";
+import { safeString, safeStringOptional } from "@/lib/validation-utils";
 
 // =============================================================================
 // ikaZa Import — Validadores de Pedidos y Checkout
 // =============================================================================
 
 export const addressSchema = z.object({
-  firstName: z.string().min(2, "Nombre requerido"),
-  lastName: z.string().min(2, "Apellido requerido"),
-  company: z.string().optional(),
-  phone: z.string().optional(),
-  street: z.string().min(5, "Dirección requerida"),
-  number: z.string().optional(),
-  district: z.string().optional(),
-  city: z.string().min(2, "Ciudad requerida"),
-  state: z.string().min(2, "Departamento requerido"),
+  firstName: safeString({ min: 2, label: "El nombre" }),
+  lastName: safeString({ min: 2, label: "El apellido" }),
+  company: safeStringOptional(),
+  phone: safeStringOptional(),
+  street: safeString({ min: 5, label: "La dirección" }),
+  number: safeStringOptional(),
+  district: safeStringOptional(),
+  city: safeString({ min: 2, label: "La ciudad" }),
+  state: safeString({ min: 2, label: "El departamento" }),
   country: z.string().default("PE"),
-  postalCode: z.string().optional(),
-  alias: z.string().optional(),
+  postalCode: safeStringOptional(),
+  alias: safeStringOptional(),
   isDefault: z.boolean().default(false),
 });
 
@@ -25,8 +26,8 @@ export const checkoutSchema = z.object({
   newAddress: addressSchema.optional(),
   shippingMethod: z.string().default("standard"),
   paymentProvider: z.enum(["MERCADOPAGO", "CULQI", "IZIPAY", "PAYPAL", "MANUAL"]),
-  couponCode: z.string().optional(),
-  notes: z.string().optional(),
+  couponCode: safeStringOptional(),
+  notes: safeStringOptional(),
 });
 
 export const orderFilterSchema = z.object({

@@ -268,7 +268,8 @@ export default async function AdminDashboardPage() {
           <h2 className="font-headline font-semibold mb-4">Acciones Rápidas</h2>
           <div className="space-y-2">
             {[
-              { label: "Añadir producto", href: "/admin/products/new", icon: Package },
+              { label: "Ver productos", href: "/admin/products", icon: Package },
+              { label: "Añadir producto", href: "/admin/products", icon: Package },
               { label: "Ver pedidos", href: "/admin/orders", icon: ShoppingCart },
               { label: "Gestionar usuarios", href: "/admin/users", icon: Users },
               { label: "Ver inventario", href: "/admin/inventory", icon: Package },

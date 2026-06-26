@@ -2,27 +2,34 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { sanitizeValue } from "@/lib/validation-utils";
 
-export async function getProducts() {
+export async function getProducts(page: number = 1, limit: number = 20) {
   try {
-    const products = await prisma.product.findMany({
-      orderBy: { createdAt: "desc" },
-      include: {
-        category: true,
-        brand: true,
-        inventory: true,
-        images: {
-          where: { isPrimary: true },
-          take: 1
+    const skip = (page - 1) * limit;
+
+    const [products, totalCount, categories, brands] = await Promise.all([
+      prisma.product.findMany({
+        skip,
+        take: limit,
+        orderBy: { createdAt: "desc" },
+        include: {
+          category: true,
+          brand: true,
+          inventory: true,
+          images: {
+            where: { isPrimary: true },
+            take: 1
+          }
         }
-      }
-    });
-    
-    // Necesitamos cargar también las categorías y marcas para los selectores del formulario
-    const categories = await prisma.category.findMany({ orderBy: { name: "asc" } });
-    const brands = await prisma.brand.findMany({ orderBy: { name: "asc" } });
-    // Serializar para evitar el error de "Only plain objects can be passed to Client Components" por los Decimal de Prisma
-    const safeData = JSON.parse(JSON.stringify({ products, categories, brands }));
+      }),
+      prisma.product.count(),
+      prisma.category.findMany({ orderBy: { name: "asc" } }),
+      prisma.brand.findMany({ orderBy: { name: "asc" } }),
+    ]);
+
+    const totalPages = Math.ceil(totalCount / limit);
+    const safeData = JSON.parse(JSON.stringify({ products, totalCount, totalPages, categories, brands }));
     return { success: true, data: safeData };
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -32,8 +39,8 @@ export async function getProducts() {
 
 export async function createProduct(formData: FormData) {
   try {
-    const name = formData.get("name") as string;
-    const sku = formData.get("sku") as string;
+    const name = sanitizeValue(formData.get("name") as string);
+    const sku = sanitizeValue(formData.get("sku") as string);
     const price = parseFloat(formData.get("price") as string);
     const categoryId = formData.get("categoryId") as string;
     const brandId = formData.get("brandId") as string || undefined;
@@ -42,7 +49,7 @@ export async function createProduct(formData: FormData) {
     const stock = parseInt(formData.get("stock") as string) || 0;
 
     const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") + "-" + Date.now().toString().substring(8);
-    const shortDescription = formData.get("description") as string || name;
+    const shortDescription = sanitizeValue(formData.get("description") as string || name);
 
     if (!name || !sku || isNaN(price) || !categoryId) {
       return { success: false, error: "Faltan campos obligatorios" };

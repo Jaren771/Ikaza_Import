@@ -1,36 +1,37 @@
 import { z } from "zod";
+import { safeString } from "@/lib/validation-utils";
+
+const emailSchema = z
+  .string()
+  .min(1, "El email es requerido")
+  .email("Ingresa un correo electrónico válido (ej: usuario@dominio.com)")
+  .transform((v) => v.trim().toLowerCase());
+
+const phoneSchema = z
+  .string()
+  .regex(/^\+?\d{7,15}$/, "Ingresa un teléfono válido (solo números, 7-15 dígitos)")
+  .optional()
+  .or(z.literal(""));
 
 // =============================================================================
 // ikaZa Import — Validadores de Autenticación
 // =============================================================================
 
 export const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, "El email es requerido")
-    .email("Email inválido"),
-  password: z
-    .string()
-    .min(1, "La contraseña es requerida")
-    .min(8, "Mínimo 8 caracteres"),
+  email: emailSchema,
+  password: safeString({ min: 8, label: "La contraseña" }),
 });
 
 export const registerSchema = z
   .object({
-    name: z
-      .string()
-      .min(2, "El nombre debe tener al menos 2 caracteres")
-      .max(100, "El nombre es muy largo"),
-    email: z.string().min(1, "El email es requerido").email("Email inválido"),
-    password: z
-      .string()
-      .min(8, "Mínimo 8 caracteres")
-      .regex(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-        "Debe contener mayúsculas, minúsculas y números"
-      ),
-    confirmPassword: z.string().min(1, "Confirma tu contraseña"),
-    phone: z.string().optional(),
+    name: safeString({ min: 2, max: 100, label: "El nombre" }),
+    email: emailSchema,
+    password: safeString({ min: 8, label: "La contraseña" }).regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+      "Debe contener mayúsculas, minúsculas y números"
+    ),
+    confirmPassword: safeString({ min: 1, label: "Confirma tu contraseña" }),
+    phone: phoneSchema,
     acceptTerms: z
       .boolean()
       .refine((val) => val === true, "Debes aceptar los términos"),
@@ -41,7 +42,7 @@ export const registerSchema = z
   });
 
 export const forgotPasswordSchema = z.object({
-  email: z.string().min(1, "El email es requerido").email("Email inválido"),
+  email: emailSchema,
 });
 
 export const resetPasswordSchema = z

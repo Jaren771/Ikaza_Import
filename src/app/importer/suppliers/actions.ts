@@ -1,6 +1,7 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { sanitizeValue } from "@/lib/validation-utils";
 
 export async function getSuppliers() {
   try {
@@ -13,10 +14,10 @@ export async function getSuppliers() {
 
 export async function createSupplier(formData: FormData) {
   try {
-    const name = formData.get("name") as string;
-    const email = formData.get("email") as string;
-    const phone = formData.get("phone") as string;
-    const country = formData.get("country") as string;
+    const name = sanitizeValue(formData.get("name") as string);
+    const email = sanitizeValue(formData.get("email") as string);
+    const phone = sanitizeValue(formData.get("phone") as string);
+    const country = sanitizeValue(formData.get("country") as string);
     
     await prisma.supplier.create({
       data: { name, email, phone, country }
