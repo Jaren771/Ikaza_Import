@@ -96,12 +96,6 @@ export const CURRENCIES = [
 // Proveedores de pago
 export const PAYMENT_PROVIDERS = [
   {
-    id: "MERCADOPAGO",
-    name: "MercadoPago",
-    logo: "/payment/mercadopago.svg",
-    enabled: false,
-  },
-  {
     id: "CULQI",
     name: "Culqi",
     logo: "/payment/culqi.svg",

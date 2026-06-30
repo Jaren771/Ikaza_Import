@@ -455,7 +455,6 @@ model OrderItem {
 // =============================================================================
 
 enum PaymentProvider {
-  MERCADOPAGO
   IZIPAY
   CULQI
   PAYPAL

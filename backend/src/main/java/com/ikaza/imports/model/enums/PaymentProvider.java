@@ -4,7 +4,6 @@
 package com.ikaza.imports.model.enums;
 
 public enum PaymentProvider {
-    MERCADOPAGO,
     CULQI,
     IZIPAY,
     PAYPAL,

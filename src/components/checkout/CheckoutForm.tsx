@@ -17,7 +17,7 @@ export function CheckoutForm({ addresses, cartTotal }: CheckoutFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [selectedAddress, setSelectedAddress] = useState(addresses[0]?.id ?? "");
-  const [paymentMethod, setPaymentMethod] = useState("MERCADOPAGO");
+  const [paymentMethod, setPaymentMethod] = useState("CULQI");
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -109,12 +109,6 @@ export function CheckoutForm({ addresses, cartTotal }: CheckoutFormProps) {
         <h2 className="font-headline text-lg font-semibold mb-4">2. Método de Pago</h2>
         <div className="space-y-3">
           {[
-            {
-              id: "MERCADOPAGO",
-              name: "MercadoPago",
-              desc: "Tarjetas y dinero en cuenta",
-              icon: CreditCard,
-            },
             {
               id: "CULQI",
               name: "Culqi",
