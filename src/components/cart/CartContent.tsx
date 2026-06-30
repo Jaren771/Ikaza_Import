@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Trash2, Plus, Minus, Tag, ArrowRight, Loader2 } from "lucide-react";
+import { Trash2, Plus, Minus, Tag, ArrowRight, MapPin } from "lucide-react";
 import { updateCartItemAction, removeFromCartAction, clearCartAction } from "@/features/orders/actions/cart.actions";
 import { formatPrice } from "@/lib/utils";
 import { toast } from "sonner";
@@ -238,6 +238,16 @@ export function CartContent({ cart }: CartContentProps) {
               </p>
             )}
           </div>
+
+          <Separator className="mb-4" />
+
+          <Link
+            href="/profile/addresses/new?returnTo=/checkout"
+            className="mb-4 flex items-center justify-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium text-[#006065] transition-colors hover:bg-muted"
+          >
+            <MapPin className="h-4 w-4" />
+            Agregar dirección de envío
+          </Link>
 
           <Separator className="mb-4" />
 

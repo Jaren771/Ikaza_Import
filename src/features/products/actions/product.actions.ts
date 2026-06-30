@@ -44,6 +44,16 @@ export async function getProductsAction(filters: ProductFilters) {
   }
 }
 
+export async function getCatalogPriceBoundsAction(filters: ProductFilters = {}) {
+  try {
+    const bounds = await productRepository.getPriceBounds(filters);
+    return { success: true, data: bounds };
+  } catch (error) {
+    console.error("DB connection error in getCatalogPriceBoundsAction:", error);
+    return { success: false, error: "Error al cargar el rango de precios" };
+  }
+}
+
 /**
  * Obtiene un producto por slug (pública)
  */

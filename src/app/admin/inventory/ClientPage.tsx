@@ -38,7 +38,7 @@ export default function InventoryClientPage({ initialData }: { initialData: any[
     setIsLoading(true);
     const result = await getInventoryMovements(item.id);
     if (result.success) {
-      setMovements(result.data);
+      setMovements(result.data ?? []);
     } else {
       toast.error(result.error);
     }

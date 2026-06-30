@@ -1,11 +1,16 @@
-import { Suspense } from "react";
-import { getProductsAction, getCategoriesAction } from "@/features/products/actions/product.actions";
+import Link from "next/link";
+import type { Metadata } from "next";
+import { Search } from "lucide-react";
+import {
+  getCatalogPriceBoundsAction,
+  getCategoriesAction,
+  getProductsAction,
+} from "@/features/products/actions/product.actions";
+import { CatalogControls, type CatalogSort, type CatalogView } from "@/components/catalog/CatalogControls";
+import { MobileFiltersSheet } from "@/components/catalog/MobileFiltersSheet";
+import { Pagination } from "@/components/shared/Pagination";
 import { ProductCard } from "@/components/catalog/ProductCard";
 import { ProductFiltersPanel } from "@/components/catalog/ProductFiltersPanel";
-import { Pagination } from "@/components/shared/Pagination";
-import { ProductGridSkeleton } from "@/components/catalog/ProductGridSkeleton";
-import type { Metadata } from "next";
-import { SlidersHorizontal, Grid2X2, LayoutList } from "lucide-react";
 
 interface CatalogPageProps {
   searchParams: Promise<{
@@ -19,80 +24,112 @@ interface CatalogPageProps {
     page?: string;
     isFeatured?: string;
     inStock?: string;
+    view?: string;
   }>;
 }
 
+const sortValues: CatalogSort[] = ["price_asc", "price_desc", "newest", "popular", "name"];
+
 export const metadata: Metadata = {
   title: "Catálogo de Productos",
-  description: "Explora nuestra amplia selección de productos importados de calidad para el hogar, cocina, tecnología y más.",
+  description:
+    "Explora nuestra selección de productos importados de calidad para el hogar, cocina, tecnología y más.",
 };
 
-// =============================================================================
-// Página de Catálogo — Con filtros dinámicos y paginación
-// Basado en el wireframe "Catálogo - ikaZa Import" de Stitch
-// =============================================================================
+function parsePositiveNumber(value?: string) {
+  if (!value) return undefined;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined;
+}
+
+function parsePage(value?: string) {
+  const parsed = parseInt(value ?? "1", 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
+}
+
+function parseSort(value?: string): CatalogSort | undefined {
+  return sortValues.includes(value as CatalogSort) ? (value as CatalogSort) : undefined;
+}
+
+function parseView(value?: string): CatalogView {
+  return value === "list" ? "list" : "grid";
+}
 
 export default async function CatalogPage({ searchParams }: CatalogPageProps) {
   const params = await searchParams;
+  const sortBy = parseSort(params.sortBy);
+  const view = parseView(params.view);
 
   const filters = {
     search: params.search,
     categoryId: params.category,
     subcategoryId: params.subcategory,
     brandId: params.brand,
-    minPrice: params.minPrice ? parseFloat(params.minPrice) : undefined,
-    maxPrice: params.maxPrice ? parseFloat(params.maxPrice) : undefined,
-    sortBy: params.sortBy as "price_asc" | "price_desc" | "newest" | "popular" | "name" | undefined,
-    page: params.page ? parseInt(params.page) : 1,
+    minPrice: parsePositiveNumber(params.minPrice),
+    maxPrice: parsePositiveNumber(params.maxPrice),
+    sortBy,
+    page: parsePage(params.page),
     limit: 12,
     isFeatured: params.isFeatured === "true" ? true : undefined,
     inStock: params.inStock === "true" ? true : undefined,
   };
 
-  const [productsResult, categories] = await Promise.all([
+  const [productsResult, categories, priceBoundsResult] = await Promise.all([
     getProductsAction(filters),
     getCategoriesAction(),
+    getCatalogPriceBoundsAction(filters),
   ]);
 
-  const hasActiveFilters = !!(
+  const hasActiveFilters = Boolean(
     params.search ||
-    params.category ||
-    params.brand ||
-    params.minPrice ||
-    params.maxPrice ||
-    params.isFeatured ||
-    params.inStock
+      params.category ||
+      params.subcategory ||
+      params.brand ||
+      params.minPrice ||
+      params.maxPrice ||
+      params.isFeatured ||
+      params.inStock
   );
 
-  const productsData = "data" in productsResult && productsResult.data ? productsResult.data.products : [];
-  const productsMeta = "data" in productsResult && productsResult.data ? productsResult.data.meta : { total: 0, page: 1, limit: 12, totalPages: 0 };
+  const productsData =
+    "data" in productsResult && productsResult.data ? productsResult.data.products : [];
+  const productsMeta =
+    "data" in productsResult && productsResult.data
+      ? productsResult.data.meta
+      : { total: 0, page: 1, limit: 12, totalPages: 0 };
+  const priceBounds =
+    priceBoundsResult.success && priceBoundsResult.data
+      ? priceBoundsResult.data
+      : { min: 0, max: 100 };
 
   return (
     <div className="ikaza-container py-6">
-      {/* Breadcrumb */}
       <nav aria-label="Ruta de navegación" className="mb-4">
         <ol className="flex items-center gap-2 text-sm text-muted-foreground">
-          <li><a href="/" className="hover:text-foreground">Inicio</a></li>
+          <li>
+            <Link href="/" className="hover:text-foreground">
+              Inicio
+            </Link>
+          </li>
           <li>/</li>
           <li className="text-foreground font-medium">Catálogo</li>
           {params.search && (
             <>
               <li>/</li>
-              <li className="text-foreground">"{params.search}"</li>
+              <li className="text-foreground">&quot;{params.search}&quot;</li>
             </>
           )}
         </ol>
       </nav>
 
-      {/* Header del catálogo */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <div className="flex flex-col gap-4 mb-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-headline text-2xl font-bold">
             {params.search
-              ? `Resultados para "${params.search}"`
+              ? `Resultados para ${params.search}`
               : params.isFeatured === "true"
-              ? "Productos en Oferta"
-              : "Catálogo de Productos"}
+                ? "Productos en Oferta"
+                : "Catálogo de Productos"}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
             {productsMeta.total > 0
@@ -101,64 +138,40 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
           </p>
         </div>
 
-        {/* Sort + View options */}
-        <div className="flex items-center gap-2">
-          <select
-            className="rounded-lg border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-            defaultValue={params.sortBy ?? "newest"}
-            aria-label="Ordenar por"
-          >
-            <option value="newest">Más recientes</option>
-            <option value="price_asc">Precio: Menor a mayor</option>
-            <option value="price_desc">Precio: Mayor a menor</option>
-            <option value="popular">Más populares</option>
-            <option value="name">Nombre A-Z</option>
-          </select>
-
-          <div className="hidden sm:flex items-center gap-1 rounded-lg border bg-white p-1">
-            <button className="rounded p-1.5 text-muted-foreground hover:bg-muted" aria-label="Vista cuadrícula">
-              <Grid2X2 className="h-4 w-4" />
-            </button>
-            <button className="rounded p-1.5 text-muted-foreground hover:bg-muted" aria-label="Vista lista">
-              <LayoutList className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
+        <CatalogControls sortBy={sortBy ?? "newest"} view={view} />
       </div>
 
       <div className="flex gap-6">
-        {/* Filtros sidebar */}
-        <aside className="hidden lg:block w-64 shrink-0">
+        <aside className="hidden w-64 shrink-0 lg:block">
           <ProductFiltersPanel
             categories={categories}
             currentFilters={filters}
+            priceBounds={priceBounds}
           />
         </aside>
 
-        {/* Grid de productos */}
-        <div className="flex-1 min-w-0">
-          {/* Mobile filters button */}
-          <button className="lg:hidden flex items-center gap-2 mb-4 rounded-lg border bg-white px-4 py-2 text-sm font-medium">
-            <SlidersHorizontal className="h-4 w-4" />
-            Filtros
-            {hasActiveFilters && (
-              <span className="ml-1 rounded-full px-1.5 py-0.5 text-xs font-bold text-white"
-                style={{ backgroundColor: "#006065" }}>
-                !
-              </span>
-            )}
-          </button>
+        <div className="min-w-0 flex-1">
+          <MobileFiltersSheet
+            categories={categories}
+            currentFilters={filters}
+            hasActiveFilters={hasActiveFilters}
+            priceBounds={priceBounds}
+          />
 
-          {/* Products grid */}
           {productsData.length > 0 ? (
             <>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              <div
+                className={
+                  view === "list"
+                    ? "space-y-4"
+                    : "grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4"
+                }
+              >
                 {productsData.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                  <ProductCard key={product.id} product={product} variant={view} />
                 ))}
               </div>
 
-              {/* Paginación */}
               {productsMeta.totalPages > 1 && (
                 <div className="mt-8">
                   <Pagination
@@ -172,19 +185,21 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
             </>
           ) : (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-              <div className="text-6xl mb-4">🔍</div>
+              <div
+                className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted"
+                aria-hidden="true"
+              >
+                <Search className="h-8 w-8 text-muted-foreground" />
+              </div>
               <h2 className="font-headline text-xl font-semibold mb-2">
                 No encontramos productos
               </h2>
               <p className="text-muted-foreground mb-6">
                 Intenta con otros términos de búsqueda o ajusta los filtros
               </p>
-              <a
-                href="/catalog"
-                className="btn-ikaza-primary"
-              >
+              <Link href="/catalog" className="btn-ikaza-primary">
                 Ver todos los productos
-              </a>
+              </Link>
             </div>
           )}
         </div>

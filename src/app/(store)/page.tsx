@@ -79,6 +79,12 @@ const PETALS = [
   { color: "#99f1f7", size: 10, left: "93%", delay: "3.5s", duration: "12s" },
 ];
 
+function stableProductWeight(id: string) {
+  return id.split("").reduce((hash, char) => {
+    return (hash * 31 + char.charCodeAt(0)) % 100000;
+  }, 7);
+}
+
 export default async function HomePage() {
   const [featuredProducts, categories, allProductsResult] = await Promise.all([
     getFeaturedProductsAction(8),
@@ -88,7 +94,9 @@ export default async function HomePage() {
 
   const allProducts =
     allProductsResult && "data" in allProductsResult && allProductsResult.data
-      ? [...allProductsResult.data.products].sort(() => Math.random() - 0.5)
+      ? [...allProductsResult.data.products].sort(
+          (a, b) => stableProductWeight(a.id) - stableProductWeight(b.id)
+        )
       : [];
 
   return (

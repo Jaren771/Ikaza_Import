@@ -11,5 +11,9 @@ export default async function Page() {
     redirect("/login");
   }
 
+  if (!result.data) {
+    redirect("/login");
+  }
+
   return <ClientPage initialData={result.data} />;
 }

@@ -694,6 +694,10 @@ model ImportOrder {
   shippingCost   Decimal?          @db.Decimal(10, 2)
   customsCost    Decimal?          @db.Decimal(10, 2)
   otherCosts     Decimal?          @db.Decimal(10, 2)
+  containerId    String?
+  vessel         String?
+  origin         String?
+  destination    String?
   estimatedArrival DateTime?
   actualArrival  DateTime?
   notes          String?           @db.Text
