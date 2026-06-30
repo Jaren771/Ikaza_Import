@@ -25,7 +25,7 @@ export const checkoutSchema = z.object({
   addressId: z.string().optional(),
   newAddress: addressSchema.optional(),
   shippingMethod: z.string().default("standard"),
-  paymentProvider: z.enum(["MERCADOPAGO", "CULQI", "IZIPAY", "PAYPAL", "MANUAL"]),
+  paymentProvider: z.enum(["CULQI", "IZIPAY", "PAYPAL", "MANUAL"]),
   couponCode: safeStringOptional(),
   notes: safeStringOptional(),
 });

@@ -33,7 +33,7 @@ public class Payment {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private PaymentProvider provider;   // MERCADOPAGO, CULQI, etc.
+    private PaymentProvider provider;   // CULQI, IZIPAY, etc.
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

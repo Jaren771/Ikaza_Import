@@ -1,79 +1,78 @@
 import { BaseRepository } from "@/repositories/base/BaseRepository";
-import type { ProductFilters, ProductWithRelations, PaginatedResponse } from "@/types";
+import type { PaginatedResponse, ProductFilters, ProductWithRelations } from "@/types";
 import { Prisma } from "@prisma/client";
 
-// =============================================================================
-// Product Repository — Acceso a datos de productos
-// =============================================================================
+function serializeProduct<T extends object>(product: T): T {
+  const serialized = { ...product } as Record<string, unknown>;
+  const numericFields = [
+    "price",
+    "comparePrice",
+    "costPrice",
+    "weight",
+    "width",
+    "height",
+    "depth",
+  ] as const;
 
-/**
- * Convierte todos los campos Decimal de un producto a number
- * Necesario para serializar productos de Server Components a Client Components
- */
-function serializeProduct(product: any): any {
+  numericFields.forEach((field) => {
+    if (field in serialized) {
+      serialized[field] =
+        serialized[field] === null || serialized[field] === undefined
+          ? null
+          : Number(serialized[field]);
+    }
+  });
+
+  return serialized as T;
+}
+
+function buildProductWhere(filters: ProductFilters): Prisma.ProductWhereInput {
+  const {
+    search,
+    categoryId,
+    subcategoryId,
+    brandId,
+    minPrice,
+    maxPrice,
+    status = "ACTIVE",
+    isFeatured,
+    inStock,
+  } = filters;
+
+  const priceFilter: Prisma.DecimalFilter<"Product"> = {};
+  if (minPrice !== undefined) priceFilter.gte = minPrice;
+  if (maxPrice !== undefined) priceFilter.lte = maxPrice;
+
   return {
-    ...product,
-    price: Number(product.price),
-    comparePrice: product.comparePrice ? Number(product.comparePrice) : null,
-    costPrice: product.costPrice ? Number(product.costPrice) : null,
-    weight: product.weight ? Number(product.weight) : null,
-    width: product.width ? Number(product.width) : null,
-    height: product.height ? Number(product.height) : null,
-    depth: product.depth ? Number(product.depth) : null,
+    status: status as Prisma.ProductWhereInput["status"],
+    ...(search && {
+      OR: [
+        { name: { contains: search, mode: "insensitive" } },
+        { description: { contains: search, mode: "insensitive" } },
+        { sku: { contains: search, mode: "insensitive" } },
+        { tags: { has: search } },
+      ],
+    }),
+    ...(categoryId && {
+      category: { OR: [{ id: categoryId }, { slug: categoryId }] },
+    }),
+    ...(subcategoryId && {
+      subcategory: { OR: [{ id: subcategoryId }, { slug: subcategoryId }] },
+    }),
+    ...(brandId && { brandId }),
+    ...(Object.keys(priceFilter).length > 0 && { price: priceFilter }),
+    ...(isFeatured !== undefined && { isFeatured }),
+    ...(inStock && {
+      inventory: { quantity: { gt: 0 } },
+    }),
   };
 }
 
-// [SOLID - SRP (Single Responsibility Principle)]: Esta clase se encarga exclusivamente de interactuar con la base de datos para realizar operaciones sobre los productos.
-// [SOLID - LSP (Liskov Substitution Principle)]: Hereda de BaseRepository y utiliza sus métodos auxiliares respetando su firma y semántica.
 export class ProductRepository extends BaseRepository {
-  /**
-   * Obtiene productos con filtros, paginación y relaciones
-   */
   async findMany(filters: ProductFilters): Promise<PaginatedResponse<ProductWithRelations>> {
-    const {
-      search,
-      categoryId,
-      subcategoryId,
-      brandId,
-      minPrice,
-      maxPrice,
-      status = "ACTIVE",
-      isFeatured,
-      inStock,
-      sortBy = "newest",
-      page = 1,
-      limit = 12,
-    } = filters;
-
-    // Construir cláusula WHERE dinámicamente
-    const where: Prisma.ProductWhereInput = {
-      status: status as Prisma.EnumProductStatusFilter,
-      ...(search && {
-        OR: [
-          { name: { contains: search, mode: "insensitive" } },
-          { description: { contains: search, mode: "insensitive" } },
-          { sku: { contains: search, mode: "insensitive" } },
-          { tags: { has: search } },
-        ],
-      }),
-      ...(categoryId && {
-        category: { OR: [{ id: categoryId }, { slug: categoryId }] }
-      }),
-      ...(subcategoryId && {
-        subcategory: { OR: [{ id: subcategoryId }, { slug: subcategoryId }] }
-      }),
-      ...(brandId && { brandId }),
-      ...(minPrice !== undefined && { price: { gte: minPrice } }),
-      ...(maxPrice !== undefined && { price: { lte: maxPrice } }),
-      ...(isFeatured !== undefined && { isFeatured }),
-      ...(inStock && {
-        inventory: { quantity: { gt: 0 } },
-      }),
-    };
-
-    // Mapear sortBy a orderBy de Prisma
+    const { sortBy = "newest", page = 1, limit = 12 } = filters;
+    const where = buildProductWhere(filters);
     const orderBy = this.buildOrderBy(sortBy);
-
     const offset = this.getOffset(page, limit);
 
     const [data, total] = await Promise.all([
@@ -99,12 +98,11 @@ export class ProductRepository extends BaseRepository {
       this.db.product.count({ where }),
     ]);
 
-    // Calcular rating promedio
     const enriched = data.map((product) => ({
       ...serializeProduct(product),
       avgRating:
         product.reviews.length > 0
-          ? product.reviews.reduce((sum, r) => sum + r.rating, 0) /
+          ? product.reviews.reduce((sum, review) => sum + review.rating, 0) /
             product.reviews.length
           : 0,
       reviewCount: product.reviews.length,
@@ -116,9 +114,25 @@ export class ProductRepository extends BaseRepository {
     };
   }
 
-  /**
-   * Obtiene un producto por su slug con todas las relaciones
-   */
+  async getPriceBounds(filters: ProductFilters = {}) {
+    const where = buildProductWhere({
+      ...filters,
+      minPrice: undefined,
+      maxPrice: undefined,
+    });
+
+    const bounds = await this.db.product.aggregate({
+      where,
+      _min: { price: true },
+      _max: { price: true },
+    });
+
+    return {
+      min: bounds._min.price ? Number(bounds._min.price) : 0,
+      max: bounds._max.price ? Number(bounds._max.price) : 0,
+    };
+  }
+
   async findBySlug(slug: string): Promise<ProductWithRelations | null> {
     const product = await this.db.product.findUnique({
       where: { slug, status: "ACTIVE" },
@@ -144,9 +158,6 @@ export class ProductRepository extends BaseRepository {
     return serializeProduct(product) as unknown as ProductWithRelations;
   }
 
-  /**
-   * Obtiene productos relacionados por categoría
-   */
   async findRelated(
     productId: string,
     categoryId: string | null,
@@ -173,9 +184,6 @@ export class ProductRepository extends BaseRepository {
     return products.map(serializeProduct) as unknown as ProductWithRelations[];
   }
 
-  /**
-   * Obtiene productos destacados para la página de inicio
-   */
   async findFeatured(limit: number = 8): Promise<ProductWithRelations[]> {
     const products = await this.db.product.findMany({
       where: { status: "ACTIVE", isFeatured: true },
@@ -192,9 +200,6 @@ export class ProductRepository extends BaseRepository {
     return products.map(serializeProduct) as unknown as ProductWithRelations[];
   }
 
-  /**
-   * Obtiene un producto por ID (para admin)
-   */
   async findById(id: string) {
     const product = await this.db.product.findUnique({
       where: { id },
@@ -211,27 +216,18 @@ export class ProductRepository extends BaseRepository {
         },
       },
     });
-    
+
     return product ? serializeProduct(product) : null;
   }
 
-  /**
-   * Crea un nuevo producto
-   */
   async create(data: Prisma.ProductCreateInput) {
     return this.db.product.create({ data });
   }
 
-  /**
-   * Actualiza un producto
-   */
   async update(id: string, data: Prisma.ProductUpdateInput) {
     return this.db.product.update({ where: { id }, data });
   }
 
-  /**
-   * Elimina un producto (soft delete - cambia status a DISCONTINUED)
-   */
   async softDelete(id: string) {
     return this.db.product.update({
       where: { id },
@@ -239,12 +235,7 @@ export class ProductRepository extends BaseRepository {
     });
   }
 
-  /**
-   * Construye el orderBy para Prisma basado en sortBy
-   */
-  private buildOrderBy(
-    sortBy: string
-  ): Prisma.ProductOrderByWithRelationInput {
+  private buildOrderBy(sortBy: string): Prisma.ProductOrderByWithRelationInput {
     switch (sortBy) {
       case "price_asc":
         return { price: "asc" };
@@ -261,5 +252,4 @@ export class ProductRepository extends BaseRepository {
   }
 }
 
-// Singleton para reutilizar en Server Actions
 export const productRepository = new ProductRepository();

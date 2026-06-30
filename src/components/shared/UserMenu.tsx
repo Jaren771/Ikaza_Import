@@ -1,10 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useSession, signOut } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import Link from "next/link";
-import { User, Settings, Package, Heart, LogOut, ChevronDown, Shield } from "lucide-react";
+import { User, Settings, Package, Heart, LogOut, ChevronDown, Shield, MapPin } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,7 +25,6 @@ interface UserMenuProps {
 }
 
 export function UserMenu({ user }: UserMenuProps) {
-  const router = useRouter();
   const isAdmin = user.role === "ADMIN" || user.role === "SUPER_ADMIN";
   const isManager = user.role === "MANAGER";
 
@@ -81,6 +78,12 @@ export function UserMenu({ user }: UserMenuProps) {
             <Link href="/orders" className="cursor-pointer">
               <Package className="mr-2 h-4 w-4" />
               Mis Pedidos
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/profile/addresses" className="cursor-pointer">
+              <MapPin className="mr-2 h-4 w-4" />
+              Mis Direcciones
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>

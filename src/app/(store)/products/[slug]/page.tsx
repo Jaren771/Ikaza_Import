@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
-import { Suspense } from "react";
-import { Star, ShoppingCart, Heart, Share2, Shield, Truck, RefreshCw, Package } from "lucide-react";
+import { Star, Heart, Share2, Shield, Truck, RefreshCw, Package } from "lucide-react";
 import { getProductBySlugAction, getRelatedProductsAction } from "@/features/products/actions/product.actions";
 import { ProductCard } from "@/components/catalog/ProductCard";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
@@ -82,7 +82,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
       {/* Breadcrumb */}
       <nav aria-label="Ruta de navegación" className="mb-6">
         <ol className="flex items-center gap-2 text-sm text-muted-foreground">
-          <li><a href="/" className="hover:text-foreground">Inicio</a></li>
+          <li><Link href="/" className="hover:text-foreground">Inicio</Link></li>
           <li>/</li>
           <li><a href="/catalog" className="hover:text-foreground">Catálogo</a></li>
           {product.category && (

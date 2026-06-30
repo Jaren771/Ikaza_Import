@@ -20,7 +20,7 @@
 | **Estilos** | Tailwind CSS v4 + shadcn/ui |
 | **Formularios** | React Hook Form + Zod |
 | **Estado** | Zustand (local) + TanStack Query v5 (servidor) |
-| **Pagos** | MercadoPago · Culqi · Izipay · PayPal |
+| **Pagos** | Culqi · Izipay · PayPal |
 
 ---
 
@@ -133,7 +133,6 @@ AUTH_GOOGLE_ID=""
 AUTH_GOOGLE_SECRET=""
 
 # Pasarelas de pago
-MERCADOPAGO_ACCESS_TOKEN=""
 CULQI_PUBLIC_KEY=""
 CULQI_SECRET_KEY=""
 IZIPAY_MERCHANT_CODE=""

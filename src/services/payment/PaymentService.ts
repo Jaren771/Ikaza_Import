@@ -1,6 +1,5 @@
 import type { IPaymentProvider } from "./IPaymentProvider";
 import {
-  MercadoPagoProvider,
   CulqiProvider,
   IzipayProvider,
   PayPalProvider,
@@ -20,7 +19,6 @@ export class PaymentService {
   constructor() {
     // [SOLID - OCP (Open/Closed Principle)]: Abierto a la extensión sumando elementos a este mapa, pero cerrado a la modificación de las llamadas del cliente.
     this.providers = new Map<string, IPaymentProvider>([
-      ["MERCADOPAGO", new MercadoPagoProvider()],
       ["CULQI", new CulqiProvider()],
       ["IZIPAY", new IzipayProvider()],
       ["PAYPAL", new PayPalProvider()],

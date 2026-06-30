@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 interface ProductCardProps {
   product: ProductWithRelations;
   inWishlist?: boolean;
+  variant?: "grid" | "list";
 }
 
 // =============================================================================
@@ -21,7 +22,7 @@ interface ProductCardProps {
 // Basado en el wireframe "Catálogo - ikaZa Import"
 // =============================================================================
 
-export function ProductCard({ product, inWishlist = false }: ProductCardProps) {
+export function ProductCard({ product, inWishlist = false, variant = "grid" }: ProductCardProps) {
   const [isPending, startTransition] = useTransition();
   const [isInWishlist, setIsInWishlist] = useState(inWishlist);
   const [showQuickView, setShowQuickView] = useState(false);
@@ -31,6 +32,7 @@ export function ProductCard({ product, inWishlist = false }: ProductCardProps) {
   const comparePrice = product.comparePrice ? toNumber(product.comparePrice) : null;
   const discount = comparePrice ? calculateDiscount(price, comparePrice) : 0;
   const isOutOfStock = product.inventory && product.inventory.quantity <= 0;
+  const isList = variant === "list";
 
   const handleAddToCart = () => {
     startTransition(async () => {
@@ -60,12 +62,15 @@ export function ProductCard({ product, inWishlist = false }: ProductCardProps) {
 
   return (
     <article
-      className="product-card group flex flex-col overflow-hidden"
+      className={cn(
+        "product-card group overflow-hidden",
+        isList ? "grid grid-cols-[112px_1fr] sm:grid-cols-[180px_1fr]" : "flex flex-col"
+      )}
       onMouseEnter={() => setShowQuickView(true)}
       onMouseLeave={() => setShowQuickView(false)}
     >
       {/* Imagen */}
-      <div className="relative overflow-hidden bg-muted aspect-square">
+      <div className={cn("relative overflow-hidden bg-muted", isList ? "min-h-36" : "aspect-square")}>
         <Link href={`/products/${product.slug}`} tabIndex={-1}>
           {primaryImage ? (
             <Image
@@ -73,7 +78,7 @@ export function ProductCard({ product, inWishlist = false }: ProductCardProps) {
               alt={primaryImage.alt ?? product.name}
               fill
               className="object-contain transition-transform duration-500 group-hover:scale-105"
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+              sizes={isList ? "(max-width: 640px) 112px, 180px" : "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"}
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center bg-muted">
@@ -127,7 +132,7 @@ export function ProductCard({ product, inWishlist = false }: ProductCardProps) {
       </div>
 
       {/* Contenido */}
-      <div className="flex flex-col flex-1 p-3">
+      <div className={cn("flex flex-col flex-1 p-3", isList && "sm:p-4")}>
         {/* Categoría en lugar de Marca */}
         {product.category && (
           <p className="text-xs font-medium uppercase tracking-wide mb-0.5" style={{ color: "#885200" }}>
@@ -138,10 +143,19 @@ export function ProductCard({ product, inWishlist = false }: ProductCardProps) {
         {/* Nombre */}
         <Link
           href={`/products/${product.slug}`}
-          className="text-sm font-medium text-foreground line-clamp-2 hover:underline transition-colors flex-1 mb-2"
+          className={cn(
+            "font-medium text-foreground line-clamp-2 hover:underline transition-colors mb-2",
+            isList ? "text-base" : "text-sm flex-1"
+          )}
         >
           {product.name}
         </Link>
+
+        {isList && product.shortDescription ? (
+          <p className="mb-3 hidden text-sm text-muted-foreground line-clamp-2 sm:block">
+            {product.shortDescription}
+          </p>
+        ) : null}
 
         {/* Rating */}
         {product.reviewCount && product.reviewCount > 0 ? (
@@ -176,6 +190,7 @@ export function ProductCard({ product, inWishlist = false }: ProductCardProps) {
           disabled={isPending || !!isOutOfStock}
           className={cn(
             "btn-ikaza-cart text-sm py-2",
+            isList && "sm:w-fit sm:px-5",
             (isPending || isOutOfStock) && "opacity-50 cursor-not-allowed"
           )}
           aria-label={`Añadir ${product.name} al carrito`}

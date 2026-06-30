@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { User, Package, MapPin, Heart } from "lucide-react";
+import { ArrowLeft, User, Package, MapPin, Heart } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,7 +9,18 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { updateProfile } from "./actions";
 
-export default function ProfileClientPage({ initialData }: { initialData: any }) {
+interface ProfileData {
+  id: string;
+  name: string | null;
+  email: string;
+  role: string;
+  _count?: {
+    addresses: number;
+    orders: number;
+  };
+}
+
+export default function ProfileClientPage({ initialData }: { initialData: ProfileData }) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -31,7 +42,7 @@ export default function ProfileClientPage({ initialData }: { initialData: any })
     <div className="container mx-auto py-10 px-4 max-w-5xl">
       <div className="flex items-center gap-4 mb-8">
         <Button variant="outline" onClick={() => router.back()} className="h-10 w-10 p-0 rounded-full">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+          <ArrowLeft className="h-5 w-5" />
         </Button>
         <h1 className="text-3xl font-bold font-headline">Mi Cuenta</h1>
       </div>
@@ -42,16 +53,26 @@ export default function ProfileClientPage({ initialData }: { initialData: any })
           <Button variant="secondary" className="w-full justify-start font-medium bg-[#006065]/10 text-[#006065]">
             <User className="mr-2 h-4 w-4" /> Datos Personales
           </Button>
-          <Link href="/wishlist">
-            <Button variant="ghost" className="w-full justify-start text-muted-foreground">
+          <Button asChild variant="ghost" className="w-full justify-start text-muted-foreground">
+            <Link href="/wishlist">
               <Heart className="mr-2 h-4 w-4" /> Lista de Deseos
-            </Button>
-          </Link>
-          <Button variant="ghost" className="w-full justify-start text-muted-foreground">
-            <Package className="mr-2 h-4 w-4" /> Mis Pedidos
+            </Link>
           </Button>
-          <Button variant="ghost" className="w-full justify-start text-muted-foreground">
-            <MapPin className="mr-2 h-4 w-4" /> Mis Direcciones
+          <Button asChild variant="ghost" className="w-full justify-start text-muted-foreground">
+            <Link href="/orders">
+              <Package className="mr-2 h-4 w-4" /> Mis Pedidos
+              {initialData?._count?.orders ? (
+                <span className="ml-auto text-xs">{initialData._count.orders}</span>
+              ) : null}
+            </Link>
+          </Button>
+          <Button asChild variant="ghost" className="w-full justify-start text-muted-foreground">
+            <Link href="/profile/addresses">
+              <MapPin className="mr-2 h-4 w-4" /> Mis Direcciones
+              {initialData?._count?.addresses ? (
+                <span className="ml-auto text-xs">{initialData._count.addresses}</span>
+              ) : null}
+            </Link>
           </Button>
         </div>
 
@@ -66,7 +87,7 @@ export default function ProfileClientPage({ initialData }: { initialData: any })
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Nombre Completo</label>
-                    <Input name="name" defaultValue={initialData?.name} required />
+                    <Input name="name" defaultValue={initialData?.name ?? ""} required />
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Correo Electrónico</label>
