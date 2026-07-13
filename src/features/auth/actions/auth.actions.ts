@@ -9,7 +9,7 @@ import type { ActionResult } from "@/types";
 import bcrypt from "bcryptjs";
 import { AuthError } from "next-auth";
 import { verifyTurnstileToken } from "@/lib/turnstile";
-import { sendVerificationEmail, sendPasswordResetEmail } from "@/lib/email";
+import { sendVerificationEmail, sendPasswordResetEmail, sendWelcomeEmail } from "@/lib/email";
 
 // =============================================================================
 // Server Actions — Autenticación
@@ -41,6 +41,27 @@ export async function loginAction(
   const user = await prisma.user.findUnique({ where: { email: validation.data.email } });
   
   if (user) {
+    if (user.status === "PENDING_VERIFICATION") {
+      // Generar nuevo OTP y reenviar
+      const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+      const expires = new Date(Date.now() + 15 * 60 * 1000); // 15 min
+      
+      await prisma.verificationToken.deleteMany({
+        where: { identifier: user.email },
+      });
+      await prisma.verificationToken.create({
+        data: { identifier: user.email, token: otpCode, expires },
+      });
+      
+      await sendVerificationEmail(user.email, otpCode);
+      
+      return { 
+        success: true, 
+        data: { redirectTo: `/verify-email?email=${encodeURIComponent(user.email)}` },
+        message: "Tu cuenta no está verificada. Hemos enviado un nuevo código a tu correo." 
+      };
+    }
+
     if (user.lockoutUntil && user.lockoutUntil > new Date()) {
       // BYPASS DE EMERGENCIA: Si es el Súper Admin usando las credenciales exactas del .env.local, le permitimos pasar (anti-bloqueo por ataques externos)
       const superEmail = process.env.SUPERADMIN_EMAIL;
@@ -211,14 +232,17 @@ export async function verifyEmailAction(
       return { success: false, error: "El código ha expirado" };
     }
 
-    // Activar usuario
-    await prisma.user.update({
+    // Activar usuario y recuperar su nombre
+    const updatedUser = await prisma.user.update({
       where: { email },
       data: {
         status: "ACTIVE",
         emailVerified: new Date(),
       },
     });
+
+    // Enviar correo de bienvenida ahora que ya está verificado
+    await sendWelcomeEmail(email, updatedUser.name || "Importador");
 
     // Borrar token usado
     await prisma.verificationToken.deleteMany({

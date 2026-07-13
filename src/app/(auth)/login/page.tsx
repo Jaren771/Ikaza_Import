@@ -65,9 +65,11 @@ export default function LoginPage() {
         return;
       }
 
-      toast.success("¡Bienvenido de vuelta!");
-      router.push("/");
-      router.refresh();
+      toast.success(result.message || "¡Bienvenido de vuelta!");
+      router.push(result.data?.redirectTo || "/");
+      if (!result.data?.redirectTo) {
+        router.refresh();
+      }
     });
   };
 

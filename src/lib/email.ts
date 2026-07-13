@@ -264,3 +264,56 @@ export async function sendOrderReceiptEmail(to: string, orderId: string, total: 
     return false;
   }
 }
+
+/**
+ * Plantilla HTML para Correo de Bienvenida
+ */
+const getWelcomeEmailHtml = (name: string) => `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>¡Bienvenido a ikaZa Import!</title>
+  <style>
+    body { font-family: 'Syne', sans-serif; background-color: #fbf9f8; color: #1a1a1a; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.04); }
+    .header { background-color: #006065; padding: 32px; text-align: center; }
+    .header h1 { color: #ffffff; margin: 0; font-size: 24px; }
+    .content { padding: 40px; text-align: center; }
+    .footer { background-color: #fbf9f8; padding: 24px; text-align: center; font-size: 13px; color: #888888; border-top: 1px solid #f0f0f0; }
+    .btn { display: inline-block; background-color: #fca311; color: #1a1a1a; padding: 12px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header"><h1>ikaZa Import</h1></div>
+    <div class="content">
+      <h2>¡Hola ${name || 'Importador'}!</h2>
+      <p>Nos emociona darte la bienvenida a la plataforma líder en tecnología y hogar. Tu cuenta ha sido creada exitosamente y ya está lista para usarse.</p>
+      <p>Explora nuestro catálogo y descubre los mejores precios del mercado.</p>
+      <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/catalog" class="btn">Ir al catálogo</a>
+    </div>
+    <div class="footer">
+      <p>© ${new Date().getFullYear()} ikaZa Import. Todos los derechos reservados.</p>
+    </div>
+  </div>
+</body>
+</html>
+`;
+
+export async function sendWelcomeEmail(to: string, name: string) {
+  try {
+    const info = await transporter.sendMail({
+      from: '"ikaZa Import" <' + adminEmail + '>',
+      to,
+      subject: "¡Bienvenido a ikaZa Import!",
+      html: getWelcomeEmailHtml(name),
+    });
+
+    console.log("Correo de bienvenida enviado:", info.messageId);
+    return true;
+  } catch (error) {
+    console.error("Error SMTP Bienvenida:", error);
+    return false;
+  }
+}

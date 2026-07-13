@@ -4,6 +4,7 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { sendWelcomeEmail } from "@/lib/email";
 import type { UserRole } from "@prisma/client";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -20,6 +21,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     GoogleProvider({
       clientId: process.env.AUTH_GOOGLE_ID!,
       clientSecret: process.env.AUTH_GOOGLE_SECRET!,
+      allowDangerousEmailAccountLinking: true,
     }),
 
     // -------------------------------------------------------------------------
@@ -165,12 +167,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
 
   events: {
-    // Crear wishlist y carrito automáticamente al registrarse
+    // Crear wishlist y carrito automáticamente al registrarse y enviar bienvenida
     async createUser({ user }) {
       await Promise.all([
         prisma.wishlist.create({ data: { userId: user.id! } }),
         prisma.cart.create({ data: { userId: user.id! } }),
       ]);
+      
+      if (user.email) {
+        await sendWelcomeEmail(user.email, user.name || "Importador");
+      }
     },
   },
 });
