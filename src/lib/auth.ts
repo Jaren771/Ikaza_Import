@@ -32,9 +32,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
+        otpCode: { label: "OTP Code", type: "text" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
+        if (!credentials?.email) {
+          throw new Error("Email requerido");
+        }
+        
+        const hasPassword = !!credentials.password;
+        const hasOtp = !!credentials.otpCode;
+
+        if (!hasPassword && !hasOtp) {
           throw new Error("Credenciales inválidas");
         }
 
@@ -90,12 +98,49 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             where: { email: credentials.email as string },
           });
 
-          if (!user || !user.password) {
+          if (!user) {
             throw new Error("Usuario no encontrado");
           }
 
           if (user.status === "BANNED") {
             throw new Error("Cuenta suspendida");
+          }
+
+          // Flujo de inicio de sesión por OTP (Verificación de correo)
+          if (hasOtp) {
+            const tokenRecord = await prisma.verificationToken.findFirst({
+              where: { identifier: user.email, token: credentials.otpCode as string },
+            });
+
+            if (!tokenRecord || tokenRecord.expires < new Date()) {
+              throw new Error("Código inválido o expirado");
+            }
+
+            // Código válido, procedemos a activarlo si estaba inactivo y loguearlo
+            await prisma.user.update({
+              where: { email: user.email },
+              data: { status: "ACTIVE", emailVerified: new Date() }
+            });
+
+            // Opcionalmente se podría enviar el correo de bienvenida aquí si NextAuth lo permite, 
+            // pero para no mezclar responsabilidades de UI con el auth, solo lo activamos.
+
+            await prisma.verificationToken.deleteMany({
+              where: { identifier: user.email },
+            });
+
+            return {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              image: user.image,
+              role: user.role,
+            };
+          }
+
+          // Flujo normal de inicio de sesión con contraseña
+          if (!user.password) {
+            throw new Error("El usuario no tiene contraseña (usa Google)");
           }
 
           if (user.status === "INACTIVE") {
@@ -170,8 +215,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     // Crear wishlist y carrito automáticamente al registrarse y enviar bienvenida
     async createUser({ user }) {
       await Promise.all([
-        prisma.wishlist.create({ data: { userId: user.id! } }),
-        prisma.cart.create({ data: { userId: user.id! } }),
+        prisma.wishlist.upsert({ 
+          where: { userId: user.id! },
+          update: {},
+          create: { userId: user.id! } 
+        }),
+        prisma.cart.upsert({ 
+          where: { userId: user.id! },
+          update: {},
+          create: { userId: user.id! } 
+        }),
       ]);
       
       if (user.email) {

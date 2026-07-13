@@ -2,7 +2,7 @@
 
 import { useState, useTransition, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { verifyEmailAction } from "@/features/auth/actions/auth.actions";
+import { signIn } from "next-auth/react";
 import { Loader2, Mail, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { Suspense } from "react";
@@ -31,15 +31,20 @@ function VerifyEmailForm() {
     }
 
     startTransition(async () => {
-      const result = await verifyEmailAction({ email, code });
+      // Iniciar sesión directamente con el código OTP
+      const result = await signIn("credentials", {
+        email,
+        otpCode: code,
+        redirect: false, // Evitar recarga automática para manejar el toast
+      });
 
-      if (!result.success) {
-        toast.error(result.error);
+      if (result?.error) {
+        toast.error("El código es inválido o ha expirado.");
         return;
       }
 
-      toast.success(result.message || "¡Cuenta activada!");
-      router.push(result.data?.redirectTo || "/login");
+      toast.success("¡Cuenta activada y sesión iniciada!");
+      router.push("/");
       router.refresh();
     });
   };

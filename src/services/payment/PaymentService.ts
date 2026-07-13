@@ -74,6 +74,17 @@ export class PaymentService {
     const provider = this.getProvider(providerId);
     return provider.processWebhook(payload, signature);
   }
+
+  /**
+   * Ejecuta un cobro directo en Culqi (vía Token)
+   */
+  async createCulqiCharge(amount: number, token: string, email: string) {
+    const culqi = this.getProvider("CULQI") as any;
+    if (typeof culqi.createCharge !== "function") {
+      throw new Error("CulqiProvider no soporta createCharge");
+    }
+    return culqi.createCharge(amount, token, email);
+  }
 }
 
 // Singleton para reutilizar en toda la aplicación

@@ -10,6 +10,17 @@ export const rateLimit = redis
       prefix: "@upstash/ratelimit",
     })
   : {
-      // Mock en caso de no tener configurado Redis localmente
+      limit: async () => ({ success: true }),
+    };
+
+// Rate limiter más estricto para registro y autenticación (5 peticiones por hora)
+export const authRateLimit = redis
+  ? new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(5, "1 h"),
+      analytics: true,
+      prefix: "@upstash/auth-ratelimit",
+    })
+  : {
       limit: async () => ({ success: true }),
     };

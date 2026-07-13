@@ -78,6 +78,7 @@ export async function createProduct(formData: FormData) {
     });
 
     revalidatePath("/admin/products");
+    revalidatePath("/", "layout"); // Refresca toda la tienda para los usuarios
     return { success: true, data: product };
   } catch (error: any) {
     console.error("Error creating product:", error);
@@ -90,6 +91,7 @@ export async function deleteProduct(id: string) {
   try {
     await prisma.product.delete({ where: { id } });
     revalidatePath("/admin/products");
+    revalidatePath("/", "layout"); // Refresca toda la tienda para los usuarios
     return { success: true };
   } catch (error) {
     console.error("Error deleting product:", error);

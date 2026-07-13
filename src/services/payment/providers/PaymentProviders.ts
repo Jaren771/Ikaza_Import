@@ -135,6 +135,37 @@ export class CulqiProvider implements IPaymentProvider {
     }
   }
 
+  async createCharge(amount: number, token: string, email: string) {
+    const amountInCents = Math.round(amount * 100);
+    try {
+      const response = await fetch('https://api.culqi.com/v2/charges', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.secretKey}`,
+        },
+        body: JSON.stringify({
+          amount: amountInCents,
+          currency_code: 'PEN',
+          email: email,
+          source_id: token, // El token generado por el frontend
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error("Culqi Charge Error:", data);
+        return { success: false, error: data.user_message || "Error al procesar el pago" };
+      }
+
+      return { success: true, charge: data };
+    } catch (error: any) {
+      console.error("[CulqiProvider.createCharge]", error);
+      return { success: false, error: "Error interno al procesar el pago" };
+    }
+  }
+
   async verifyPayment(providerPaymentId: string) {
     try {
       const response = await fetch(`https://api.culqi.com/v2/charges/${providerPaymentId}`, {

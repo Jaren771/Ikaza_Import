@@ -421,7 +421,11 @@ model Order {
   currency       String        @default("PEN")
   notes          String?
   trackingNumber String?
-  shippingMethod String?
+  shippingMethod String?       @default("DELIVERY")
+  receiptType    String?       @default("BOLETA")
+  documentNumber String?       
+  customerName   String?       
+  customerEmail  String?       
   couponId       String?
   addressId      String?
   createdAt      DateTime      @default(now())

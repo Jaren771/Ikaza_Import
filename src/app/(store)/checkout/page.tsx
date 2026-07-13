@@ -47,9 +47,21 @@ export default async function CheckoutPage() {
     orderBy: { isDefault: "desc" },
   });
 
-  // 3. Totales
+  // 3. Totales y Peso
   const subtotal = cart.items.reduce((sum, item) => sum + toNumber(item.price) * item.quantity, 0);
-  const shipping = subtotal >= 150 ? 0 : 15;
+  
+  let cartItemsWeight = 0;
+  for (const item of cart.items) {
+    const realW = Number(item.product.weight || 0);
+    const w = Number(item.product.width || 0);
+    const h = Number(item.product.height || 0);
+    const d = Number(item.product.depth || 0);
+    const volW = (w * h * d) / 5000;
+    const maxW = Math.max(realW, volW) || 1;
+    cartItemsWeight += maxW * item.quantity;
+  }
+
+  const shipping = subtotal >= 150 ? 0 : 15; // Estimación base visual
   const total = subtotal + shipping;
 
   return (
@@ -66,68 +78,14 @@ export default async function CheckoutPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Formulario de Checkout */}
-        <div className="lg:col-span-7">
-          <CheckoutForm addresses={addresses} cartTotal={total} />
-        </div>
-
-        {/* Resumen del Pedido */}
-        <div className="lg:col-span-5">
-          <div className="rounded-xl border bg-white p-6 sticky top-24">
-            <h2 className="font-headline text-lg font-semibold mb-4">Resumen de tu pedido</h2>
-            
-            <div className="space-y-4 mb-6 max-h-64 overflow-y-auto pr-2">
-              {cart.items.map((item) => (
-                <div key={item.id} className="flex gap-4">
-                  <div className="relative h-16 w-16 shrink-0 rounded border bg-muted overflow-hidden">
-                    {item.product.images[0] ? (
-                      <Image
-                        src={item.product.images[0].url}
-                        alt={item.product.name}
-                        fill
-                        className="object-cover"
-                        sizes="64px"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center text-xs">📦</div>
-                    )}
-                    <span className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-gray-500 text-[10px] text-white flex items-center justify-center">
-                      {item.quantity}
-                    </span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium line-clamp-2">{item.product.name}</p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {formatPrice(toNumber(item.price))} x {item.quantity}
-                    </p>
-                  </div>
-                  <div className="text-right shrink-0">
-                    <p className="text-sm font-semibold">
-                      {formatPrice(toNumber(item.price) * item.quantity)}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="border-t pt-4 space-y-2 mb-4 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Subtotal</span>
-                <span>{formatPrice(subtotal)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Envío</span>
-                <span>{shipping === 0 ? "Gratis" : formatPrice(shipping)}</span>
-              </div>
-            </div>
-
-            <div className="border-t pt-4 flex justify-between items-center">
-              <span className="font-semibold text-lg">Total a Pagar</span>
-              <span className="font-headline text-2xl font-bold" style={{ color: "#006065" }}>
-                {formatPrice(total)}
-              </span>
-            </div>
-          </div>
+        <div className="lg:col-span-12">
+          <CheckoutForm 
+            addresses={addresses} 
+            cartTotal={total} 
+            subtotal={subtotal} 
+            cartItemsWeight={cartItemsWeight}
+            cartItems={cart.items} 
+          />
         </div>
       </div>
     </div>

@@ -10,6 +10,8 @@ import bcrypt from "bcryptjs";
 import { AuthError } from "next-auth";
 import { verifyTurnstileToken } from "@/lib/turnstile";
 import { sendVerificationEmail, sendPasswordResetEmail, sendWelcomeEmail } from "@/lib/email";
+import { headers } from "next/headers";
+import { authRateLimit } from "@/lib/rate-limit";
 
 // =============================================================================
 // Server Actions — Autenticación
@@ -147,6 +149,15 @@ export async function registerAction(
     return { success: false, error: "Verificación de seguridad fallida. Intenta nuevamente." };
   }
 
+  // 1.5 Rate Limiter (Protección contra Spam de Registro)
+  const headersList = await headers();
+  const ip = headersList.get("x-forwarded-for") || "127.0.0.1";
+  const { success: rateLimitSuccess } = await authRateLimit.limit(`register_${ip}`);
+
+  if (!rateLimitSuccess) {
+    return { success: false, error: "Demasiados intentos de registro desde esta IP. Intenta de nuevo en 1 hora." };
+  }
+
   const { name, email, password, phone } = validation.data;
 
   try {
@@ -220,39 +231,26 @@ export async function verifyEmailAction(
   const { email, code } = validation.data;
 
   try {
-    const tokenRecord = await prisma.verificationToken.findFirst({
-      where: { identifier: email, token: code },
+    // Iniciar sesión llamando a NextAuth con el código OTP
+    // Esto se procesará en authorize() del CredentialsProvider.
+    // Si tiene éxito, NextAuth lanzará un error de tipo "NEXT_REDIRECT" que debemos dejar pasar para que se guarden las cookies de sesión.
+    await signIn("credentials", {
+      email,
+      otpCode: code,
+      redirectTo: "/",
     });
 
-    if (!tokenRecord) {
-      return { success: false, error: "Código inválido o incorrecto" };
-    }
-
-    if (tokenRecord.expires < new Date()) {
-      return { success: false, error: "El código ha expirado" };
-    }
-
-    // Activar usuario y recuperar su nombre
-    const updatedUser = await prisma.user.update({
-      where: { email },
-      data: {
-        status: "ACTIVE",
-        emailVerified: new Date(),
-      },
-    });
-
-    // Enviar correo de bienvenida ahora que ya está verificado
-    await sendWelcomeEmail(email, updatedUser.name || "Importador");
-
-    // Borrar token usado
-    await prisma.verificationToken.deleteMany({
-      where: { identifier: email },
-    });
-
-    return { success: true, data: { redirectTo: "/login" }, message: "Cuenta activada con éxito" };
+    // Esta línea nunca se ejecuta porque signIn lanza un redirect.
+    return { success: true, data: { redirectTo: "/" }, message: "Cuenta activada" };
   } catch (error) {
-    console.error("[verifyEmailAction]", error);
-    return { success: false, error: "Error validando el código" };
+    if (error instanceof AuthError) {
+      if (error.type === "CredentialsSignin") {
+        return { success: false, error: "Código inválido o expirado" };
+      }
+      return { success: false, error: "Error de validación" };
+    }
+    // IMPORTANTE: Dejar pasar el error de redirección de Next.js
+    throw error;
   }
 }
 

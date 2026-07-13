@@ -191,13 +191,19 @@ export async function sendPasswordResetEmail(to: string, resetToken: string) {
 /**
  * Plantilla HTML para Recibo de Compra
  */
-const getOrderReceiptHtml = (orderId: string, total: number, items: any[]) => {
+const getOrderReceiptHtml = (orderId: string, total: number, items: any[], pdfUrl?: string) => {
   const itemsHtml = items.map(item => `
     <tr>
       <td style="padding: 12px; border-bottom: 1px solid #eee;">${item.productName} (x${item.quantity})</td>
       <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;">S/ ${item.totalPrice.toFixed(2)}</td>
     </tr>
   `).join('');
+
+  const sunatButtonHtml = pdfUrl ? `
+    <div style="text-align: center; margin-top: 24px;">
+      <a href="${pdfUrl}" target="_blank" style="display: inline-block; background-color: #006065; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">Descargar Comprobante Electrónico (PDF)</a>
+    </div>
+  ` : '';
 
   return `
   <!DOCTYPE html>
@@ -238,6 +244,7 @@ const getOrderReceiptHtml = (orderId: string, total: number, items: any[]) => {
         <div class="total-box">
           <h3 style="margin: 0; color: #006065;">TOTAL PAGADO: S/ ${total.toFixed(2)}</h3>
         </div>
+        ${sunatButtonHtml}
       </div>
       <div class="footer">
         <p>© ${new Date().getFullYear()} ikaZa Import. Todos los derechos reservados.</p>
@@ -248,13 +255,13 @@ const getOrderReceiptHtml = (orderId: string, total: number, items: any[]) => {
   `;
 };
 
-export async function sendOrderReceiptEmail(to: string, orderId: string, total: number, items: any[]) {
+export async function sendOrderReceiptEmail(to: string, orderId: string, total: number, items: any[], pdfUrl?: string) {
   try {
     const info = await transporter.sendMail({
       from: `"ikaZa Import" <${adminEmail}>`,
       to,
       subject: `Confirmación de Pedido #${orderId}`,
-      html: getOrderReceiptHtml(orderId, total, items),
+      html: getOrderReceiptHtml(orderId, total, items, pdfUrl),
     });
 
     console.log("Recibo enviado:", info.messageId);

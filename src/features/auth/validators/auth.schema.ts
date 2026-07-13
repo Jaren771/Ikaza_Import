@@ -4,12 +4,14 @@ import { safeString } from "@/lib/validation-utils";
 const emailSchema = z
   .string()
   .min(1, "El email es requerido")
+  .max(100, "El email es demasiado largo")
   .email("Ingresa un correo electrónico válido (ej: usuario@dominio.com)")
   .transform((v) => v.trim().toLowerCase());
 
 const phoneSchema = z
   .string()
-  .regex(/^\+?\d{7,15}$/, "Ingresa un teléfono válido (solo números, 7-15 dígitos)")
+  .regex(/^[0-9]{9}$/, "El teléfono debe tener exactamente 9 números")
+  .max(9)
   .optional()
   .or(z.literal(""));
 
@@ -19,7 +21,7 @@ const phoneSchema = z
 
 export const loginSchema = z.object({
   email: emailSchema,
-  password: safeString({ min: 8, label: "La contraseña" }),
+  password: safeString({ min: 8, max: 32, label: "La contraseña" }),
   turnstileToken: z.string().min(1, "Por favor completa la verificación de seguridad"),
 });
 
@@ -27,11 +29,11 @@ export const registerSchema = z
   .object({
     name: safeString({ min: 2, max: 100, label: "El nombre" }),
     email: emailSchema,
-    password: safeString({ min: 8, label: "La contraseña" }).regex(
+    password: safeString({ min: 8, max: 32, label: "La contraseña" }).regex(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
       "Debe contener mayúsculas, minúsculas y números"
     ),
-    confirmPassword: safeString({ min: 1, label: "Confirma tu contraseña" }),
+    confirmPassword: safeString({ min: 1, max: 32, label: "Confirma tu contraseña" }),
     phone: phoneSchema,
     turnstileToken: z.string().min(1, "Por favor completa la verificación de seguridad"),
     acceptTerms: z
