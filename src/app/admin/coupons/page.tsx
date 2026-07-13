@@ -5,5 +5,5 @@ export const metadata = { title: "Cupones — ikaZa Import" };
 
 export default async function Page() {
   const result = await getCoupons();
-  return <ClientPage initialData={result.success ? result.data : []} />;
+  return <ClientPage initialData={result.success ? (result.data || []) : []} />;
 }

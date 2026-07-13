@@ -20,6 +20,7 @@ const phoneSchema = z
 export const loginSchema = z.object({
   email: emailSchema,
   password: safeString({ min: 8, label: "La contraseña" }),
+  turnstileToken: z.string().min(1, "Por favor completa la verificación de seguridad"),
 });
 
 export const registerSchema = z
@@ -32,6 +33,7 @@ export const registerSchema = z
     ),
     confirmPassword: safeString({ min: 1, label: "Confirma tu contraseña" }),
     phone: phoneSchema,
+    turnstileToken: z.string().min(1, "Por favor completa la verificación de seguridad"),
     acceptTerms: z
       .boolean()
       .refine((val) => val === true, "Debes aceptar los términos"),

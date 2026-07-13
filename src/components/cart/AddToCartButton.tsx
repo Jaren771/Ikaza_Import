@@ -5,6 +5,7 @@ import { ShoppingCart, Loader2 } from "lucide-react";
 import { addToCartAction } from "@/features/orders/actions/cart.actions";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useCart } from "@/store/cart";
 
 interface AddToCartButtonProps {
   productId: string;
@@ -15,10 +16,28 @@ interface AddToCartButtonProps {
 export function AddToCartButton({ productId, productName, disabled }: AddToCartButtonProps) {
   const [isPending, startTransition] = useTransition();
 
+  const { dispatch } = useCart();
+
   const handleAddToCart = () => {
     startTransition(async () => {
       const result = await addToCartAction(productId, 1);
       if (result.success) {
+        // Disparar evento para que el carrito global se actualice y se abra
+        dispatch({
+          type: "ADD_ITEM",
+          payload: {
+            id: productId, // Simplificado
+            productId: productId,
+            name: productName,
+            slug: "",
+            price: 0, // Como no tenemos el precio aquí, lo ideal sería pasarlo por props, o dejar que el carrito se hidrate
+            basePrice: 0,
+            quantity: 1,
+            image: "",
+          }
+        });
+        dispatch({ type: "TOGGLE_CART", payload: true });
+
         toast.success("Añadido al carrito", {
           description: productName,
           action: {

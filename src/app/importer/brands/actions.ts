@@ -26,11 +26,13 @@ export async function createBrand(formData: FormData) {
     const name = sanitizeValue(formData.get("name") as string);
     const slug = sanitizeValue(formData.get("slug") as string || name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""));
     const description = sanitizeValue(formData.get("description") as string || "");
+    const logo = formData.get("logo") as string || null;
+    const website = sanitizeValue(formData.get("website") as string || "");
 
     if (!name) return { success: false, error: "El nombre es obligatorio" };
 
     const newBrand = await prisma.brand.create({
-      data: { name, slug, description },
+      data: { name, slug, description, logo, website },
     });
 
     revalidatePath("/importer/brands");
@@ -46,12 +48,14 @@ export async function updateBrand(id: string, formData: FormData) {
     const name = sanitizeValue(formData.get("name") as string);
     const slug = sanitizeValue(formData.get("slug") as string);
     const description = sanitizeValue(formData.get("description") as string || "");
+    const logo = formData.get("logo") as string || null;
+    const website = sanitizeValue(formData.get("website") as string || "");
 
     if (!name) return { success: false, error: "El nombre es obligatorio" };
 
     const updatedBrand = await prisma.brand.update({
       where: { id },
-      data: { name, slug, description },
+      data: { name, slug, description, logo, website },
     });
 
     revalidatePath("/importer/brands");

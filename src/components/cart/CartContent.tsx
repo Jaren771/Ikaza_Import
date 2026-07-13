@@ -8,6 +8,7 @@ import { updateCartItemAction, removeFromCartAction, clearCartAction } from "@/f
 import { formatPrice } from "@/lib/utils";
 import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
+import { useCart } from "@/store/cart";
 
 interface CartItem {
   id: string;
@@ -40,6 +41,7 @@ interface CartContentProps {
 export function CartContent({ cart }: CartContentProps) {
   const [isPending, startTransition] = useTransition();
   const [couponCode, setCouponCode] = useState("");
+  const { dispatch } = useCart();
 
   const subtotal = cart.items.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -51,7 +53,11 @@ export function CartContent({ cart }: CartContentProps) {
   const handleUpdateQuantity = (itemId: string, newQty: number) => {
     startTransition(async () => {
       const result = await updateCartItemAction(itemId, newQty);
-      if (!result.success) toast.error(result.error);
+      if (!result.success) {
+        toast.error(result.error);
+      } else {
+        dispatch({ type: "UPDATE_QUANTITY", payload: { id: itemId, quantity: newQty } });
+      }
     });
   };
 
@@ -59,6 +65,7 @@ export function CartContent({ cart }: CartContentProps) {
     startTransition(async () => {
       const result = await removeFromCartAction(itemId);
       if (result.success) {
+        dispatch({ type: "REMOVE_ITEM", payload: { id: itemId } });
         toast.success(`${productName} eliminado del carrito`);
       } else {
         toast.error(result.error);
@@ -69,8 +76,12 @@ export function CartContent({ cart }: CartContentProps) {
   const handleClearCart = () => {
     startTransition(async () => {
       const result = await clearCartAction();
-      if (result.success) toast.success("Carrito vaciado");
-      else toast.error(result.error);
+      if (result.success) {
+        dispatch({ type: "CLEAR_CART" });
+        toast.success("Carrito vaciado");
+      } else {
+        toast.error(result.error);
+      }
     });
   };
 

@@ -2,8 +2,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ShieldCheck, Truck, Headphones, RefreshCw, Star, CheckCircle2, Home, ChefHat, Monitor, Palette, Shirt, Sparkles, Gamepad2, Gift, Flower2, Droplets, Paintbrush } from "lucide-react";
 import { getFeaturedProductsAction, getCategoriesAction, getProductsAction } from "@/features/products/actions/product.actions";
+import { getBanners } from "@/app/admin/banners/actions";
 import { ProductCard } from "@/components/catalog/ProductCard";
 import { OfferCarousel } from "@/components/home/OfferCarousel";
+import { HeroCarousel } from "@/components/home/HeroCarousel";
+import { SecondaryCarousel } from "@/components/home/SecondaryCarousel";
 import type { Metadata } from "next";
 import { SITE_CONFIG } from "@/lib/constants";
 
@@ -80,10 +83,11 @@ const PETALS = [
 ];
 
 export default async function HomePage() {
-  const [featuredProducts, categories, allProductsResult] = await Promise.all([
+  const [featuredProducts, categories, allProductsResult, bannersResult] = await Promise.all([
     getFeaturedProductsAction(8),
     getCategoriesAction(),
     getProductsAction({ limit: 100, sortBy: "newest" }),
+    getBanners(),
   ]);
 
   const allProducts =
@@ -91,137 +95,21 @@ export default async function HomePage() {
       ? [...allProductsResult.data.products].sort(() => Math.random() - 0.5)
       : [];
 
+  const activeBanners = bannersResult?.success && Array.isArray(bannersResult.data)
+    ? bannersResult.data.filter((b: any) => b.isActive && b.position === "home_hero")
+    : [];
+
+  const activeSecondaryBanners = bannersResult?.success && Array.isArray(bannersResult.data)
+    ? bannersResult.data.filter((b: any) => b.isActive && b.position === "home_secondary")
+    : [];
+
   return (
     <div className="fade-in">
 
       {/* =========================================================
-          HERO SECTION — Fondo_IkasaImport.webp como hero full-width
-          Imagen rectangular de alta resolución, overlay teal izq→derecha
+          HERO SECTION — Carrusel dinámico fluido (10 seg)
           ========================================================= */}
-      <section
-        className="relative overflow-hidden"
-        aria-label="Banner principal"
-        style={{ minHeight: "520px" }}
-      >
-        {/* ── Imagen de fondo full-width ── */}
-        <Image
-          src="/Fondo_IkasaImport.webp"
-          alt=""
-          fill
-          priority
-          quality={95}
-          className="object-cover object-center"
-          aria-hidden="true"
-        />
-
-        {/* ── Overlay izquierda: teal oscuro opaco para legibilidad del texto ── */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "linear-gradient(100deg, rgba(0,32,34,0.92) 0%, rgba(0,96,101,0.82) 38%, rgba(0,96,101,0.45) 62%, rgba(0,96,101,0.05) 100%)",
-          }}
-          aria-hidden="true"
-        />
-
-        {/* ── Vignette sutil inferior para transición suave ── */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
-          style={{
-            background: "linear-gradient(to top, rgba(0,32,34,0.6) 0%, transparent 100%)",
-          }}
-          aria-hidden="true"
-        />
-
-        {/* ── Pétalos flotantes (CSS puro) ── */}
-        {PETALS.map((p, i) => (
-          <span
-            key={i}
-            className="hero-petal"
-            style={{
-              width: p.size,
-              height: p.size,
-              left: p.left,
-              top: "-20px",
-              backgroundColor: p.color,
-              animationDuration: p.duration,
-              animationDelay: p.delay,
-            }}
-          />
-        ))}
-
-        {/* ── Contenido ── */}
-        <div className="ikaza-container relative z-10 py-20 md:py-28 lg:py-32">
-          <div className="max-w-xl slide-up">
-
-            {/* Badge flotante */}
-            <span
-              className="float-badge inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium mb-6"
-              style={{ backgroundColor: "rgba(125, 212, 219, 0.2)", color: "#7dd4db", backdropFilter: "blur(6px)", border: "1px solid rgba(125,212,219,0.3)" }}
-            >
-              <span className="pulse-dot inline-block h-2 w-2 rounded-full bg-current" />
-              Los mejores productos importados
-            </span>
-
-            <h1 className="font-headline text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6 drop-shadow-lg">
-              Calidad de
-              <span style={{ color: "#feb562" }}> Importación</span>
-              <br />
-              al Mejor Precio
-            </h1>
-
-            <p className="text-lg leading-relaxed mb-8 drop-shadow" style={{ color: "#c7fbff" }}>
-              Descubre miles de productos importados: hogar, cocina, tecnología
-              y más. Envío rápido a todo el Perú.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link
-                href="/catalog"
-                className="inline-flex items-center justify-center gap-2 rounded-full px-8 py-3.5 text-base font-semibold text-white transition-all hover:opacity-90 hover:-translate-y-0.5"
-                style={{ backgroundColor: "#885200", boxShadow: "0 4px 20px rgba(136,82,0,0.5)" }}
-                id="hero-cta-primary"
-              >
-                Ver Catálogo
-                <ArrowRight className="h-5 w-5" />
-              </Link>
-              <Link
-                href="/catalog?isFeatured=true"
-                className="inline-flex items-center justify-center gap-2 rounded-full border-2 px-8 py-3.5 text-base font-semibold transition-all hover:bg-white/10"
-                style={{ borderColor: "#7dd4db", color: "#7dd4db" }}
-                id="hero-cta-secondary"
-              >
-                Ver Ofertas
-              </Link>
-            </div>
-
-            {/* Stats */}
-            <div
-              className="flex gap-8 mt-10 pt-8 border-t"
-              style={{ borderColor: "rgba(125, 212, 219, 0.25)" }}
-            >
-              {[
-                { value: "+5,000",  label: "Productos" },
-                { value: "+200",    label: "Marcas"    },
-                { value: "+10,000", label: "Clientes"  },
-              ].map((stat) => (
-                <div key={stat.label}>
-                  <p className="font-headline text-2xl font-bold text-white drop-shadow">{stat.value}</p>
-                  <p className="text-sm" style={{ color: "#7dd4db" }}>{stat.label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Wave inferior */}
-        <div className="wave-divider absolute bottom-0 left-0 right-0" style={{ lineHeight: 0 }}>
-          <svg viewBox="0 0 1440 48" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ width: "100%", display: "block" }}>
-            <path d="M0 48L60 40C120 32 240 16 360 12C480 8 600 16 720 22C840 28 960 32 1080 28C1200 24 1320 12 1380 6L1440 0V48H0Z"
-              fill="#efeded" />
-          </svg>
-        </div>
-      </section>
+      <HeroCarousel banners={activeBanners} />
 
       {/* =========================================================
           FEATURES — Beneficios premium
@@ -366,79 +254,11 @@ export default async function HomePage() {
       </section>
 
       {/* =========================================================
-          BANNER DE OFERTA — Split layout (imagen nítida a la derecha)
+          BANNER DE OFERTA — Dinámico desde BD
           ========================================================= */}
       <section className="py-16" id="banner-oferta">
         <div className="ikaza-container">
-          <div
-            className="relative overflow-hidden rounded-3xl shadow-2xl"
-            style={{ background: "linear-gradient(135deg, #5c3700 0%, #885200 45%, #c97a00 80%, #feb562 100%)" }}
-          >
-            {/* Patrón de puntos decorativo */}
-            <div
-              className="absolute inset-0 opacity-10 pointer-events-none"
-              style={{
-                backgroundImage: "radial-gradient(circle, #fff 1px, transparent 1px)",
-                backgroundSize: "24px 24px",
-              }}
-            />
-            {/* Resplandor izquierdo */}
-            <div
-              className="absolute left-0 top-0 h-full w-1/2 pointer-events-none"
-              style={{
-                background: "radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.08) 0%, transparent 70%)",
-              }}
-            />
-
-            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-0">
-
-              {/* — Lado izquierdo: texto y CTA — */}
-              <div className="flex-1 p-8 md:p-12 lg:p-14">
-                <span
-                  className="inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider mb-5"
-                  style={{ backgroundColor: "rgba(255,255,255,0.2)", color: "#fff" }}
-                >
-                  ⏳ Oferta por tiempo limitado
-                </span>
-                <h2 className="font-headline text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight">
-                  Hasta{" "}
-                  <span
-                    className="float-badge inline-block"
-                    style={{ color: "#ffd080" }}
-                  >
-                    50% OFF
-                  </span>
-                  <br />
-                  en artículos seleccionados
-                </h2>
-                <p className="text-white/80 max-w-sm text-base leading-relaxed mb-8">
-                  Aprovecha nuestras ofertas exclusivas en productos de hogar y cocina.
-                  ¡Solo por tiempo limitado!
-                </p>
-                <Link
-                  href="/catalog?isFeatured=true"
-                  className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-base font-bold transition-all hover:opacity-90 hover:-translate-y-0.5 shadow-lg"
-                  style={{ color: "#885200" }}
-                  id="offer-banner-cta"
-                >
-                  Aprovechar Oferta
-                  <ArrowRight className="h-5 w-5" />
-                </Link>
-              </div>
-
-              {/* — Lado derecho: carrusel de productos — */}
-              <div className="hidden md:flex shrink-0 items-end justify-center self-stretch w-[460px] pb-5">
-                {allProducts.length > 0 ? (
-                  <OfferCarousel products={allProducts} interval={3000} />
-                ) : (
-                  <div className="m-4 rounded-2xl overflow-hidden shadow-2xl bg-white/10 p-8 text-white/60 text-center">
-                    Próximamente ofertas
-                  </div>
-                )}
-              </div>
-
-            </div>
-          </div>
+          <SecondaryCarousel banners={activeSecondaryBanners} products={allProducts} />
         </div>
       </section>
 

@@ -11,6 +11,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { createBrand, updateBrand, deleteBrand } from "./actions";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { ImageUpload } from "@/components/ui/ImageUpload";
+import Image from "next/image";
 
 export default function BrandsClientPage({ initialBrands }: { initialBrands: any[] }) {
   const [brands, setBrands] = useState(initialBrands);
@@ -109,6 +111,7 @@ export default function BrandsClientPage({ initialBrands }: { initialBrands: any
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-[60px]">Logo</TableHead>
                     <TableHead>Nombre</TableHead>
                     <TableHead>Slug</TableHead>
                     <TableHead className="text-center">Productos</TableHead>
@@ -118,6 +121,15 @@ export default function BrandsClientPage({ initialBrands }: { initialBrands: any
                 <TableBody>
                   {brands.map((brand) => (
                     <TableRow key={brand.id}>
+                      <TableCell>
+                        <div className="relative w-10 h-10 rounded-md border bg-white overflow-hidden flex items-center justify-center p-1">
+                          {brand.logo ? (
+                            <Image src={brand.logo} alt={brand.name} fill className="object-contain p-1" />
+                          ) : (
+                            <span className="text-xs font-bold text-muted-foreground">{brand.name.charAt(0)}</span>
+                          )}
+                        </div>
+                      </TableCell>
                       <TableCell className="font-medium">
                         <div>
                           {brand.name}
@@ -159,7 +171,7 @@ export default function BrandsClientPage({ initialBrands }: { initialBrands: any
       </Card>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent aria-describedby={undefined} className="sm:max-w-[425px]">
+        <DialogContent aria-describedby={undefined} className="sm:max-w-[600px]">
           <form onSubmit={handleSubmit}>
             <DialogHeader>
               <DialogTitle>{editingBrand ? "Editar Marca" : "Nueva Marca"}</DialogTitle>
@@ -177,6 +189,14 @@ export default function BrandsClientPage({ initialBrands }: { initialBrands: any
               <div className="grid gap-2">
                 <Label htmlFor="description">Descripción</Label>
                 <Input id="description" name="description" defaultValue={editingBrand?.description} placeholder="Breve descripción..." />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="website">Sitio Web</Label>
+                <Input id="website" name="website" type="url" defaultValue={editingBrand?.website} placeholder="https://..." />
+              </div>
+              <div className="grid gap-2">
+                <Label>Logo de la Marca</Label>
+                <ImageUpload name="logo" defaultValue={editingBrand?.logo} />
               </div>
             </div>
             <DialogFooter>

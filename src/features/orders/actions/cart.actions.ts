@@ -137,6 +137,7 @@ export async function addToCartAction(
           productId,
           quantity,
           price: product.price,
+          basePrice: product.comparePrice ?? product.price, // Patrón 4: Guardar precio original
         },
       });
     }
@@ -178,7 +179,7 @@ export async function updateCartItemAction(
 }
 
 /**
- * Elimina un item del carrito
+ * Elimina un item del carrito por id de CartItem
  */
 export async function removeFromCartAction(
   itemId: string
@@ -193,6 +194,70 @@ export async function removeFromCartAction(
   } catch (error) {
     console.error("[removeFromCartAction]", error);
     return { success: false, error: "Error al eliminar del carrito" };
+  }
+}
+
+/**
+ * Actualiza la cantidad usando productId (útil para el carrito local)
+ */
+export async function updateProductQuantityAction(
+  productId: string,
+  quantity: number
+): Promise<ActionResult<null>> {
+  const session = await auth();
+  if (!session?.user?.id) return { success: false, error: "No autenticado" };
+
+  try {
+    const cart = await prisma.cart.findUnique({ where: { userId: session.user.id } });
+    if (!cart) return { success: false, error: "Carrito no encontrado" };
+
+    const cartItem = await prisma.cartItem.findUnique({
+      where: { cartId_productId: { cartId: cart.id, productId } }
+    });
+
+    if (cartItem) {
+      if (quantity <= 0) {
+        await prisma.cartItem.delete({ where: { id: cartItem.id } });
+      } else {
+        await prisma.cartItem.update({
+          where: { id: cartItem.id },
+          data: { quantity },
+        });
+      }
+      revalidatePath("/cart");
+    }
+    return { success: true, data: null };
+  } catch (error) {
+    console.error("[updateProductQuantityAction]", error);
+    return { success: false, error: "Error al actualizar" };
+  }
+}
+
+/**
+ * Elimina usando productId (útil para el carrito local)
+ */
+export async function removeProductFromCartAction(
+  productId: string
+): Promise<ActionResult<null>> {
+  const session = await auth();
+  if (!session?.user?.id) return { success: false, error: "No autenticado" };
+
+  try {
+    const cart = await prisma.cart.findUnique({ where: { userId: session.user.id } });
+    if (!cart) return { success: false, error: "Carrito no encontrado" };
+
+    const cartItem = await prisma.cartItem.findUnique({
+      where: { cartId_productId: { cartId: cart.id, productId } }
+    });
+
+    if (cartItem) {
+      await prisma.cartItem.delete({ where: { id: cartItem.id } });
+      revalidatePath("/cart");
+    }
+    return { success: true, data: null };
+  } catch (error) {
+    console.error("[removeProductFromCartAction]", error);
+    return { success: false, error: "Error al eliminar" };
   }
 }
 
@@ -262,5 +327,50 @@ export async function toggleWishlistAction(
   } catch (error) {
     console.error("[toggleWishlistAction]", error);
     return { success: false, error: "Error al actualizar la lista de deseos" };
+  }
+}
+
+/**
+ * Aplica un código de cupón al carrito
+ */
+export async function applyCouponAction(
+  code: string
+): Promise<ActionResult<null>> {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false, error: "Debes iniciar sesión para usar cupones" };
+  }
+
+  try {
+    const cart = await prisma.cart.findUnique({
+      where: { userId: session.user.id },
+    });
+
+    if (!cart) {
+      return { success: false, error: "No tienes un carrito activo" };
+    }
+
+    if (!code) {
+      // Eliminar cupón
+      await prisma.cart.update({
+        where: { id: cart.id },
+        data: { appliedCouponCode: null },
+      });
+      revalidatePath("/cart");
+      return { success: true, data: null, message: "Cupón removido" };
+    }
+
+    // Aquí podrías añadir lógica para buscar el cupón en la tabla Coupon si existe
+    // Por ahora, lo guardamos directamente para el Checkout (Patrón 4)
+    await prisma.cart.update({
+      where: { id: cart.id },
+      data: { appliedCouponCode: code },
+    });
+
+    revalidatePath("/cart");
+    return { success: true, data: null, message: "Cupón aplicado exitosamente" };
+  } catch (error) {
+    console.error("[applyCouponAction]", error);
+    return { success: false, error: "Error al aplicar el cupón" };
   }
 }

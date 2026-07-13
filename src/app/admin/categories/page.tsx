@@ -7,7 +7,5 @@ export const metadata = {
 
 export default async function CategoriesPage() {
   const result = await getCategories();
-  const categories = result.success ? result.data : [];
-
-  return <CategoriesClientPage initialCategories={categories || []} />;
+  return <CategoriesClientPage initialCategories={result.success ? (result.data || []) : []} />;
 }

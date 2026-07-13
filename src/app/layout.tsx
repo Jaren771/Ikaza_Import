@@ -3,6 +3,8 @@ import { Manrope, Work_Sans } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { SITE_CONFIG } from "@/lib/constants";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 // Fuentes del design system ikaZa (Stitch)
 const manrope = Manrope({
@@ -33,6 +35,9 @@ export const metadata: Metadata = {
     "ikaza import",
     "compras online perú",
   ],
+  alternates: {
+    canonical: SITE_CONFIG.url, // Patrón 10: Canonical estático para evitar dilución SEO
+  },
   authors: [{ name: "ikaZa Import" }],
   creator: "ikaZa Import",
   icons: {
@@ -80,6 +85,8 @@ export default function RootLayout({
         className={`${manrope.variable} ${workSans.variable} font-body antialiased`}
       >
         <Providers>{children}</Providers>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

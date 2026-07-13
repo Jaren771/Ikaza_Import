@@ -9,6 +9,7 @@ import { toNumber } from "@/lib/utils";
 import type { ActionResult, ProductFilters } from "@/types";
 import { revalidatePath } from "next/cache";
 import { generateSlug } from "@/lib/utils";
+import { l1Cache } from "@/lib/cache";
 
 
 // =============================================================================
@@ -24,51 +25,57 @@ export async function getProductsAction(filters: ProductFilters) {
     return { success: false, error: "Filtros inválidos" };
   }
 
-  try {
-    // Intentar obtener productos de la base de datos
-    const result = await productRepository.findMany(validation.data);
-    
-    // La BD respondió correctamente — usar sus resultados aunque sean 0
-    return {
-      success: true,
-      data: {
-        products: result.data.length > 0
-          ? await Promise.all(result.data.map(p => serializeProduct(p)))
-          : [],
-        meta: result.meta,
-      }
-    };
-  } catch (error) {
-    console.error("DB connection error in getProductsAction:", error);
-    return { success: false, error: "Error de conexión con la base de datos" };
-  }
+  // Clave única basada en los filtros serializados
+  const cacheKey = `products_${JSON.stringify(validation.data)}`;
+
+  return l1Cache.wrap(cacheKey, async () => {
+    try {
+      const result = await productRepository.findMany(validation.data);
+      
+      return {
+        success: true,
+        data: {
+          products: result.data.length > 0
+            ? await Promise.all(result.data.map(p => serializeProduct(p)))
+            : [],
+          meta: result.meta,
+        }
+      };
+    } catch (error) {
+      console.error("DB connection error in getProductsAction:", error);
+      return { success: false, error: "Error de conexión con la base de datos" };
+    }
+  });
 }
 
 /**
  * Obtiene un producto por slug (pública)
  */
 export async function getProductBySlugAction(slug: string) {
-  try {
-    const product = await productRepository.findBySlug(slug);
-    if (product) return await serializeProduct(product);
-    // Product not found in DB - return null, don't fall to mock
-    return null;
-  } catch (error) {
-    console.error("DB connection error in getProductBySlugAction:", error);
-    return null;
-  }
+  return l1Cache.wrap(`product_${slug}`, async () => {
+    try {
+      const product = await productRepository.findBySlug(slug);
+      if (product) return await serializeProduct(product);
+      return null;
+    } catch (error) {
+      console.error("DB connection error in getProductBySlugAction:", error);
+      return null;
+    }
+  });
 }
 
 /**
  * Obtiene productos destacados (pública)
  */
 export async function getFeaturedProductsAction(limit = 8) {
-  try {
-    return await productRepository.findFeatured(limit);
-  } catch (error) {
-    console.error("DB connection error in getFeaturedProductsAction:", error);
-    return [];
-  }
+  return l1Cache.wrap(`featured_products_${limit}`, async () => {
+    try {
+      return await productRepository.findFeatured(limit);
+    } catch (error) {
+      console.error("DB connection error in getFeaturedProductsAction:", error);
+      return [];
+    }
+  });
 }
 
 /**
@@ -78,12 +85,14 @@ export async function getRelatedProductsAction(
   productId: string,
   categoryId: string | null
 ) {
-  try {
-    return await productRepository.findRelated(productId, categoryId);
-  } catch (error) {
-    console.error("DB connection error in getRelatedProductsAction:", error);
-    return [];
-  }
+  return l1Cache.wrap(`related_products_${productId}`, async () => {
+    try {
+      return await productRepository.findRelated(productId, categoryId);
+    } catch (error) {
+      console.error("DB connection error in getRelatedProductsAction:", error);
+      return [];
+    }
+  });
 }
 
 /**
@@ -131,6 +140,7 @@ export async function createProductAction(
 
     revalidatePath("/admin/products");
     revalidatePath("/catalog");
+    l1Cache.clear(); // Purga global de L1 al modificar productos (Patrón 12)
 
     return { success: true, data: { id: product.id }, message: "Producto creado" };
   } catch (error) {
@@ -170,6 +180,7 @@ export async function updateProductAction(
 
     revalidatePath("/admin/products");
     revalidatePath(`/products/${validation.data.slug ?? id}`);
+    l1Cache.clear(); // Purga global de L1 al modificar productos (Patrón 12)
 
     return { success: true, data: null, message: "Producto actualizado" };
   } catch (error) {
@@ -193,6 +204,7 @@ export async function deleteProductAction(
   try {
     await productRepository.softDelete(id);
     revalidatePath("/admin/products");
+    l1Cache.clear(); // Purga global de L1 al eliminar productos (Patrón 12)
     return { success: true, data: null, message: "Producto eliminado" };
   } catch (error) {
     console.error("[deleteProductAction]", error);
@@ -204,21 +216,23 @@ export async function deleteProductAction(
  * Obtiene categorías activas (pública)
  */
 export async function getCategoriesAction() {
-  try {
-    const cats = await prisma.category.findMany({
-      where: { isActive: true },
-      orderBy: { sortOrder: "asc" },
-      include: {
-        subcategories: {
-          where: { isActive: true },
-          orderBy: { sortOrder: "asc" },
+  return l1Cache.wrap("categories_public", async () => {
+    try {
+      const cats = await prisma.category.findMany({
+        where: { isActive: true },
+        orderBy: { sortOrder: "asc" },
+        include: {
+          subcategories: {
+            where: { isActive: true },
+            orderBy: { sortOrder: "asc" },
+          },
+          _count: { select: { products: true } },
         },
-        _count: { select: { products: true } },
-      },
-    });
-    return cats;
-  } catch (error) {
-    console.error("DB connection error in getCategoriesAction:", error);
-    return [];
-  }
+      });
+      return cats;
+    } catch (error) {
+      console.error("DB connection error in getCategoriesAction:", error);
+      return [];
+    }
+  });
 }

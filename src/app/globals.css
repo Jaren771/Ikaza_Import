@@ -219,10 +219,13 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   }
 
-  .product-card:hover {
-    border-color: #0d7a80;
-    box-shadow: 0 4px 16px rgba(0, 96, 101, 0.12);
-    transform: translateY(-2px);
+  /* Error Real #8 AGENTS.md: @media (hover: hover) para evitar doble toque en iOS Safari */
+  @media (hover: hover) {
+    .product-card:hover {
+      border-color: #0d7a80;
+      box-shadow: 0 4px 16px rgba(0, 96, 101, 0.12);
+      transform: translateY(-2px);
+    }
   }
 
   /* Botón primario ikaZa */
@@ -231,10 +234,12 @@
     background-color: #006065;
   }
 
-  .btn-ikaza-primary:hover {
-    background-color: #004f53;
-    box-shadow: 0 4px 12px rgba(0, 96, 101, 0.3);
-    transform: translateY(-1px);
+  @media (hover: hover) {
+    .btn-ikaza-primary:hover {
+      background-color: #004f53;
+      box-shadow: 0 4px 12px rgba(0, 96, 101, 0.3);
+      transform: translateY(-1px);
+    }
   }
 
   /* Botón CTA de carrito (naranja) */
@@ -243,9 +248,11 @@
     background-color: #885200;
   }
 
-  .btn-ikaza-cart:hover {
-    background-color: #673d00;
-    box-shadow: 0 4px 12px rgba(136, 82, 0, 0.3);
+  @media (hover: hover) {
+    .btn-ikaza-cart:hover {
+      background-color: #673d00;
+      box-shadow: 0 4px 12px rgba(136, 82, 0, 0.3);
+    }
   }
 
   /* Search bar con estilo pill */
@@ -382,10 +389,13 @@
     transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
   }
 
-  .category-card-item:hover {
-    transform: translateY(-6px) scale(1.03);
-    box-shadow: 0 12px 32px rgba(0, 96, 101, 0.18);
-    border-color: #0d7a80;
+  /* Error Real #8 AGENTS.md: @media (hover: hover) para evitar doble toque en iOS Safari */
+  @media (hover: hover) {
+    .category-card-item:hover {
+      transform: translateY(-6px) scale(1.03);
+      box-shadow: 0 12px 32px rgba(0, 96, 101, 0.18);
+      border-color: #0d7a80;
+    }
   }
 
   /* Offer banner */
@@ -400,9 +410,11 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
-  .testimonial-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(0, 96, 101, 0.1);
+  @media (hover: hover) {
+    .testimonial-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0, 96, 101, 0.1);
+    }
   }
 
   .testimonial-card::before {
@@ -425,9 +437,11 @@
     transition: background-color 0.2s ease, transform 0.2s ease;
   }
 
-  .feature-item:hover {
-    background-color: #ffffff;
-    transform: translateY(-2px);
+  @media (hover: hover) {
+    .feature-item:hover {
+      background-color: #ffffff;
+      transform: translateY(-2px);
+    }
   }
 
   /* Section wave divider */

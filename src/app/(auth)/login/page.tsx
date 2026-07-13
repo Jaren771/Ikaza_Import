@@ -6,9 +6,10 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginInput } from "@/features/auth/validators/auth.schema";
-import { loginAction, loginWithGoogleAction } from "@/features/auth/actions/auth.actions";
+import { loginAction, loginWithGoogleAction, forgotPasswordAction } from "@/features/auth/actions/auth.actions";
 import { Eye, EyeOff, Loader2, Mail, Lock } from "lucide-react";
 import { toast } from "sonner";
+import { Turnstile } from "@marsidev/react-turnstile";
 import type { Metadata } from "next";
 
 // =============================================================================
@@ -25,10 +26,30 @@ export default function LoginPage() {
     register,
     handleSubmit,
     setError,
+    setValue,
+    getValues,
     formState: { errors },
   } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
   });
+
+  const handleForgotPassword = async () => {
+    const email = getValues("email");
+    if (!email || !email.includes("@")) {
+      toast.error("Por favor, ingresa tu correo electrónico primero para enviarte el código.");
+      return;
+    }
+    
+    startTransition(async () => {
+      const result = await forgotPasswordAction({ email });
+      if (!result.success) {
+        toast.error(result.error);
+        return;
+      }
+      toast.success("Código enviado. Revisa tu bandeja.");
+      router.push(`/reset-password?email=${encodeURIComponent(email)}`);
+    });
+  };
 
   const onSubmit = (data: LoginInput) => {
     startTransition(async () => {
@@ -126,13 +147,15 @@ export default function LoginPage() {
             <label htmlFor="login-password" className="text-sm font-medium">
               Contraseña
             </label>
-            <Link
-              href="/forgot-password"
+            <button
+              type="button"
+              onClick={handleForgotPassword}
+              disabled={isPending}
               className="text-xs transition-colors hover:underline"
               style={{ color: "#006065" }}
             >
               ¿Olvidaste tu contraseña?
-            </Link>
+            </button>
           </div>
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -158,6 +181,17 @@ export default function LoginPage() {
             <p className="text-xs text-destructive">{errors.password.message}</p>
           )}
         </div>
+
+        {/* Cloudflare Turnstile */}
+        <div className="flex justify-center my-4">
+          <Turnstile 
+            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"} 
+            onSuccess={(token) => setValue("turnstileToken", token)}
+          />
+        </div>
+        {errors.turnstileToken && (
+          <p className="text-xs text-destructive text-center mb-4">{errors.turnstileToken.message}</p>
+        )}
 
         {/* Submit */}
         <button

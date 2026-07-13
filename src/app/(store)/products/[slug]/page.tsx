@@ -34,6 +34,10 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   return {
     title: product.metaTitle ?? `${product.name} | ikaZa Import`,
     description: product.metaDescription ?? product.shortDescription ?? product.description?.slice(0, 160),
+    robots: { index: true, follow: true }, // Obligatorio según AGENTS.md sección SEO
+    alternates: {
+      canonical: `${process.env.NEXT_PUBLIC_APP_URL ?? "https://www.ikaza-import.com"}/products/${slug}`,
+    },
     openGraph: {
       title: product.name,
       description: product.shortDescription ?? "",
@@ -77,8 +81,45 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
     ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
     : 0;
 
+  // JSON-LD para SEO (Sección 4 de AGENTS.md — Schema.org Product)
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.ikaza-import.com";
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.shortDescription ?? product.description ?? "",
+    sku: product.sku,
+    image: product.images?.map((img: ProductImage) => img.url) ?? [],
+    url: `${appUrl}/products/${slug}`,
+    brand: product.brand ? { "@type": "Brand", name: product.brand.name } : undefined,
+    offers: {
+      "@type": "Offer",
+      price: price.toFixed(2),
+      priceCurrency: "PEN",
+      availability: isOutOfStock
+        ? "https://schema.org/OutOfStock"
+        : "https://schema.org/InStock",
+      url: `${appUrl}/products/${slug}`,
+    },
+    ...(reviews.length > 0 && {
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: avgRating.toFixed(1),
+        reviewCount: reviews.length,
+      },
+    }),
+  };
+
   return (
-    <div className="ikaza-container py-6 fade-in">
+    <>
+      {/* JSON-LD Schema.org Product (SEO - Sección 4 AGENTS.md) */}
+      {/* SOLO para datos estructurados, nunca para contenido de usuarios */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      <div className="ikaza-container py-6 fade-in">
       {/* Breadcrumb */}
       <nav aria-label="Ruta de navegación" className="mb-6">
         <ol className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -362,5 +403,6 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
         </section>
       )}
     </div>
+    </>
   );
 }

@@ -4,6 +4,8 @@ import { ProductCard } from "@/components/catalog/ProductCard";
 import { ProductFiltersPanel } from "@/components/catalog/ProductFiltersPanel";
 import { Pagination } from "@/components/shared/Pagination";
 import { ProductGridSkeleton } from "@/components/catalog/ProductGridSkeleton";
+import { getBanners } from "@/app/admin/banners/actions";
+import { SecondaryCarousel } from "@/components/home/SecondaryCarousel";
 import type { Metadata } from "next";
 import { SlidersHorizontal, Grid2X2, LayoutList } from "lucide-react";
 
@@ -49,9 +51,10 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
     inStock: params.inStock === "true" ? true : undefined,
   };
 
-  const [productsResult, categories] = await Promise.all([
+  const [productsResult, categories, bannersResult] = await Promise.all([
     getProductsAction(filters),
     getCategoriesAction(),
+    getBanners(),
   ]);
 
   const hasActiveFilters = !!(
@@ -66,6 +69,10 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
 
   const productsData = "data" in productsResult && productsResult.data ? productsResult.data.products : [];
   const productsMeta = "data" in productsResult && productsResult.data ? productsResult.data.meta : { total: 0, page: 1, limit: 12, totalPages: 0 };
+  
+  const catalogBanners = bannersResult?.success && Array.isArray(bannersResult.data)
+    ? bannersResult.data.filter((b: any) => b.isActive && b.position === "catalog_top")
+    : [];
 
   return (
     <div className="ikaza-container py-6">
@@ -83,6 +90,13 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
           )}
         </ol>
       </nav>
+
+      {/* Banner Principal del Catálogo */}
+      {catalogBanners.length > 0 && (
+        <div className="mb-8">
+          <SecondaryCarousel banners={catalogBanners} products={productsData.slice(0, 6)} />
+        </div>
+      )}
 
       {/* Header del catálogo */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">

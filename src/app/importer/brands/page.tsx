@@ -7,7 +7,7 @@ export const metadata = {
 
 export default async function BrandsPage() {
   const result = await getBrands();
-  const brands = result.success ? result.data : [];
+  const brands = result.success ? (result.data || []) : [];
 
   return <BrandsClientPage initialBrands={brands || []} />;
 }

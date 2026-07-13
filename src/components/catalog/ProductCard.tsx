@@ -10,6 +10,7 @@ import { toggleWishlistAction } from "@/features/orders/actions/cart.actions";
 import { toast } from "sonner";
 import type { ProductWithRelations } from "@/types";
 import { cn } from "@/lib/utils";
+import { useCart } from "@/store/cart";
 
 interface ProductCardProps {
   product: ProductWithRelations;
@@ -25,6 +26,7 @@ export function ProductCard({ product, inWishlist = false }: ProductCardProps) {
   const [isPending, startTransition] = useTransition();
   const [isInWishlist, setIsInWishlist] = useState(inWishlist);
   const [showQuickView, setShowQuickView] = useState(false);
+  const { dispatch } = useCart();
 
   const primaryImage = product.images?.find((img) => img.isPrimary) ?? product.images?.[0];
   const price = toNumber(product.price);
@@ -36,6 +38,19 @@ export function ProductCard({ product, inWishlist = false }: ProductCardProps) {
     startTransition(async () => {
       const result = await addToCartAction(product.id, 1);
       if (result.success) {
+        dispatch({
+          type: "ADD_ITEM",
+          payload: {
+            id: product.id,
+            productId: product.id,
+            name: product.name,
+            slug: product.slug,
+            price: price,
+            basePrice: comparePrice ?? price,
+            quantity: 1,
+            image: primaryImage?.url ?? "",
+          }
+        });
         toast.success("Producto añadido al carrito", {
           description: product.name,
           action: { label: "Ver carrito", onClick: () => (window.location.href = "/cart") },

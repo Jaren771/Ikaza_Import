@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState } from "react";
 import { Toaster } from "@/components/ui/sonner";
+import { CartProvider } from "@/store/cart";
+import { CartDrawer } from "@/components/layout/CartDrawer";
 
 // =============================================================================
 // Providers — Wraps toda la app con contextos globales
@@ -29,20 +31,23 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
       <QueryClientProvider client={queryClient}>
-        {children}
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            style: {
-              background: "white",
-              border: "1px solid #bdc9c9",
-              color: "#1b1c1c",
-            },
-          }}
-        />
-        {process.env.NODE_ENV === "development" && (
-          <ReactQueryDevtools initialIsOpen={false} />
-        )}
+        <CartProvider>
+          {children}
+          <CartDrawer />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              style: {
+                background: "white",
+                border: "1px solid #bdc9c9",
+                color: "#1b1c1c",
+              },
+            }}
+          />
+          {process.env.NODE_ENV === "development" && (
+            <ReactQueryDevtools initialIsOpen={false} />
+          )}
+        </CartProvider>
       </QueryClientProvider>
     </SessionProvider>
   );

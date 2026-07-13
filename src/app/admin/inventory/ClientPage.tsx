@@ -38,7 +38,7 @@ export default function InventoryClientPage({ initialData }: { initialData: any[
     setIsLoading(true);
     const result = await getInventoryMovements(item.id);
     if (result.success) {
-      setMovements(result.data);
+      setMovements(result.data || []);
     } else {
       toast.error(result.error);
     }
@@ -203,7 +203,7 @@ export default function InventoryClientPage({ initialData }: { initialData: any[
               </div>
               <div className="grid gap-2">
                 <Label>Cantidad</Label>
-                <Input name="quantity" type="number" min="1" required placeholder="Ej. 10" />
+                <Input name="quantity" type="number" min="1" required placeholder="Ej. 10" inputMode="numeric" pattern="[0-9]*" />
               </div>
               <div className="grid gap-2">
                 <Label>Motivo (Opcional)</Label>

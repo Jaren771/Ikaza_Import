@@ -55,14 +55,14 @@ export function ProductFiltersPanel({ categories, currentFilters }: ProductFilte
     }
     
     params.set("page", "1");
-    router.push(`${pathname}?${params.toString()}`);
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false }); // Patrón 9: Sincronización Cliente-Servidor SEO
   };
 
   const clearAllFilters = () => {
     const params = new URLSearchParams();
     const search = searchParams.get("search");
     if (search) params.set("search", search);
-    router.push(`${pathname}?${params.toString()}`);
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   const hasActiveFilters = searchParams.has("category") ||

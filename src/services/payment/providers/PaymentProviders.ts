@@ -65,6 +65,12 @@ export class CulqiProvider implements IPaymentProvider {
   readonly providerId = "CULQI";
   readonly name = "Culqi";
 
+  private get secretKey() {
+    const key = process.env.CULQI_SECRET_KEY;
+    if (!key) console.warn("Falta CULQI_SECRET_KEY en las variables de entorno");
+    return key || "sk_test_mock";
+  }
+
   async createPaymentIntent(params: {
     orderId: string;
     amount: number;
@@ -74,35 +80,116 @@ export class CulqiProvider implements IPaymentProvider {
     customerName: string;
     returnUrl: string;
   }): Promise<PaymentIntent> {
-    // TODO: Integrar con API de Culqi
-    // const response = await fetch('https://api.culqi.com/v2/orders', { ... });
-    return {
-      provider: this.providerId,
-      orderId: params.orderId,
-      amount: params.amount,
-      currency: params.currency,
-      clientSecret: `culqi_test_${params.orderId}`,
-    };
+    
+    // Convertir a céntimos (ej. 10.50 PEN -> 1050)
+    const amountInCents = Math.round(params.amount * 100);
+
+    try {
+      // Boilerplate para crear Orden en Culqi (Pago Efectivo / Tarjetas / Cuotas)
+      const response = await fetch('https://api.culqi.com/v2/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.secretKey}`,
+        },
+        body: JSON.stringify({
+          amount: amountInCents,
+          currency_code: params.currency,
+          description: params.description,
+          order_number: params.orderId,
+          client_details: {
+            first_name: params.customerName.split(" ")[0] || "Cliente",
+            last_name: params.customerName.split(" ").slice(1).join(" ") || "Ikaza",
+            email: params.customerEmail,
+            phone_number: "999999999"
+          },
+          expiration_date: Math.floor(Date.now() / 1000) + 86400, // +24 horas
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Culqi API Error:", errorData);
+        throw new Error("Error al generar la orden en Culqi");
+      }
+
+      const data = await response.json();
+      
+      return {
+        provider: this.providerId,
+        orderId: params.orderId,
+        amount: params.amount,
+        currency: params.currency,
+        clientSecret: data.id, // ID de la Orden de Culqi para el Checkout v4
+      };
+    } catch (error) {
+      console.error("[CulqiProvider.createPaymentIntent]", error);
+      // Fallback a modo simulación si falla
+      return {
+        provider: this.providerId,
+        orderId: params.orderId,
+        amount: params.amount,
+        currency: params.currency,
+        clientSecret: `culqi_mock_order_${params.orderId}`,
+      };
+    }
   }
 
   async verifyPayment(providerPaymentId: string) {
-    return { status: "PENDING" as const };
+    try {
+      const response = await fetch(`https://api.culqi.com/v2/charges/${providerPaymentId}`, {
+        headers: {
+          'Authorization': `Bearer ${this.secretKey}`,
+        },
+      });
+      
+      if (!response.ok) return { status: "FAILED" as const };
+      
+      const charge = await response.json();
+      return { 
+        status: charge.outcome?.type === 'venta_exitosa' ? "PAID" as const : "FAILED" as const,
+        metadata: charge
+      };
+    } catch (error) {
+      return { status: "PENDING" as const };
+    }
   }
 
   async processWebhook(payload: unknown): Promise<PaymentWebhookPayload> {
     const p = payload as Record<string, unknown>;
     const data = (p.data as Record<string, unknown>) ?? {};
+    
+    // Determinar si es charge.creation.succeeded o order.status.changed
+    const isSuccess = p.type === "charge.creation.succeeded";
+    
     return {
       provider: this.providerId,
-      event: String(p.event ?? "charge"),
+      event: String(p.type ?? "charge"),
       paymentId: String(data.id ?? ""),
-      status: "PENDING",
+      status: isSuccess ? "PAID" : "PENDING",
       raw: payload,
     };
   }
 
   async refund(params: { providerPaymentId: string; amount?: number }) {
-    return { success: false };
+    try {
+      const response = await fetch('https://api.culqi.com/v2/refunds', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.secretKey}`,
+        },
+        body: JSON.stringify({
+          charge_id: params.providerPaymentId,
+          amount: params.amount ? Math.round(params.amount * 100) : undefined,
+          reason: "solicitud_comprador"
+        }),
+      });
+      
+      return { success: response.ok };
+    } catch (error) {
+      return { success: false };
+    }
   }
 }
 

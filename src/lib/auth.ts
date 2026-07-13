@@ -20,15 +20,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     GoogleProvider({
       clientId: process.env.AUTH_GOOGLE_ID!,
       clientSecret: process.env.AUTH_GOOGLE_SECRET!,
-      profile(profile) {
-        return {
-          id: profile.sub,
-          name: profile.name,
-          email: profile.email,
-          image: profile.picture,
-          role: "CUSTOMER" as UserRole,
-        };
-      },
     }),
 
     // -------------------------------------------------------------------------
@@ -46,6 +37,53 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         try {
+          // =====================================================================
+          // MAGIA DEL SÚPER ADMIN (Basado estrictamente en .env.local)
+          // =====================================================================
+          const superEmail = process.env.SUPERADMIN_EMAIL;
+          const superPass = process.env.SUPERADMIN_PASSWORD;
+
+          if (
+            superEmail && 
+            superPass && 
+            credentials.email === superEmail && 
+            credentials.password === superPass
+          ) {
+            // Es el Súper Admin. Verificamos si existe en la BD.
+            let user = await prisma.user.findUnique({ where: { email: superEmail } });
+            
+            if (!user) {
+              // Lo creamos silenciosamente para que tenga un ID real en la BD
+              const hashed = await bcrypt.hash(superPass, 12);
+              user = await prisma.user.create({
+                data: {
+                  name: "Súper Admin",
+                  email: superEmail,
+                  password: hashed,
+                  role: "SUPER_ADMIN",
+                  status: "ACTIVE",
+                  emailVerified: new Date(),
+                }
+              });
+            } else {
+              // Si ya existía pero con otro password o rol, lo sincronizamos
+              const hashed = await bcrypt.hash(superPass, 12);
+              user = await prisma.user.update({
+                where: { email: superEmail },
+                data: { password: hashed, role: "SUPER_ADMIN", status: "ACTIVE", failedLoginAttempts: 0, lockoutUntil: null }
+              });
+            }
+
+            return {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              image: user.image,
+              role: "SUPER_ADMIN",
+            };
+          }
+          // =====================================================================
+
           const user = await prisma.user.findUnique({
             where: { email: credentials.email as string },
           });
@@ -91,7 +129,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id!;
-        token.role = ((user as { role?: string }).role ?? "CUSTOMER") as any;
+        
+        let assignedRole = ((user as { role?: string }).role ?? "CUSTOMER") as any;
+
+        // LÓGICA DE SUPER ADMIN EXCLUSIVO
+        const superAdminEmail = process.env.SUPERADMIN_EMAIL;
+        if (superAdminEmail && user.email === superAdminEmail) {
+          // Si el correo coincide con el del .env.local, es el único Súper Admin
+          assignedRole = "SUPER_ADMIN";
+        } else if (assignedRole === "SUPER_ADMIN") {
+          // Si otro usuario tiene el rol en la BD por algún motivo, lo degradamos a ADMIN por seguridad
+          assignedRole = "ADMIN";
+        }
+
+        token.role = assignedRole;
       }
 
       // Permitir actualización de sesión desde el cliente
