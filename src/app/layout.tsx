@@ -5,6 +5,7 @@ import { Providers } from "./providers";
 import { SITE_CONFIG } from "@/lib/constants";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import Script from "next/script";
 
 // Fuentes del design system ikaZa (Stitch)
 const manrope = Manrope({
@@ -81,6 +82,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" suppressHydrationWarning>
+      <head>
+        <Script src="https://checkout.culqi.com/js/v4" strategy="beforeInteractive" />
+      </head>
       <body
         className={`${manrope.variable} ${workSans.variable} font-body antialiased`}
       >

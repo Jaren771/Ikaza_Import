@@ -153,7 +153,6 @@ export function CheckoutForm({ addresses, cartTotal, subtotal, cartItemsWeight, 
 
   return (
     <>
-      <Script src="https://checkout.culqi.com/js/v4" strategy="afterInteractive" />
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* LADO IZQUIERDO: FORMULARIO */}
