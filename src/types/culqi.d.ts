@@ -32,6 +32,7 @@ interface CulqiObject {
   settings: (settings: CulqiSettings) => void;
   options: (options: CulqiOptions) => void;
   open: () => void;
+  close?: () => void;
   token?: {
     id: string;
     email: string;
