@@ -20,6 +20,10 @@ export async function validateCartItems(items: CartItem[]): Promise<{ validItems
       comparePrice: true,
       name: true,
       slug: true,
+      images: {
+        where: { isPrimary: true },
+        take: 1
+      },
       inventory: {
         select: {
           quantity: true
@@ -77,6 +81,7 @@ export async function validateCartItems(items: CartItem[]): Promise<{ validItems
       price: finalPrice,
       basePrice: dbPrice,
       quantity: finalQuantity,
+      image: dbProduct.images?.[0]?.url || item.image,
     });
   }
 
