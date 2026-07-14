@@ -56,13 +56,14 @@ export function CheckoutForm({ addresses, cartTotal, subtotal, cartItemsWeight, 
     window.culqi = () => {
       if (window.Culqi.token) {
         const token = window.Culqi.token.id;
+        if (window.Culqi.close) window.Culqi.close();
         processCheckout(token);
       } else if (window.Culqi.error) {
         toast.error(window.Culqi.error.user_message);
         setIsPending(false);
       }
     };
-  }, [shippingMethod, shippingStreet, shippingCity, shippingState, docType, docNumber, billingName, billingEmail]);
+  }, [shippingMethod, shippingStreet, shippingCity, shippingState, docType, docNumber, billingName, billingEmail, cartState]);
 
   const processCheckout = (paymentToken?: string) => {
     const cartSnapshot = JSON.parse(JSON.stringify(cartState.items)).map((item: any) => ({
@@ -143,6 +144,7 @@ export function CheckoutForm({ addresses, cartTotal, subtotal, cartItemsWeight, 
           cuotealo: false,
         }
       });
+      setIsPending(true);
       window.Culqi.open();
     } catch (err) {
       console.error(err);
