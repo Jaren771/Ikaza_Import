@@ -42,7 +42,15 @@ const nextConfig: NextConfig = {
           },
           {
             key: "Content-Security-Policy",
-            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com https://va.vercel-scripts.com; connect-src 'self' https://challenges.cloudflare.com https://vitals.vercel-insights.com https://*.sentry.io; frame-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob: data: https://images.unsplash.com https://res.cloudinary.com;",
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com https://va.vercel-scripts.com https://checkout.culqi.com https://js.culqi.com",
+              "connect-src 'self' https://challenges.cloudflare.com https://vitals.vercel-insights.com https://*.sentry.io https://api.culqi.com https://sandbox.apisunat.pe https://app.apisunat.pe",
+              "frame-src 'self' https://challenges.cloudflare.com https://checkout.culqi.com",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://checkout.culqi.com",
+              "font-src 'self' https://fonts.gstatic.com https://checkout.culqi.com",
+              "img-src 'self' blob: data: https://images.unsplash.com https://res.cloudinary.com https://checkout.culqi.com",
+            ].join("; "),
           },
         ],
       },
