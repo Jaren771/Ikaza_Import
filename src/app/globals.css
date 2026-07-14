@@ -162,12 +162,14 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 
   body {
     @apply bg-background text-foreground;
     background-color: #fbf9f8;
     color: #1b1c1c;
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {

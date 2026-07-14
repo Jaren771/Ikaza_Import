@@ -191,7 +191,11 @@ export default function LoginPage() {
           <Turnstile 
             siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"} 
             onSuccess={(token) => setValue("turnstileToken", token)}
-            onError={() => toast.error("Error al cargar verificación de seguridad")}
+            onError={() => {
+              // Si el widget falla (red/dominio), ponemos bypass para no bloquear al usuario
+              setValue("turnstileToken", "bypass-widget-error");
+            }}
+            onExpire={() => setValue("turnstileToken", "")}
           />
         </div>
         {errors.turnstileToken && (
