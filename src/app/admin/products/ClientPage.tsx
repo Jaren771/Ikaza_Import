@@ -316,11 +316,11 @@ export default function ProductsClientPage({ data }: { data: any }) {
                 </div>
 
                 <div className="grid gap-2 col-span-2 p-4 border rounded-md bg-muted/30">
-                  <Label htmlFor="imageUrl">URL de la Imagen (Temporal)</Label>
+                  <Label htmlFor="imageFile">Subir Imagen Principal</Label>
                   <p className="text-xs text-muted-foreground mb-1">
-                    * La subida a Cloudinary se implementará en una fase posterior. Por ahora, pega un enlace público de una imagen.
+                    Sube una imagen (JPG, PNG, WEBP) desde tu computadora. Será alojada en Cloudinary automáticamente.
                   </p>
-                  <Input id="imageUrl" name="imageUrl" placeholder="https://ejemplo.com/imagen.jpg" />
+                  <Input type="file" id="imageFile" name="imageFile" accept="image/*" />
                 </div>
               </div>
             </div>

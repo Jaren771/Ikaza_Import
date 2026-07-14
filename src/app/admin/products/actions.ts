@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { sanitizeValue } from "@/lib/validation-utils";
+import { uploadImageBuffer } from "@/lib/cloudinary";
 
 export async function getProducts(page: number = 1, limit: number = 20) {
   try {
@@ -45,15 +46,22 @@ export async function createProduct(formData: FormData) {
     const categoryId = formData.get("categoryId") as string;
     const brandId = formData.get("brandId") as string || undefined;
     const status = formData.get("status") as any || "ACTIVE";
-    const imageUrl = formData.get("imageUrl") as string;
     const stock = parseInt(formData.get("stock") as string) || 0;
-
-    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") + "-" + Date.now().toString().substring(8);
-    const shortDescription = sanitizeValue(formData.get("description") as string || name);
+    const imageFile = formData.get("imageFile") as File;
 
     if (!name || !sku || isNaN(price) || !categoryId) {
       return { success: false, error: "Faltan campos obligatorios" };
     }
+
+    let finalImageUrl = "";
+    if (imageFile && imageFile.size > 0) {
+      const arrayBuffer = await imageFile.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      finalImageUrl = await uploadImageBuffer(buffer, "ikaza-products");
+    }
+
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") + "-" + Date.now().toString().substring(8);
+    const shortDescription = sanitizeValue(formData.get("description") as string || name);
 
     const product = await prisma.product.create({
       data: {
@@ -68,14 +76,20 @@ export async function createProduct(formData: FormData) {
         brandId,
         inventory: {
           create: { quantity: stock, minStock: 5 }
-        },
-        ...(imageUrl ? {
-          images: {
-            create: [{ url: imageUrl, isPrimary: true, position: 0 }]
-          }
-        } : {})
+        }
       },
     });
+
+    if (finalImageUrl) {
+      await prisma.productImage.create({
+        data: {
+          productId: product.id,
+          url: finalImageUrl,
+          alt: name,
+          isPrimary: true,
+        }
+      });
+    }
 
     revalidatePath("/admin/products");
     revalidatePath("/", "layout"); // Refresca toda la tienda para los usuarios

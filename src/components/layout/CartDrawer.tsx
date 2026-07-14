@@ -80,7 +80,12 @@ export function CartDrawer() {
                   {state.items.map((item) => (
                     <div key={item.id} className="flex gap-4 border-b pb-4">
                       <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md border bg-muted">
-                        <img src={item.image} alt={item.name} className="h-full w-full object-cover object-center" />
+                        <img 
+                          src={item.image?.startsWith('http') || item.image?.startsWith('/') ? item.image : `/${item.image || 'logo_ikasa_sin_fondo.webp'}`} 
+                          alt={item.name} 
+                          onError={(e) => { e.currentTarget.src = "/logo_ikasa_sin_fondo.webp"; }}
+                          className="h-full w-full object-cover object-center" 
+                        />
                       </div>
                       <div className="flex flex-1 flex-col">
                         <div className="flex justify-between text-sm font-medium text-gray-900 dark:text-gray-100">
