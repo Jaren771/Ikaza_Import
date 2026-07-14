@@ -124,8 +124,7 @@ export async function loginAction(
  * Iniciar sesión con Google
  */
 export async function loginWithGoogleAction(): Promise<void> {
-  const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-  await signIn("google", { redirectTo: `${baseUrl}/` });
+  await signIn("google", { redirectTo: "/" });
 }
 
 /**
