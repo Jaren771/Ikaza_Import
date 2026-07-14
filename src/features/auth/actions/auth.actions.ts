@@ -8,7 +8,6 @@ import { z } from "zod";
 import type { ActionResult } from "@/types";
 import bcrypt from "bcryptjs";
 import { AuthError } from "next-auth";
-import { verifyTurnstileToken } from "@/lib/turnstile";
 import { sendVerificationEmail, sendPasswordResetEmail, sendWelcomeEmail } from "@/lib/email";
 import { headers } from "next/headers";
 import { authRateLimit } from "@/lib/rate-limit";
@@ -31,12 +30,6 @@ export async function loginAction(
       error: "Datos inválidos",
       fieldErrors: validation.error.flatten().fieldErrors as Record<string, string[]>,
     };
-  }
-
-  // 1. Verificación Cloudflare Turnstile (Prevención Bot)
-  const isHuman = await verifyTurnstileToken(validation.data.turnstileToken);
-  if (!isHuman) {
-    return { success: false, error: "Verificación de seguridad fallida. Intenta nuevamente." };
   }
 
   // 2. Patrón 7: Prevención de Fuerza Bruta (Account Lockout)
@@ -141,12 +134,6 @@ export async function registerAction(
       error: "Datos inválidos",
       fieldErrors: validation.error.flatten().fieldErrors as Record<string, string[]>,
     };
-  }
-
-  // 1. Verificación Cloudflare Turnstile (Prevención Bot)
-  const isHuman = await verifyTurnstileToken(validation.data.turnstileToken);
-  if (!isHuman) {
-    return { success: false, error: "Verificación de seguridad fallida. Intenta nuevamente." };
   }
 
   // 1.5 Rate Limiter (Protección contra Spam de Registro)
