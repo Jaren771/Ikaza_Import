@@ -9,8 +9,6 @@ import { loginSchema, type LoginInput } from "@/features/auth/validators/auth.sc
 import { loginAction, loginWithGoogleAction, forgotPasswordAction } from "@/features/auth/actions/auth.actions";
 import { Eye, EyeOff, Loader2, Mail, Lock } from "lucide-react";
 import { toast } from "sonner";
-import { Turnstile } from "@marsidev/react-turnstile";
-import type { Metadata } from "next";
 
 // =============================================================================
 // Página de Login — Basado en wireframe "Acceso - ikaZa Import"
@@ -181,17 +179,6 @@ export default function LoginPage() {
             <p className="text-xs text-destructive">{errors.password.message}</p>
           )}
         </div>
-
-        {/* Cloudflare Turnstile */}
-        <div className="flex justify-center my-4">
-          <Turnstile 
-            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"} 
-            onSuccess={(token) => setValue("turnstileToken", token)}
-          />
-        </div>
-        {errors.turnstileToken && (
-          <p className="text-xs text-destructive text-center mb-4">{errors.turnstileToken.message}</p>
-        )}
 
         {/* Submit */}
         <button

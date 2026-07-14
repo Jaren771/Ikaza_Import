@@ -10,7 +10,6 @@ import { registerAction, loginWithGoogleAction } from "@/features/auth/actions/a
 import { Eye, EyeOff, Loader2, Mail, Lock, User, Phone, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Turnstile } from "@marsidev/react-turnstile";
 
 // =============================================================================
 // Página de Registro — Basado en wireframe "Registro - ikaZa Import"
@@ -224,17 +223,6 @@ export default function RegisterPage() {
         </div>
         {errors.acceptTerms && (
           <p className="text-xs text-destructive">{errors.acceptTerms.message}</p>
-        )}
-
-        {/* Cloudflare Turnstile */}
-        <div className="flex justify-center my-4">
-          <Turnstile 
-            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"} 
-            onSuccess={(token) => setValue("turnstileToken", token)}
-          />
-        </div>
-        {errors.turnstileToken && (
-          <p className="text-xs text-destructive text-center mb-4">{errors.turnstileToken.message}</p>
         )}
 
         <button
