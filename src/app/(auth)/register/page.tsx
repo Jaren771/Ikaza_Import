@@ -55,13 +55,24 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="fade-in">
+    <div className="mx-auto w-full max-w-md">
       <div className="mb-6">
-        <h1 className="font-headline text-3xl font-bold">Crear cuenta</h1>
-        <p className="text-muted-foreground mt-2">
-          Únete a miles de clientes satisfechos
-        </p>
+        <Link 
+          href="/" 
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          Regresar
+        </Link>
       </div>
+      
+      <div className="space-y-8">
+        <div className="mb-6">
+          <h1 className="font-headline text-3xl font-bold">Crear cuenta</h1>
+          <p className="text-muted-foreground mt-2">
+            Únete a ikaZa Import y disfruta de los mejores productos
+          </p>
+        </div>
 
       {/* Google OAuth */}
       <form action={loginWithGoogleAction}>
@@ -257,6 +268,7 @@ export default function RegisterPage() {
           Iniciar Sesión
         </Link>
       </p>
+      </div>
     </div>
   );
 }
