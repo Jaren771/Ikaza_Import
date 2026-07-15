@@ -123,32 +123,11 @@ export async function processCheckoutAction(data: {
           // CÁLCULO DINÁMICO DE ENVÍO
           // ==========================================
           let shipping = 0;
-          if (data.shippingMethod === "DELIVERY" && address) {
-            let totalWeight = 0;
-            
-            for (const item of cart.items) {
-              // Calcular peso real vs volumétrico (ancho x alto x largo / 5000)
-              const realW = Number(item.product.weight || 0);
-              const w = Number(item.product.width || 0);
-              const h = Number(item.product.height || 0);
-              const d = Number(item.product.depth || 0);
-              const volW = (w * h * d) / 5000;
-              const maxW = Math.max(realW, volW) || 1; // Mínimo 1kg por item si no hay datos
-              
-              totalWeight += maxW * item.quantity;
+          if (data.shippingMethod === "DELIVERY") {
+            if (subtotal < 20) {
+               throw new Error("El Envío a Domicilio solo está disponible para compras a partir de S/ 20.00.");
             }
-
-            // Lógica de distancia base (Local vs Nacional)
-            const isLocal = address.state?.toLowerCase() === "lima" || address.city?.toLowerCase() === "lima";
-            const baseRate = isLocal ? 10 : 20; // 10 soles local, 20 nacional
-            const extraWeightRate = totalWeight > 2 ? (totalWeight - 2) * 3 : 0; // 3 soles por kg extra después de 2kg
-
-            shipping = baseRate + extraWeightRate;
-            
-            // Envío gratis si el subtotal supera 150 (opcional, lo dejamos si es local)
-            if (subtotal >= 150 && isLocal) {
-              shipping = 0;
-            }
+            shipping = subtotal >= 150 ? 0 : 15;
           }
 
           const total = subtotal + shipping;

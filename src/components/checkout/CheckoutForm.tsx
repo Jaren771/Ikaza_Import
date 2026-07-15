@@ -24,7 +24,8 @@ interface CheckoutFormProps {
 export function CheckoutForm({ addresses, cartTotal, subtotal, cartItemsWeight, cartItems }: CheckoutFormProps) {
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
-  const [shippingMethod, setShippingMethod] = useState<"DELIVERY" | "PICKUP">("DELIVERY");
+  const isDeliveryAllowed = subtotal >= 20;
+  const [shippingMethod, setShippingMethod] = useState<"DELIVERY" | "PICKUP">(isDeliveryAllowed ? "DELIVERY" : "PICKUP");
   
   const [shippingStreet, setShippingStreet] = useState("");
   const [shippingCity, setShippingCity] = useState("");
@@ -41,14 +42,8 @@ export function CheckoutForm({ addresses, cartTotal, subtotal, cartItemsWeight, 
 
   // Cálculo dinámico de envío (igual al backend)
   let calculatedShipping = 0;
-  if (shippingMethod === "DELIVERY" && shippingState) {
-    const isLocal = shippingState.toLowerCase() === "lima" || shippingCity.toLowerCase() === "lima";
-    const baseRate = isLocal ? 10 : 20;
-    const extraWeightRate = cartItemsWeight > 2 ? (cartItemsWeight - 2) * 3 : 0;
-    calculatedShipping = baseRate + extraWeightRate;
-    if (subtotal >= 150 && isLocal) {
-      calculatedShipping = 0;
-    }
+  if (shippingMethod === "DELIVERY") {
+    calculatedShipping = subtotal >= 150 ? 0 : 15;
   }
   const finalTotal = subtotal + calculatedShipping;
 
@@ -164,9 +159,9 @@ export function CheckoutForm({ addresses, cartTotal, subtotal, cartItemsWeight, 
             {/* 1. Método de entrega */}
             <section>
               <h2 className="font-headline text-lg font-semibold mb-4">1. Método de Entrega</h2>
-              <div className="flex gap-4 mb-6">
-                <label className={`flex-1 relative flex cursor-pointer rounded-xl border p-4 transition-all items-center gap-3 ${shippingMethod === "DELIVERY" ? "border-[#006065] bg-teal-50/30 ring-1 ring-[#006065]" : "hover:border-[#006065]"}`}>
-                  <input type="radio" name="shippingMethod" value="DELIVERY" checked={shippingMethod === "DELIVERY"} onChange={() => setShippingMethod("DELIVERY")} className="sr-only" />
+              <div className="flex gap-4 mb-6 relative">
+                <label className={`flex-1 relative flex cursor-pointer rounded-xl border p-4 transition-all items-center gap-3 ${!isDeliveryAllowed ? 'opacity-50 grayscale bg-gray-50' : shippingMethod === "DELIVERY" ? "border-[#006065] bg-teal-50/30 ring-1 ring-[#006065]" : "hover:border-[#006065]"}`}>
+                  <input type="radio" name="shippingMethod" value="DELIVERY" checked={shippingMethod === "DELIVERY"} onChange={() => { if(isDeliveryAllowed) setShippingMethod("DELIVERY") }} disabled={!isDeliveryAllowed} className="sr-only" />
                   <Truck className={`h-6 w-6 ${shippingMethod === "DELIVERY" ? "text-[#006065]" : "text-muted-foreground"}`} />
                   <span className="font-semibold text-sm">Envío a Domicilio</span>
                 </label>
@@ -176,6 +171,16 @@ export function CheckoutForm({ addresses, cartTotal, subtotal, cartItemsWeight, 
                   <span className="font-semibold text-sm">Recojo en Tienda</span>
                 </label>
               </div>
+
+              {!isDeliveryAllowed && (
+                <div className="mb-6 p-4 rounded-xl bg-orange-50 border border-orange-200 text-sm text-orange-800 flex items-start gap-3">
+                  <span className="text-xl">⚠️</span>
+                  <p>
+                    <strong>Envío a Domicilio no disponible:</strong> El subtotal de tu compra debe ser mayor a <strong>S/ 20.00</strong> para acceder a este método. 
+                    Por favor, selecciona <strong>Recojo en Tienda</strong> o agrega más productos a tu carrito.
+                  </p>
+                </div>
+              )}
 
               {shippingMethod === "DELIVERY" ? (
                 <div className="rounded-xl border p-4 space-y-4">

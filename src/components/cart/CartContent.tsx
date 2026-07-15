@@ -244,8 +244,13 @@ export function CartContent({ cart }: CartContentProps) {
               </span>
             </div>
             {shipping > 0 && (
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground mt-1">
                 Envío gratis en pedidos mayores a S/ 150
+              </p>
+            )}
+            {subtotal < 20 && (
+              <p className="text-xs text-orange-600 mt-1 font-medium bg-orange-50 p-2 rounded border border-orange-100">
+                Envío a Domicilio disponible a partir de S/ 20.00 (Podrás elegir Recojo en Tienda gratis).
               </p>
             )}
           </div>
