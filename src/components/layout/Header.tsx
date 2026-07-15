@@ -40,8 +40,8 @@ export async function Header() {
       {/* Barra decorativa de marca — gradiente ikaZa (Opción C) */}
       <div className="header-brand-bar w-full" aria-hidden="true" />
       <div className="ikaza-container">
-        {/* Top bar */}
-        <div className="flex h-16 items-center gap-4">
+        {/* Top bar (Desktop & Mobile) */}
+        <div className="flex flex-wrap items-center justify-between gap-y-3 py-3 sm:flex-nowrap sm:gap-4 sm:py-0 sm:h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 shrink-0">
             <div className="relative h-9 w-9 overflow-hidden rounded-lg">
@@ -63,13 +63,8 @@ export async function Header() {
             </div>
           </Link>
 
-          {/* Search Bar — centro */}
-          <div className="flex-1 max-w-xl mx-auto">
-            <SearchBar />
-          </div>
-
-          {/* Acciones — derecha */}
-          <div className="flex items-center gap-2 shrink-0">
+          {/* Acciones — Derecha (Se muestra primero en móvil junto al logo) */}
+          <div className="flex items-center justify-end gap-1 sm:gap-2 shrink-0 order-2 sm:order-3">
             {/* Wishlist */}
             <Link
               href="/wishlist"
@@ -98,6 +93,11 @@ export async function Header() {
 
             {/* Mobile menu */}
             <MobileMenu isLoggedIn={!!session?.user} />
+          </div>
+
+          {/* Search Bar — Baja a la segunda línea en móvil, flex-1 en desktop */}
+          <div className="w-full order-last sm:order-none sm:flex-1 sm:max-w-xl sm:mx-auto">
+            <SearchBar />
           </div>
         </div>
 

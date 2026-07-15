@@ -83,7 +83,14 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="fade-in">
+    <div className="mx-auto w-full max-w-md space-y-8 relative">
+      <Link 
+        href="/" 
+        className="absolute -top-12 left-0 sm:-left-12 sm:-top-0 flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        Regresar
+      </Link>
       <div className="mb-8">
         <h1 className="font-headline text-3xl font-bold">Bienvenido</h1>
         <p className="text-muted-foreground mt-2">

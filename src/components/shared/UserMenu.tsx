@@ -32,7 +32,7 @@ export function UserMenu({ user }: UserMenuProps) {
   const isManager = user.role === "MANAGER";
 
   const handleLogout = async () => {
-    await signOut({ redirectTo: "/" });
+    await signOut({ callbackUrl: "/" });
   };
 
   return (
